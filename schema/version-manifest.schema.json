@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jan-guenter/bluemap-atmons/blob/main/schema/version-manifest.schema.json",
+  "title": "BlueMap ATMons compatibility manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "atmons",
+    "runtime",
+    "release",
+    "components"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "atmons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "tag", "pack_commit"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "tag": {
+          "type": "string",
+          "pattern": "^atmons-[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "pack_commit": {
+          "$ref": "#/$defs/commit"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minecraft", "neoforge", "java"],
+      "properties": {
+        "minecraft": {"type": "string", "minLength": 1},
+        "neoforge": {"type": "string", "minLength": 1},
+        "java": {"type": "integer", "minimum": 1}
+      }
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["addon_count", "component_count"],
+      "properties": {
+        "addon_count": {"type": "integer", "minimum": 0},
+        "component_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/component"}
+    }
+  },
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "repository",
+        "submodule_path",
+        "commit",
+        "release_tag",
+        "artifact",
+        "requires"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "kind": {
+          "enum": ["bluemap", "addon"]
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "submodule_path": {
+          "type": "string",
+          "pattern": "^(?:bluemap|addons/[a-z0-9]+(?:-[a-z0-9]+)*)$"
+        },
+        "commit": {"$ref": "#/$defs/commit"},
+        "release_tag": {"type": "string", "minLength": 1},
+        "artifact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["filename", "url", "size_bytes", "sha256"],
+          "properties": {
+            "filename": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.+-]+\\.jar$"
+            },
+            "url": {
+              "type": "string",
+              "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/releases/download/[^/]+/[A-Za-z0-9_.+-]+\\.jar$"
+            },
+            "size_bytes": {"type": "integer", "minimum": 1},
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "requires": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

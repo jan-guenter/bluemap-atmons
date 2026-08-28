@@ -1,0 +1,901 @@
+{
+  "schema_version": 1,
+  "atmons": {
+    "version": "1.2.0",
+    "tag": "atmons-1.2.0",
+    "pack_commit": "c7bb230f21d14d26859d0b92548f089b3a493ad9"
+  },
+  "runtime": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.248",
+    "java": 21
+  },
+  "release": {
+    "addon_count": 51,
+    "component_count": 52
+  },
+  "components": [
+    {
+      "id": "ae2",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-ae2-addon",
+      "submodule_path": "addons/ae2",
+      "commit": "575c05222c7322421c30cb1158a2054dc04aa564",
+      "release_tag": "v0.1.0-alpha.3",
+      "artifact": {
+        "filename": "bluemap-ae2-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ae2-addon/releases/download/v0.1.0-alpha.3/bluemap-ae2-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 1252649,
+        "sha256": "f7014e1c60bdf02fa22583a7b5b5cbf6f3076a0b2371601360775507d473a12d"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "ars-creo",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-ars-creo-addon",
+      "submodule_path": "addons/ars-creo",
+      "commit": "f27921f918928a813d8bf9d0aa607184de41d9e2",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-ars-creo-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-creo-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-creo-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 163265,
+        "sha256": "bcf9ac905e3d9b7702da666c3be131a6b24ab6b8dfd472b8ffa5d5e014cb1938"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "ars-energistique",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-ars-energistique-addon",
+      "submodule_path": "addons/ars-energistique",
+      "commit": "33a8cc848d51384dcc11d817c09957601a9c7234",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-ars-energistique-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-energistique-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-energistique-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 52396,
+        "sha256": "5f679b5af007401e0456e0de7168527d401c77cf79c500b5f18a102184659a7f"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "ars-nouveau",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-ars-nouveau-addon",
+      "submodule_path": "addons/ars-nouveau",
+      "commit": "32cb3e041bc7bc5bb4e6325cfb8b57a9604f4c28",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-ars-nouveau-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-nouveau-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-nouveau-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 153309,
+        "sha256": "d048145174754f9a134fcac449fd200ee6b423aedeca74fff3eef21f60e20c2d"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "ars-technica",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-ars-technica-addon",
+      "submodule_path": "addons/ars-technica",
+      "commit": "76c8a262fc42f309f3ad8ba039c79d8fe0a42ae1",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-ars-technica-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-technica-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-technica-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 139865,
+        "sha256": "4b36968ee1ed53614ba1de5d11277f073ed43c94c48470e53fbbca2679e8e643"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "bluemap",
+      "kind": "bluemap",
+      "repository": "jan-guenter/BlueMap",
+      "submodule_path": "bluemap",
+      "commit": "9be321df995a1103808621d529eb72773e719d4d",
+      "release_tag": "v5.22-agent.backport-5.22-mc1.21.1-2",
+      "artifact": {
+        "filename": "bluemap-5.22-agent.backport-5.22-mc1.21.1-2-neoforge.jar",
+        "url": "https://github.com/jan-guenter/BlueMap/releases/download/v5.22-agent.backport-5.22-mc1.21.1-2/bluemap-5.22-agent.backport-5.22-mc1.21.1-2-neoforge.jar",
+        "size_bytes": 6467235,
+        "sha256": "749f7647fa29764cea113114a7ab3259271bab3da22720989f2bd9fd1f3ba150"
+      },
+      "requires": []
+    },
+    {
+      "id": "botanypots",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-botanypots-addon",
+      "submodule_path": "addons/botanypots",
+      "commit": "f40eed6c1f7f30356bcdfabbc3e2a6455fec7884",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-botanypots-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-botanypots-addon/releases/download/v0.1.0-alpha.1/bluemap-botanypots-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 147258,
+        "sha256": "ab32bdad893e95847e191b86fee1da727757e1ee006449128acb897fe5eb05b0"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "camol",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-camol-addon",
+      "submodule_path": "addons/camol",
+      "commit": "3a3f3b37943fc506893a1548a28953ef1a5f0da9",
+      "release_tag": "v0.1.0-alpha.2",
+      "artifact": {
+        "filename": "bluemap-camol-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-camol-addon/releases/download/v0.1.0-alpha.2/bluemap-camol-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 32587,
+        "sha256": "2c707f0cb1e8ebbef735f3afeae818e9154029a4d3892c58a737ae75891d197b"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "chipped",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-chipped-addon",
+      "submodule_path": "addons/chipped",
+      "commit": "c474a82b6bfd1b4173d119cb1e053a5458167e4b",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-chipped-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-chipped-addon/releases/download/v0.1.0-alpha.1/bluemap-chipped-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 598326,
+        "sha256": "b43c238b764e068db4009ab16fc2af140b54d84feaf37bd6577602e1dc97fd21"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "chisel",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-chisel-addon",
+      "submodule_path": "addons/chisel",
+      "commit": "f9131a5143062e2045cf26823aabb8628bb5d94d",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-chisel-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-chisel-addon/releases/download/v0.1.0-alpha.1/bluemap-chisel-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 249972,
+        "sha256": "053e048f9332094571b25b2edc5ddb9a172e1f89c0a65c2f7ceb05e4a946510e"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "cobblefurnies",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-cobblefurnies-addon",
+      "submodule_path": "addons/cobblefurnies",
+      "commit": "eea5407dbbd162cbe4dd8fc5bc247f6617cf5d98",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-cobblefurnies-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-cobblefurnies-addon/releases/download/v0.1.0-alpha.1/bluemap-cobblefurnies-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 108237,
+        "sha256": "2c9df027e4cd1b4f56856dcb05a65499b6ed1df3f8592e9d662ad59e477564a3"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "cobblemonstonestatues",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-cobblemonstonestatues-addon",
+      "submodule_path": "addons/cobblemonstonestatues",
+      "commit": "576c3030a60b5b9af266c2af4b3f8556a69aaa0f",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-cobblemonstonestatues-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-cobblemonstonestatues-addon/releases/download/v0.1.0-alpha.1/bluemap-cobblemonstonestatues-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 286752,
+        "sha256": "9800484109aa7e571f393aa96b069e6248186c35103b6e26fd9dad920e4efcd4"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "connectedglass",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-connectedglass-addon",
+      "submodule_path": "addons/connectedglass",
+      "commit": "4a4eb5030d18f1e54cd5a8ad1c2dc093a187ac06",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-connectedglass-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-connectedglass-addon/releases/download/v0.1.0-alpha.1/bluemap-connectedglass-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 155396,
+        "sha256": "eb1dc07a6f9906f83a710e175cb8c119f0464bda73f651fa13a6e24900ffb70e"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "create",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-create-addon",
+      "submodule_path": "addons/create",
+      "commit": "987b1a2d4e579878d605ec9c003ee8eef69f8686",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-create-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-create-addon/releases/download/v0.1.0-alpha.1/bluemap-create-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 312744,
+        "sha256": "e9e860ff0a3cc3398090d03f36441a9df863ec96c0c5e6da408815a1f9c1cd05"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "crystalix",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-crystalix-addon",
+      "submodule_path": "addons/crystalix",
+      "commit": "b60a3fecb809fbaefb3347500d75b5d453cfe14a",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-crystalix-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-crystalix-addon/releases/download/v0.1.0-alpha.1/bluemap-crystalix-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 47389,
+        "sha256": "512e02fda272a1c6809fb6c30ee3958cdf13fb87e531b23355069f177458721b"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "draconic-evolution",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-draconic-evolution-addon",
+      "submodule_path": "addons/draconic-evolution",
+      "commit": "c9c37d3a07fdcbf971a1e1c28b2845c494260a7b",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-draconic-evolution-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-draconic-evolution-addon/releases/download/v0.1.0-alpha.1/bluemap-draconic-evolution-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 149301,
+        "sha256": "78281d7a3a8f2badfd0c7fb01312d3a15f0adcf261889e9b662b3f5ab33403ef"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "enderio",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-enderio-addon",
+      "submodule_path": "addons/enderio",
+      "commit": "0dfb4901193f67090a5ff5b1929ca24f60fbf2c0",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-enderio-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-enderio-addon/releases/download/v0.1.0-alpha.1/bluemap-enderio-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 53872,
+        "sha256": "4434f9f7da28b157ca83e17ef5a6eaf56fee830c0044cd987e4a78b4f9f2b41a"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "extreme-reactors",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-extreme-reactors-addon",
+      "submodule_path": "addons/extreme-reactors",
+      "commit": "c6a70f0ec38e984c4c349742b921a87cd4d21e18",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-extreme-reactors-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-extreme-reactors-addon/releases/download/v0.1.0-alpha.1/bluemap-extreme-reactors-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 92010,
+        "sha256": "60eaf0b401742fbc40a8500948234e72010b4a8224395893af8b521b2aed0d24"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "factory-blocks",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-factory-blocks-addon",
+      "submodule_path": "addons/factory-blocks",
+      "commit": "ad9ee2bcf0e2886ee88931f1eaf50ccb4b8a03bd",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-factory-blocks-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-factory-blocks-addon/releases/download/v0.1.0-alpha.1/bluemap-factory-blocks-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 86501,
+        "sha256": "69f4f53022aac455a4bcc362dc09cbaf5b3f73cf108ccc154dffa8e238869302"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "framedblocks",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-framedblocks-addon",
+      "submodule_path": "addons/framedblocks",
+      "commit": "0c20019d570356044526faea964caf10a13a82f3",
+      "release_tag": "v0.1.0-alpha.2",
+      "artifact": {
+        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.2/bluemap-framedblocks-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 1327387,
+        "sha256": "a7c4922777e6912d726da14d246c92c75b7fc1d1db8ec2f862a07b25bc9e9ebb"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "functional-storage",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-functional-storage-addon",
+      "submodule_path": "addons/functional-storage",
+      "commit": "d085e3a4450dd2e8b1dc6d54541054ee36b4646c",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-functional-storage-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-functional-storage-addon/releases/download/v0.1.0-alpha.1/bluemap-functional-storage-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 82274,
+        "sha256": "ffe80812802c2c8f68d50ee74f17dd492561f3b44a9e650545064f66e285b048"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "glassential",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-glassential-addon",
+      "submodule_path": "addons/glassential",
+      "commit": "13fd12412573c62847700d1cfc8e4aa9d2bb5ea1",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-glassential-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-glassential-addon/releases/download/v0.1.0-alpha.1/bluemap-glassential-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 162440,
+        "sha256": "a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "immersive-energistics",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-immersive-energistics-addon",
+      "submodule_path": "addons/immersive-energistics",
+      "commit": "4632af465a9991cc1f81ea4d12239d5a1376c6df",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-immersive-energistics-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-immersive-energistics-addon/releases/download/v0.1.0-alpha.1/bluemap-immersive-energistics-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 91505,
+        "sha256": "e61ae9c0fd9c8cfd36698a13a03124ff3536e8e93419fca22c47d4e29eb9bc76"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "immersive-engineering",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-immersive-engineering-addon",
+      "submodule_path": "addons/immersive-engineering",
+      "commit": "a08b7fd0267103d0a3d1722bed171ef7b4487a57",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-immersive-engineering-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-immersive-engineering-addon/releases/download/v0.1.0-alpha.1/bluemap-immersive-engineering-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 321202,
+        "sha256": "eec9bbd5b1c27ffa3e9c57d7a730f5a2212ebeebc600cafc7498fa0a15580fb4"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "integrated-dynamics",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-integrated-dynamics-addon",
+      "submodule_path": "addons/integrated-dynamics",
+      "commit": "f6f0d7c89563aa63f27970c898fda4cc720cc32f",
+      "release_tag": "v0.1.0-alpha.2",
+      "artifact": {
+        "filename": "bluemap-integrated-dynamics-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-integrated-dynamics-addon/releases/download/v0.1.0-alpha.2/bluemap-integrated-dynamics-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 54979,
+        "sha256": "11fdae6eb18513d7d06bbca1973e2eded36ae12f30a69bd9e09af148f8e70f18"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "laser-bridges",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-laser-bridges-addon",
+      "submodule_path": "addons/laser-bridges",
+      "commit": "e801361fa3495b1752cf4ab8d6c2a48e0caabd53",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-laser-bridges-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-laser-bridges-addon/releases/download/v0.1.0-alpha.1/bluemap-laser-bridges-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 91268,
+        "sha256": "f4229a2ad89eafbc7c0d1a434cec53c859c051221804ee3013ed4fde34284193"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "laserio",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-laserio-addon",
+      "submodule_path": "addons/laserio",
+      "commit": "2148a344b1ae78e77b95aa2baa51efe46c1357e8",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-laserio-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-laserio-addon/releases/download/v0.1.0-alpha.1/bluemap-laserio-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 110887,
+        "sha256": "006900dd9000c6614c60b38df46b6cd1940dab53f059a381c282e9d79e89dbf1"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "little-big-redstone",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-little-big-redstone-addon",
+      "submodule_path": "addons/little-big-redstone",
+      "commit": "cee9ed82e22e8041d53c3d9d54a61bee82da72a1",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-little-big-redstone-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-little-big-redstone-addon/releases/download/v0.1.0-alpha.1/bluemap-little-big-redstone-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 54658,
+        "sha256": "d3bf3ee012b5a00e3f1d546429c1f7f72a183e27e38088deaae9654a9d4750a5"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "logistics-networks",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-logistics-networks-addon",
+      "submodule_path": "addons/logistics-networks",
+      "commit": "e6dc2ebe4c3ddbf4942b07c9208147d901f411fb",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-logistics-networks-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-logistics-networks-addon/releases/download/v0.1.0-alpha.1/bluemap-logistics-networks-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 67367,
+        "sha256": "5f813504e2dccd63ad0a2cc1bd33a129da2e2934e5576d149b6b215c12ba8f18"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "lootr",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-lootr-addon",
+      "submodule_path": "addons/lootr",
+      "commit": "f01d71c1f55a743d73d171677b18ed13be5756eb",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-lootr-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-lootr-addon/releases/download/v0.1.0-alpha.1/bluemap-lootr-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 138464,
+        "sha256": "009495162e9319990f7dfc427c4b5a9caa9279fbcd64740e51ccacaa37b06cc3"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "mekanism",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-mekanism-addon",
+      "submodule_path": "addons/mekanism",
+      "commit": "fd38ee958fa24795112fdd2ab91b9f3dfc36b29c",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-mekanism-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-mekanism-addon/releases/download/v0.1.0-alpha.1/bluemap-mekanism-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 78688,
+        "sha256": "fc0b0144dcd3dd5ec24747961bd57960f5f00d699c7bb5dc67975739fb0d61c7"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "modular-routers",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-modular-routers-addon",
+      "submodule_path": "addons/modular-routers",
+      "commit": "7fd7a4d0c40bd2dae13bb87e48445eb905322993",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-modular-routers-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-modular-routers-addon/releases/download/v0.1.0-alpha.1/bluemap-modular-routers-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 46780,
+        "sha256": "c8e0c591169e12334abc85c3a917caffb5c82e4dd000acf92d0ff101b8f97a31"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "morered",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-morered-addon",
+      "submodule_path": "addons/morered",
+      "commit": "845033ad8d49eab73986622dd964b6f5072a559e",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-morered-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-morered-addon/releases/download/v0.1.0-alpha.1/bluemap-morered-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 93178,
+        "sha256": "8c146f92d2939a38093423e70dd7db248a28426fade75e5eb0cefb477dcc0f9d"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "natures-aura",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-natures-aura-addon",
+      "submodule_path": "addons/natures-aura",
+      "commit": "8c2cef5d5782061aa4effa3d1a550ee7d262639c",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-natures-aura-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-natures-aura-addon/releases/download/v0.1.0-alpha.1/bluemap-natures-aura-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 115630,
+        "sha256": "ba98a71dce55a343cfdf3c2f22421beebf26ac631f8a42841643da6f03d5f5e6"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "oritech",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-oritech-addon",
+      "submodule_path": "addons/oritech",
+      "commit": "a4ffa5632459193d10be181005a03e6cae5b4743",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-oritech-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-oritech-addon/releases/download/v0.1.0-alpha.1/bluemap-oritech-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 64472,
+        "sha256": "958ae6fa2ae5a17893cccc348d3a6ce90498ff16ded21a97b0575774b7698a8e"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "pipez",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-pipez-addon",
+      "submodule_path": "addons/pipez",
+      "commit": "fa3e773a7d1b7e9af52277bf104e70f704b0bb2a",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-pipez-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-pipez-addon/releases/download/v0.1.0-alpha.1/bluemap-pipez-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 53921,
+        "sha256": "e81dea280d08e19ea4602e5a0700f4ab7004ca74e3408bfba3a898cb745e67db"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "pneumaticcraft",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-pneumaticcraft-addon",
+      "submodule_path": "addons/pneumaticcraft",
+      "commit": "91a4f84bce2d76e0204daeb05ad7d720b3fd548f",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-pneumaticcraft-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-pneumaticcraft-addon/releases/download/v0.1.0-alpha.1/bluemap-pneumaticcraft-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 74221,
+        "sha256": "683a151fa8156136e3ce30df3cc887ed7ccfc695b3457cd27bc281c29d836f6c"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "powah",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-powah-addon",
+      "submodule_path": "addons/powah",
+      "commit": "7ad05e80ed70152fcf48c92c6c32de3f6d815667",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-powah-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-powah-addon/releases/download/v0.1.0-alpha.1/bluemap-powah-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 36572,
+        "sha256": "0b370dfcd5d8c0a5844dd920d60a2cdb74ed441d87ff038382d8292c374686c8"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "productive-bees",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-productive-bees-addon",
+      "submodule_path": "addons/productive-bees",
+      "commit": "c2fb4e93bd765bbe2e4ffb151764ae7431db9695",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-productive-bees-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-productive-bees-addon/releases/download/v0.1.0-alpha.1/bluemap-productive-bees-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 66286,
+        "sha256": "17643a965eaf55d5746ec74bd39df153762ac03aaddcd4f47005d9b9f683b1dc"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "productive-metalworks",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-productive-metalworks-addon",
+      "submodule_path": "addons/productive-metalworks",
+      "commit": "f7706461f5500067d610c0c2e5ed97371f16af81",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-productive-metalworks-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-productive-metalworks-addon/releases/download/v0.1.0-alpha.1/bluemap-productive-metalworks-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 118243,
+        "sha256": "7b7890329de51230a8a455a45acac83e860932fda12b3e685d42522b138df0cd"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "railcraft-reborn",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-railcraft-reborn-addon",
+      "submodule_path": "addons/railcraft-reborn",
+      "commit": "3ef611818c1fd6b8f2f1671776cbb390aad56024",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-railcraft-reborn-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-railcraft-reborn-addon/releases/download/v0.1.0-alpha.1/bluemap-railcraft-reborn-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 86864,
+        "sha256": "e4822c8756cada38958646a3b0c0e022d961b4549aa26254ebfc289a52190996"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "rechiseled",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-rechiseled-addon",
+      "submodule_path": "addons/rechiseled",
+      "commit": "8588d99388c213b938d79931dd6d9e9ef8e4099c",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-rechiseled-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rechiseled-addon/releases/download/v0.1.0-alpha.1/bluemap-rechiseled-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 645622,
+        "sha256": "39793187b97b504e085664a23eb5e54961dfdeac1e9ccf57e1bd701bd90c0242"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "rechiseled-create",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-rechiseled-create-addon",
+      "submodule_path": "addons/rechiseled-create",
+      "commit": "e1fd8afc1816154a95e224815ca4015528fd0e2e",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-rechiseled-create-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rechiseled-create-addon/releases/download/v0.1.0-alpha.1/bluemap-rechiseled-create-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 209444,
+        "sha256": "651b8be8a41d459f04f3ec1cbc64ba7441cceb3c2bb3c07d518556a11c83596b"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "rftools-builder",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-rftools-builder-addon",
+      "submodule_path": "addons/rftools-builder",
+      "commit": "64471638ed4f61c102bd5f54986fba1cd467d6dd",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-rftools-builder-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rftools-builder-addon/releases/download/v0.1.0-alpha.1/bluemap-rftools-builder-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 65006,
+        "sha256": "776d4242bf6826a8aafe081aca5b32f242bc0af5677efccbdd3469b65ba7cfe6"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "rftools-utility",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-rftools-utility-addon",
+      "submodule_path": "addons/rftools-utility",
+      "commit": "cf3f4c714aafd49be097d391d077158f0cc1fb60",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-rftools-utility-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rftools-utility-addon/releases/download/v0.1.0-alpha.1/bluemap-rftools-utility-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 71184,
+        "sha256": "a9adfd5d2773b9b7ed2a7757b520ea513b5dedeaa0e57eb8349afdb9ebd6dd25"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "securitycraft",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-securitycraft-addon",
+      "submodule_path": "addons/securitycraft",
+      "commit": "a99e816581b62c71dae3975e1e677a1ff93aec64",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-securitycraft-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-securitycraft-addon/releases/download/v0.1.0-alpha.1/bluemap-securitycraft-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 33345,
+        "sha256": "4caccbbfaf9d413ae7d60e926069812e09da182adeb907ec2475083904d096e4"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "sophisticated",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-sophisticated-addon",
+      "submodule_path": "addons/sophisticated",
+      "commit": "a75b1d82c3987fa9360a1e8a5910eedf90aca7cb",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-sophisticated-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-sophisticated-addon/releases/download/v0.1.0-alpha.1/bluemap-sophisticated-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 114309,
+        "sha256": "d466d6b40fc1f51a8e045ba34631354fd181681aa8363b4f0649ec1c83227036"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "supplementaries",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-supplementaries-addon",
+      "submodule_path": "addons/supplementaries",
+      "commit": "f9e1035ce356e749489e67e65f5f83c42415bd2b",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-supplementaries-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-supplementaries-addon/releases/download/v0.1.0-alpha.1/bluemap-supplementaries-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 64385,
+        "sha256": "7559ec3eff162a279a1a3ba1ce4b061d0ed2ff6726e016614ed0973cc407e5da"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "tempad",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-tempad-addon",
+      "submodule_path": "addons/tempad",
+      "commit": "9bd217d642be3b0abdac77a2f93098eba8c15fe9",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-tempad-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-tempad-addon/releases/download/v0.1.0-alpha.1/bluemap-tempad-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 99536,
+        "sha256": "0026de4bd3de80f52f11f6ae223351c7ecae51cbd59c0adc85ab755fddbae95d"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "theurgy",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-theurgy-addon",
+      "submodule_path": "addons/theurgy",
+      "commit": "7d27df09578fd521644ac15a4caf232b9729f312",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-theurgy-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-theurgy-addon/releases/download/v0.1.0-alpha.1/bluemap-theurgy-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 67128,
+        "sha256": "8517196b56ddc9c180e792ad33f28347781b3f08ffe9805f23b7932182035ce0"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "trophy-manager",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-trophy-manager-addon",
+      "submodule_path": "addons/trophy-manager",
+      "commit": "235fe54839a9521b0a70fd95822779fa499eee37",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-trophy-manager-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-trophy-manager-addon/releases/download/v0.1.0-alpha.1/bluemap-trophy-manager-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 92121,
+        "sha256": "3eb5e33df93231f362e749b9044fc450748e2a3d0f3998711d6871586aae00d9"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    },
+    {
+      "id": "xnet",
+      "kind": "addon",
+      "repository": "jan-guenter/bluemap-xnet-addon",
+      "submodule_path": "addons/xnet",
+      "commit": "925a5e890e0f97791599c063825bc0ac4fc2bd51",
+      "release_tag": "v0.1.0-alpha.1",
+      "artifact": {
+        "filename": "bluemap-xnet-addon-0.1.0-alpha.1.jar",
+        "url": "https://github.com/jan-guenter/bluemap-xnet-addon/releases/download/v0.1.0-alpha.1/bluemap-xnet-addon-0.1.0-alpha.1.jar",
+        "size_bytes": 129889,
+        "sha256": "bd08f4e4d0c7e88e7dbe15863e7f6669bd4c6c2cb495bfdbff43af2d35e49bb4"
+      },
+      "requires": [
+        "bluemap"
+      ]
+    }
+  ]
+}

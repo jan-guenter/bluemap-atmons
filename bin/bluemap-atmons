@@ -1,0 +1,654 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+PROGRAM=${0##*/}
+DEFAULT_ATMONS=1.2.0
+DEFAULT_REPOSITORY=jan-guenter/bluemap-atmons
+
+die() {
+  printf '%s: %s\n' "$PROGRAM" "$*" >&2
+  exit 1
+}
+
+note() {
+  printf '%s\n' "$*"
+}
+
+usage() {
+  cat <<'EOF'
+Usage:
+  bluemap-atmons <plan|install|update|status|verify|recover> --server DIR [options]
+
+Options:
+  --atmons VERSION            All the Mons version (default: 1.2.0)
+  --manifest PATH|URL         Use an explicit manifest instead of the tagged one
+  --components SET           all, bluemap, or addons (default: all)
+  --addons ID[,ID...]         Limit add-on work to these IDs
+  --exclude-addon ID[,ID...] Leave these add-ons untouched; may be repeated
+  --dry-run                   Plan without downloading or changing files
+  --server-stopped            Assert that the server is stopped
+  --pid-file PATH             Refuse mutation while the PID in PATH is alive
+  -h, --help                  Show this help
+
+BlueMap is installed under SERVER/mods. Add-ons are installed under
+SERVER/config/bluemap/packs. Files not recorded in SERVER/.bluemap-atmons are
+never replaced or removed.
+EOF
+}
+
+need_command() {
+  command -v "$1" >/dev/null 2>&1 || die "required command not found: $1"
+}
+
+json_canonical() {
+  jq -S -c . "$1"
+}
+
+sha256_file() {
+  sha256sum -- "$1" | cut -d' ' -f1
+}
+
+size_file() {
+  wc -c < "$1" | tr -d '[:space:]'
+}
+
+safe_component_id() {
+  [[ $1 =~ ^[a-z0-9][a-z0-9-]*$ ]]
+}
+
+safe_jar_name() {
+  [[ $1 =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*\.jar$ ]] && [[ $1 != *..* ]]
+}
+
+destination_for() {
+  local kind=$1 filename=$2
+  case "$kind" in
+    bluemap) printf 'mods/%s\n' "$filename" ;;
+    addon) printf 'config/bluemap/packs/%s\n' "$filename" ;;
+    *) return 1 ;;
+  esac
+}
+
+validate_relative_path() {
+  local path=$1 filename kind expected
+  [[ $path != /* && $path != *..* ]] || return 1
+  filename=${path##*/}
+  safe_jar_name "$filename" || return 1
+  case "$path" in
+    mods/*) kind=bluemap ;;
+    config/bluemap/packs/*) kind=addon ;;
+    *) return 1 ;;
+  esac
+  expected=$(destination_for "$kind" "$filename")
+  [[ $path == "$expected" ]]
+}
+
+assert_destination_inside_server() {
+  local path=$1 resolved
+  validate_relative_path "$path" || die "unsafe managed path: $path"
+  resolved=$(realpath -m -- "$SERVER/$path")
+  [[ $resolved == "$SERVER/"* ]] || die "managed path resolves outside the server directory: $path"
+}
+
+validate_csv() {
+  local value=$1 item
+  [[ -z $value ]] && return 0
+  IFS=',' read -r -a items <<< "$value"
+  for item in "${items[@]}"; do
+    safe_component_id "$item" || die "invalid add-on ID: $item"
+  done
+}
+
+validate_manifest() {
+  local manifest=$1 expected_version=$2
+  jq -e . "$manifest" >/dev/null || die "manifest is not valid JSON"
+  jq -e --arg version "$expected_version" '
+    .schema_version == 1 and
+    .atmons.version == $version and
+    .atmons.tag == ("atmons-" + $version) and
+    (.components | type == "array" and length > 0) and
+    ([.components[].id] | length == (unique | length))
+  ' "$manifest" >/dev/null || die "manifest identity or component list is invalid"
+
+  local id kind repository tag filename url bytes hash expected_url_path
+  while IFS=$'\t' read -r id kind repository tag filename url bytes hash; do
+    safe_component_id "$id" || die "invalid component ID in manifest: $id"
+    [[ $kind == bluemap || $kind == addon ]] || die "invalid kind for $id: $kind"
+    [[ $repository =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || die "invalid repository for $id"
+    [[ $tag =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*$ ]] || die "invalid release tag for $id"
+    safe_jar_name "$filename" || die "invalid artifact filename for $id: $filename"
+    [[ $bytes =~ ^[1-9][0-9]*$ ]] || die "invalid artifact size for $id"
+    [[ $hash =~ ^[0-9a-f]{64}$ ]] || die "invalid SHA-256 for $id"
+    case "$url" in
+      https://github.com/*)
+        expected_url_path="https://github.com/$repository/releases/download/$tag/$filename"
+        [[ $url == "$expected_url_path" ]] || die "release URL does not match metadata for $id"
+        ;;
+      file:///*)
+        [[ -n $MANIFEST_OVERRIDE ]] || die "file artifact URLs require an explicit manifest"
+        [[ ${url##*/} == "$filename" ]] || die "file URL does not match filename for $id"
+        ;;
+      *) die "unsupported artifact URL for $id: $url" ;;
+    esac
+  done < <(jq -r '.components[] | [.id,.kind,.repository,.release_tag,.artifact.filename,.artifact.url,(.artifact.size_bytes|tostring),.artifact.sha256] | @tsv' "$manifest")
+
+  local duplicate_destinations
+  duplicate_destinations=$(jq -r '
+    [.components[] | (if .kind == "bluemap" then "mods/" else "config/bluemap/packs/" end) + .artifact.filename]
+    | group_by(.) | map(select(length > 1) | .[0]) | .[]
+  ' "$manifest")
+  [[ -z $duplicate_destinations ]] || die "manifest contains duplicate destinations: $duplicate_destinations"
+}
+
+validate_state() {
+  local state=$1 id kind filename path hash bytes expected
+  jq -e '
+    (.schema_version == 1 or .schema_version == 2) and
+    (.components | type == "array") and
+    ([.components[].id] | length == (unique | length)) and
+    ([.components[].path] | length == (unique | length)) and
+    (if .schema_version == 1 then
+       (.atmons_version | type == "string") and (.compatibility_tag | type == "string")
+     else
+       (.snapshot_status == "complete" or .snapshot_status == "partial" or .snapshot_status == "mixed") and
+       (.atmons_versions | type == "array" and . == (sort | unique)) and
+       (.compatibility_tags | type == "array" and . == (sort | unique)) and
+       (.atmons_versions == ([.components[].atmons_version] | sort | unique)) and
+       (.compatibility_tags == ([.components[].compatibility_tag] | sort | unique)) and
+       (all(.components[]; (.atmons_version | type == "string") and (.compatibility_tag | type == "string")))
+     end)
+  ' "$state" >/dev/null || die "installer state is invalid; inspect it or run recover"
+  while IFS=$'\t' read -r id kind filename path bytes hash; do
+    safe_component_id "$id" || die "invalid component ID in installer state"
+    [[ $kind == bluemap || $kind == addon ]] || die "invalid component kind in installer state"
+    safe_jar_name "$filename" || die "invalid filename in installer state"
+    validate_relative_path "$path" || die "unsafe path in installer state: $path"
+    expected=$(destination_for "$kind" "$filename")
+    [[ $path == "$expected" ]] || die "inconsistent path in installer state: $path"
+    [[ $bytes =~ ^[1-9][0-9]*$ ]] || die "invalid size in installer state"
+    [[ $hash =~ ^[0-9a-f]{64}$ ]] || die "invalid hash in installer state"
+  done < <(jq -r '.components[] | [.id,.kind,.filename,.path,(.size_bytes|tostring),.sha256] | @tsv' "$state")
+}
+
+normalize_state() {
+  local input=$1 output=$2
+  jq '
+    if .schema_version == 1 then
+      . as $legacy |
+      {
+        schema_version: 2,
+        snapshot_status: "partial",
+        atmons_versions: [$legacy.atmons_version],
+        compatibility_tags: [$legacy.compatibility_tag],
+        components: [$legacy.components[] | . + {
+          atmons_version: $legacy.atmons_version,
+          compatibility_tag: $legacy.compatibility_tag
+        }]
+      }
+    else . end
+  ' "$input" > "$output"
+}
+
+validate_unique_destinations() {
+  local state=$1 duplicates
+  duplicates=$(jq -r '[.components[].path] | group_by(.) | map(select(length > 1) | .[0]) | .[]' "$state")
+  [[ -z $duplicates ]] || die "duplicate managed destination in resulting state: $duplicates"
+}
+
+fetch_manifest() {
+  local target=$1 source
+  if [[ -n $MANIFEST_OVERRIDE ]]; then
+    source=$MANIFEST_OVERRIDE
+  else
+    source="https://raw.githubusercontent.com/$DEFAULT_REPOSITORY/atmons-$ATMONS/versions/$ATMONS/manifest.json"
+  fi
+  case "$source" in
+    https://*|file://*) curl --fail --location --silent --show-error --output "$target" "$source" ;;
+    *)
+      [[ -f $source ]] || die "manifest not found: $source"
+      cp -- "$source" "$target"
+      ;;
+  esac
+  validate_manifest "$target" "$ATMONS"
+}
+
+make_selected_state() {
+  local manifest=$1 old_state=$2 output=$3
+  jq \
+    --arg components "$COMPONENTS" \
+    --arg addons "$ADDONS" \
+    --arg excludes "$EXCLUDES" \
+    --slurpfile old "$old_state" '
+    def csv($s): if $s == "" then [] else ($s | split(",") | map(select(length > 0)) | unique) end;
+    def wanted_kind:
+      ($components == "all") or
+      ($components == "bluemap" and .kind == "bluemap") or
+      ($components == "addons" and .kind == "addon");
+    def selected:
+      . as $component |
+      wanted_kind and
+      (.kind != "addon" or ((csv($addons) | length) == 0 or (csv($addons) | index($component.id)))) and
+      (.kind != "addon" or ((csv($excludes) | index($component.id)) | not));
+    def affected:
+      . as $component |
+      if .kind == "bluemap" then ($components == "all" or $components == "bluemap")
+      elif ($components == "bluemap") then false
+      elif (csv($excludes) | index($component.id)) then false
+      elif (csv($addons) | length) > 0 then (csv($addons) | index($component.id)) != null
+      else true
+      end;
+    . as $manifest |
+    [.components[] | select(selected) | {
+      id, kind, release_tag,
+      atmons_version: $manifest.atmons.version,
+      compatibility_tag: $manifest.atmons.tag,
+      filename: .artifact.filename,
+      path: ((if .kind == "bluemap" then "mods/" else "config/bluemap/packs/" end) + .artifact.filename),
+      url: .artifact.url,
+      size_bytes: .artifact.size_bytes,
+      sha256: .artifact.sha256
+    }] as $desired |
+    [($old[0].components // [])[] | select(affected | not)] as $untouched |
+    (($untouched + $desired) | unique_by(.id) | sort_by(.id)) as $next |
+    ([$next[].atmons_version] | sort | unique) as $versions |
+    ([$next[].compatibility_tag] | sort | unique) as $tags |
+    ([ $manifest.components[] | {id, sha256: .artifact.sha256} ] | sort_by(.id)) as $manifest_identity |
+    ([ $next[] | select(.compatibility_tag == $manifest.atmons.tag) | {id, sha256} ] | sort_by(.id)) as $next_identity |
+    {
+      schema_version: 2,
+      snapshot_status: (
+        if (($versions | length) > 1 or ($tags | length) > 1) then "mixed"
+        elif $next_identity == $manifest_identity then "complete"
+        else "partial"
+        end
+      ),
+      atmons_versions: $versions,
+      compatibility_tags: $tags,
+      components: $next
+    }
+  ' "$manifest" > "$output"
+}
+
+make_target_state() {
+  local manifest=$1 output=$2
+  jq \
+    --arg components "$COMPONENTS" \
+    --arg addons "$ADDONS" \
+    --arg excludes "$EXCLUDES" '
+    def csv($s): if $s == "" then [] else ($s | split(",") | map(select(length > 0)) | unique) end;
+    def selected:
+      . as $component |
+      (($components == "all") or
+       ($components == "bluemap" and .kind == "bluemap") or
+       ($components == "addons" and .kind == "addon")) and
+      (.kind != "addon" or ((csv($addons) | length) == 0 or (csv($addons) | index($component.id)))) and
+      (.kind != "addon" or ((csv($excludes) | index($component.id)) | not));
+    . as $manifest |
+    {
+      schema_version: 1,
+      components: [$manifest.components[] | select(selected) | {
+        id, kind, release_tag,
+        atmons_version: $manifest.atmons.version,
+        compatibility_tag: $manifest.atmons.tag,
+        filename: .artifact.filename,
+        path: ((if .kind == "bluemap" then "mods/" else "config/bluemap/packs/" end) + .artifact.filename),
+        url: .artifact.url,
+        size_bytes: .artifact.size_bytes,
+        sha256: .artifact.sha256
+      }] | sort_by(.id)
+    }
+  ' "$manifest" > "$output"
+}
+
+component_selected_count() {
+  jq '.components | length' "$1"
+}
+
+state_has_path() {
+  local state=$1 path=$2
+  jq -e --arg path "$path" '.components[]? | select(.path == $path)' "$state" >/dev/null
+}
+
+file_matches() {
+  local file=$1 bytes=$2 hash=$3
+  [[ -f $file ]] || return 1
+  [[ $(size_file "$file") == "$bytes" ]] || return 1
+  [[ $(sha256_file "$file") == "$hash" ]]
+}
+
+check_collision_and_print_plan() {
+  local old_state=$1 next_state=$2 target_state=$3
+  local id path bytes hash absolute
+  while IFS=$'\t' read -r id path bytes hash; do
+    assert_destination_inside_server "$path"
+    absolute=$SERVER/$path
+    if [[ -e $absolute || -L $absolute ]]; then
+      [[ -f $absolute && ! -L $absolute ]] || die "destination is not a regular file: $absolute"
+      if file_matches "$absolute" "$bytes" "$hash"; then
+        note "keep     $path ($id)"
+      elif state_has_path "$old_state" "$path"; then
+        note "replace  $path ($id)"
+      else
+        die "refusing to replace unmanaged file: $absolute"
+      fi
+    else
+      note "install  $path ($id)"
+    fi
+  done < <(jq -r '.components[] | [.id,.path,(.size_bytes|tostring),.sha256] | @tsv' "$target_state")
+
+  while IFS= read -r path; do
+    if [[ -n $path ]]; then
+      assert_destination_inside_server "$path"
+      note "remove   $path"
+    fi
+  done < <(jq -r --slurpfile next "$next_state" '
+    .components[]? | select(.path as $p | ($next[0].components | map(.path) | index($p) | not)) | .path
+  ' "$old_state")
+}
+
+state_files_ok() {
+  local state=$1 path bytes hash
+  while IFS=$'\t' read -r path bytes hash; do
+    file_matches "$SERVER/$path" "$bytes" "$hash" || return 1
+  done < <(jq -r '.components[] | [.path,(.size_bytes|tostring),.sha256] | @tsv' "$state")
+}
+
+assert_stopped() {
+  local pid
+  if [[ -n $PID_FILE ]]; then
+    [[ -f $PID_FILE ]] || die "PID file does not exist: $PID_FILE"
+    pid=$(tr -d '[:space:]' < "$PID_FILE")
+    [[ $pid =~ ^[1-9][0-9]*$ ]] || die "PID file does not contain one valid PID: $PID_FILE"
+    if kill -0 "$pid" 2>/dev/null; then
+      die "server process $pid is still running"
+    fi
+  elif (( ! SERVER_STOPPED )); then
+    die "mutation requires --server-stopped or --pid-file with a stopped PID"
+  fi
+}
+
+download_components() {
+  local next_state=$1 download_dir=$2 id path url bytes hash target destination
+  mkdir -p -- "$download_dir"
+  while IFS=$'\t' read -r id path url bytes hash; do
+    destination=$SERVER/$path
+    if file_matches "$destination" "$bytes" "$hash"; then
+      continue
+    fi
+    target=$download_dir/$id.jar
+    curl --fail --location --silent --show-error --output "$target" "$url"
+    [[ $(size_file "$target") == "$bytes" ]] || die "downloaded size mismatch for $id"
+    [[ $(sha256_file "$target") == "$hash" ]] || die "downloaded SHA-256 mismatch for $id"
+  done < <(jq -r '.components[] | [.id,.path,.url,(.size_bytes|tostring),.sha256] | @tsv' "$next_state")
+}
+
+rollback_transaction() {
+  local tx_dir=$1 state_file=$2 type path backup absolute
+  [[ -d $tx_dir ]] || return 0
+  if [[ -f $tx_dir/operations.tsv ]]; then
+    while IFS=$'\t' read -r type path backup; do
+      [[ -z $type ]] && continue
+      validate_relative_path "$path" || die "unsafe path in transaction journal: $path"
+      assert_destination_inside_server "$path"
+      absolute=$SERVER/$path
+      case "$type" in
+        INSTALL)
+          rm -f -- "$absolute"
+          ;;
+        BACKUP)
+          [[ $backup =~ ^backups/[0-9]+\.jar$ ]] || die "unsafe backup path in transaction journal"
+          if [[ -f $tx_dir/$backup ]]; then
+            mkdir -p -- "${absolute%/*}"
+            rm -f -- "$absolute"
+            mv -- "$tx_dir/$backup" "$absolute"
+          fi
+          ;;
+        *) die "unknown transaction operation: $type" ;;
+      esac
+    done < <(tac "$tx_dir/operations.tsv")
+  fi
+  if [[ -f $tx_dir/previous-state.json ]]; then
+    cp -- "$tx_dir/previous-state.json" "$state_file.tmp"
+    mv -- "$state_file.tmp" "$state_file"
+  else
+    rm -f -- "$state_file"
+  fi
+  rm -rf -- "$tx_dir"
+}
+
+apply_transaction() {
+  local old_state=$1 next_state=$2 target_state=$3 downloads=$4 state_dir=$5 state_file=$6
+  local tx_dir=$state_dir/transaction path id bytes hash absolute backup counter=0
+  [[ ! -e $tx_dir ]] || die "unfinished transaction exists; run recover"
+  mkdir -p -- "$tx_dir/backups" "$tx_dir/staged"
+  : > "$tx_dir/operations.tsv"
+  if [[ -f $state_file ]]; then
+    cp -- "$state_file" "$tx_dir/previous-state.json"
+  fi
+
+  TRANSACTION_ACTIVE=1
+  ACTIVE_TX=$tx_dir
+  ACTIVE_STATE=$state_file
+
+  while IFS= read -r path; do
+    [[ -n $path ]] || continue
+    assert_destination_inside_server "$path"
+    absolute=$SERVER/$path
+    if [[ -e $absolute ]]; then
+      [[ -f $absolute && ! -L $absolute ]] || die "managed path is not a regular file: $absolute"
+      counter=$((counter + 1))
+      backup=backups/$counter.jar
+      printf 'BACKUP\t%s\t%s\n' "$path" "$backup" >> "$tx_dir/operations.tsv"
+      mv -- "$absolute" "$tx_dir/$backup"
+    fi
+  done < <(jq -r --slurpfile next "$next_state" '
+    .components[]? | select(.path as $p | ($next[0].components | map(.path) | index($p) | not)) | .path
+  ' "$old_state")
+
+  while IFS=$'\t' read -r id path bytes hash; do
+    assert_destination_inside_server "$path"
+    absolute=$SERVER/$path
+    if file_matches "$absolute" "$bytes" "$hash"; then
+      continue
+    fi
+    if [[ -e $absolute ]]; then
+      state_has_path "$old_state" "$path" || die "unmanaged collision appeared during transaction: $absolute"
+      counter=$((counter + 1))
+      backup=backups/$counter.jar
+      printf 'BACKUP\t%s\t%s\n' "$path" "$backup" >> "$tx_dir/operations.tsv"
+      mv -- "$absolute" "$tx_dir/$backup"
+    fi
+    mkdir -p -- "${absolute%/*}"
+    cp -- "$downloads/$id.jar" "$tx_dir/staged/$id.jar"
+    chmod 0644 "$tx_dir/staged/$id.jar"
+    printf 'INSTALL\t%s\t-\n' "$path" >> "$tx_dir/operations.tsv"
+    mv -- "$tx_dir/staged/$id.jar" "$absolute"
+  done < <(jq -r '.components[] | [.id,.path,(.size_bytes|tostring),.sha256] | @tsv' "$target_state")
+
+  cp -- "$next_state" "$tx_dir/next-state.json"
+  mv -- "$tx_dir/next-state.json" "$state_file"
+  TRANSACTION_ACTIVE=0
+  rm -rf -- "$tx_dir"
+}
+
+inspect_state() {
+  local state_file=$1 bad=0 id path bytes hash result schema
+  if [[ ! -f $state_file ]]; then
+    note "No bluemap-atmons managed installation found."
+    return 1
+  fi
+  validate_state "$state_file"
+  schema=$(jq -r '.schema_version' "$state_file")
+  if [[ $schema == 1 ]]; then
+    note "Snapshot status: legacy-unknown"
+    note "All the Mons versions: $(jq -r '.atmons_version' "$state_file")"
+    note "Compatibility tags: $(jq -r '.compatibility_tag' "$state_file")"
+  else
+    note "Snapshot status: $(jq -r '.snapshot_status' "$state_file")"
+    note "All the Mons versions: $(jq -r '.atmons_versions | join(", ")' "$state_file")"
+    note "Compatibility tags: $(jq -r '.compatibility_tags | join(", ")' "$state_file")"
+  fi
+  while IFS=$'\t' read -r id path bytes hash; do
+    assert_destination_inside_server "$path"
+    if [[ ! -e $SERVER/$path ]]; then
+      result=MISSING
+      bad=1
+    elif file_matches "$SERVER/$path" "$bytes" "$hash"; then
+      result=OK
+    else
+      result=MISMATCH
+      bad=1
+    fi
+    printf '%-10s %-28s %s\n' "$result" "$id" "$path"
+  done < <(jq -r '.components[] | [.id,.path,(.size_bytes|tostring),.sha256] | @tsv' "$state_file")
+  return "$bad"
+}
+
+COMMAND=${1:-}
+case "$COMMAND" in
+  plan|install|update|status|verify|recover) shift ;;
+  -h|--help|'') usage; exit 0 ;;
+  *) die "unknown command: $COMMAND" ;;
+esac
+
+SERVER=
+ATMONS=$DEFAULT_ATMONS
+MANIFEST_OVERRIDE=
+COMPONENTS=all
+ADDONS=
+EXCLUDES=
+DRY_RUN=0
+SERVER_STOPPED=0
+PID_FILE=
+
+while (($#)); do
+  case "$1" in
+    --server) (($# >= 2)) || die "--server requires a value"; SERVER=$2; shift 2 ;;
+    --atmons) (($# >= 2)) || die "--atmons requires a value"; ATMONS=$2; shift 2 ;;
+    --manifest) (($# >= 2)) || die "--manifest requires a value"; MANIFEST_OVERRIDE=$2; shift 2 ;;
+    --components) (($# >= 2)) || die "--components requires a value"; COMPONENTS=$2; shift 2 ;;
+    --addons) (($# >= 2)) || die "--addons requires a value"; ADDONS=${ADDONS:+$ADDONS,}$2; shift 2 ;;
+    --exclude-addon) (($# >= 2)) || die "--exclude-addon requires a value"; EXCLUDES=${EXCLUDES:+$EXCLUDES,}$2; shift 2 ;;
+    --dry-run) DRY_RUN=1; shift ;;
+    --server-stopped) SERVER_STOPPED=1; shift ;;
+    --pid-file) (($# >= 2)) || die "--pid-file requires a value"; PID_FILE=$2; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) die "unknown option: $1" ;;
+  esac
+done
+
+[[ -n $SERVER ]] || die "--server is required"
+[[ $ATMONS =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$ ]] || die "invalid All the Mons version: $ATMONS"
+[[ $COMPONENTS == all || $COMPONENTS == bluemap || $COMPONENTS == addons ]] || die "--components must be all, bluemap, or addons"
+validate_csv "$ADDONS"
+validate_csv "$EXCLUDES"
+[[ ! ( $COMPONENTS == bluemap && -n $ADDONS ) ]] || die "--addons cannot be used with --components bluemap"
+
+need_command jq
+need_command sha256sum
+need_command realpath
+SERVER=$(realpath -m -- "$SERVER")
+[[ $SERVER != / ]] || die "refusing to use the filesystem root as a server directory"
+[[ -d $SERVER ]] || die "server directory does not exist: $SERVER"
+
+STATE_DIR=$SERVER/.bluemap-atmons
+STATE_FILE=$STATE_DIR/state.json
+if [[ -e $STATE_DIR || -L $STATE_DIR ]]; then
+  [[ -d $STATE_DIR && ! -L $STATE_DIR ]] || die "installer state path must be a real directory: $STATE_DIR"
+fi
+if [[ -e $STATE_FILE || -L $STATE_FILE ]]; then
+  [[ -f $STATE_FILE && ! -L $STATE_FILE ]] || die "installer state must be a regular file: $STATE_FILE"
+fi
+
+if [[ $COMMAND == status || $COMMAND == verify ]]; then
+  inspect_state "$STATE_FILE"
+  exit $?
+fi
+
+if [[ $COMMAND == recover ]]; then
+  assert_stopped
+  need_command flock
+  [[ -d $STATE_DIR ]] || die "no installer state directory exists"
+  exec 9>"$STATE_DIR/lock"
+  flock -n 9 || die "another bluemap-atmons process holds the server lock"
+  [[ -d $STATE_DIR/transaction ]] || { note "No unfinished transaction found."; exit 0; }
+  rollback_transaction "$STATE_DIR/transaction" "$STATE_FILE"
+  note "Recovered the previous managed installation state."
+  exit 0
+fi
+
+need_command curl
+WORK_DIR=$(mktemp -d "${TMPDIR:-/tmp}/bluemap-atmons.XXXXXXXX")
+TRANSACTION_ACTIVE=0
+ACTIVE_TX=
+ACTIVE_STATE=
+cleanup() {
+  local status=$?
+  trap - EXIT
+  if (( TRANSACTION_ACTIVE )); then
+    rollback_transaction "$ACTIVE_TX" "$ACTIVE_STATE" || true
+  fi
+  rm -rf -- "$WORK_DIR"
+  exit "$status"
+}
+trap cleanup EXIT
+
+MANIFEST=$WORK_DIR/manifest.json
+OLD_STATE=$WORK_DIR/old-state.json
+NEXT_STATE=$WORK_DIR/next-state.json
+TARGET_STATE=$WORK_DIR/target-state.json
+fetch_manifest "$MANIFEST"
+if [[ -f $STATE_FILE ]]; then
+  validate_state "$STATE_FILE"
+  normalize_state "$STATE_FILE" "$OLD_STATE"
+else
+  printf '{"schema_version":2,"snapshot_status":"partial","atmons_versions":[],"compatibility_tags":[],"components":[]}\n' > "$OLD_STATE"
+fi
+make_selected_state "$MANIFEST" "$OLD_STATE" "$NEXT_STATE"
+make_target_state "$MANIFEST" "$TARGET_STATE"
+validate_unique_destinations "$NEXT_STATE"
+
+if [[ -n $ADDONS ]]; then
+  while IFS= read -r requested; do
+    jq -e --arg id "$requested" '.components[] | select(.id == $id and .kind == "addon")' "$MANIFEST" >/dev/null || die "unknown add-on ID: $requested"
+  done < <(printf '%s\n' "$ADDONS" | tr ',' '\n' | sort -u)
+fi
+
+note "All the Mons $ATMONS ($(jq -r '.atmons.tag' "$MANIFEST"))"
+note "Selected component count: $(component_selected_count "$TARGET_STATE")"
+note "Managed component count after operation: $(component_selected_count "$NEXT_STATE")"
+note "Snapshot status after operation: $(jq -r '.snapshot_status' "$NEXT_STATE")"
+check_collision_and_print_plan "$OLD_STATE" "$NEXT_STATE" "$TARGET_STATE"
+
+if [[ $COMMAND == plan || $DRY_RUN == 1 ]]; then
+  note "No files changed."
+  exit 0
+fi
+
+assert_stopped
+if [[ -f $STATE_FILE ]] && [[ "$(json_canonical "$STATE_FILE")" == "$(json_canonical "$NEXT_STATE")" ]] && state_files_ok "$TARGET_STATE"; then
+  note "Already at the requested compatibility state; nothing to do."
+  exit 0
+fi
+
+download_components "$TARGET_STATE" "$WORK_DIR/downloads"
+mkdir -p -- "$STATE_DIR"
+need_command flock
+exec 9>"$STATE_DIR/lock"
+flock -n 9 || die "another bluemap-atmons process holds the server lock"
+[[ ! -d $STATE_DIR/transaction ]] || die "unfinished transaction exists; run recover"
+
+# Recheck after waiting for the lock. A different installer may have changed state.
+if [[ -f $STATE_FILE ]]; then
+  validate_state "$STATE_FILE"
+  normalize_state "$STATE_FILE" "$OLD_STATE"
+else
+  printf '{"schema_version":2,"snapshot_status":"partial","atmons_versions":[],"compatibility_tags":[],"components":[]}\n' > "$OLD_STATE"
+fi
+make_selected_state "$MANIFEST" "$OLD_STATE" "$NEXT_STATE"
+make_target_state "$MANIFEST" "$TARGET_STATE"
+validate_unique_destinations "$NEXT_STATE"
+check_collision_and_print_plan "$OLD_STATE" "$NEXT_STATE" "$TARGET_STATE" >/dev/null
+apply_transaction "$OLD_STATE" "$NEXT_STATE" "$TARGET_STATE" "$WORK_DIR/downloads" "$STATE_DIR" "$STATE_FILE"
+note "Installed managed selection. Snapshot status: $(jq -r '.snapshot_status' "$NEXT_STATE")."
+note "Managed All the Mons versions: $(jq -r '.atmons_versions | join(", ")' "$NEXT_STATE")."

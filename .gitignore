@@ -1,0 +1,9 @@
+/.cache/
+/.tmp/
+/dist/
+__pycache__/
+*.py[cod]
+*.jar
+*.log
+*.swp
+.DS_Store

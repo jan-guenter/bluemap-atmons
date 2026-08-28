@@ -1,0 +1,156 @@
+[submodule "addons/ae2"]
+	path = addons/ae2
+	url = https://github.com/jan-guenter/bluemap-ae2-addon.git
+[submodule "addons/ars-creo"]
+	path = addons/ars-creo
+	url = https://github.com/jan-guenter/bluemap-ars-creo-addon.git
+[submodule "addons/ars-energistique"]
+	path = addons/ars-energistique
+	url = https://github.com/jan-guenter/bluemap-ars-energistique-addon.git
+[submodule "addons/ars-nouveau"]
+	path = addons/ars-nouveau
+	url = https://github.com/jan-guenter/bluemap-ars-nouveau-addon.git
+[submodule "addons/ars-technica"]
+	path = addons/ars-technica
+	url = https://github.com/jan-guenter/bluemap-ars-technica-addon.git
+[submodule "bluemap"]
+	path = bluemap
+	url = https://github.com/jan-guenter/BlueMap.git
+[submodule "addons/botanypots"]
+	path = addons/botanypots
+	url = https://github.com/jan-guenter/bluemap-botanypots-addon.git
+[submodule "addons/camol"]
+	path = addons/camol
+	url = https://github.com/jan-guenter/bluemap-camol-addon.git
+[submodule "addons/chipped"]
+	path = addons/chipped
+	url = https://github.com/jan-guenter/bluemap-chipped-addon.git
+[submodule "addons/chisel"]
+	path = addons/chisel
+	url = https://github.com/jan-guenter/bluemap-chisel-addon.git
+[submodule "addons/cobblefurnies"]
+	path = addons/cobblefurnies
+	url = https://github.com/jan-guenter/bluemap-cobblefurnies-addon.git
+[submodule "addons/cobblemonstonestatues"]
+	path = addons/cobblemonstonestatues
+	url = https://github.com/jan-guenter/bluemap-cobblemonstonestatues-addon.git
+[submodule "addons/connectedglass"]
+	path = addons/connectedglass
+	url = https://github.com/jan-guenter/bluemap-connectedglass-addon.git
+[submodule "addons/create"]
+	path = addons/create
+	url = https://github.com/jan-guenter/bluemap-create-addon.git
+[submodule "addons/crystalix"]
+	path = addons/crystalix
+	url = https://github.com/jan-guenter/bluemap-crystalix-addon.git
+[submodule "addons/draconic-evolution"]
+	path = addons/draconic-evolution
+	url = https://github.com/jan-guenter/bluemap-draconic-evolution-addon.git
+[submodule "addons/enderio"]
+	path = addons/enderio
+	url = https://github.com/jan-guenter/bluemap-enderio-addon.git
+[submodule "addons/extreme-reactors"]
+	path = addons/extreme-reactors
+	url = https://github.com/jan-guenter/bluemap-extreme-reactors-addon.git
+[submodule "addons/factory-blocks"]
+	path = addons/factory-blocks
+	url = https://github.com/jan-guenter/bluemap-factory-blocks-addon.git
+[submodule "addons/framedblocks"]
+	path = addons/framedblocks
+	url = https://github.com/jan-guenter/bluemap-framedblocks-addon.git
+[submodule "addons/functional-storage"]
+	path = addons/functional-storage
+	url = https://github.com/jan-guenter/bluemap-functional-storage-addon.git
+[submodule "addons/glassential"]
+	path = addons/glassential
+	url = https://github.com/jan-guenter/bluemap-glassential-addon.git
+[submodule "addons/immersive-energistics"]
+	path = addons/immersive-energistics
+	url = https://github.com/jan-guenter/bluemap-immersive-energistics-addon.git
+[submodule "addons/immersive-engineering"]
+	path = addons/immersive-engineering
+	url = https://github.com/jan-guenter/bluemap-immersive-engineering-addon.git
+[submodule "addons/integrated-dynamics"]
+	path = addons/integrated-dynamics
+	url = https://github.com/jan-guenter/bluemap-integrated-dynamics-addon.git
+[submodule "addons/laser-bridges"]
+	path = addons/laser-bridges
+	url = https://github.com/jan-guenter/bluemap-laser-bridges-addon.git
+[submodule "addons/laserio"]
+	path = addons/laserio
+	url = https://github.com/jan-guenter/bluemap-laserio-addon.git
+[submodule "addons/little-big-redstone"]
+	path = addons/little-big-redstone
+	url = https://github.com/jan-guenter/bluemap-little-big-redstone-addon.git
+[submodule "addons/logistics-networks"]
+	path = addons/logistics-networks
+	url = https://github.com/jan-guenter/bluemap-logistics-networks-addon.git
+[submodule "addons/lootr"]
+	path = addons/lootr
+	url = https://github.com/jan-guenter/bluemap-lootr-addon.git
+[submodule "addons/mekanism"]
+	path = addons/mekanism
+	url = https://github.com/jan-guenter/bluemap-mekanism-addon.git
+[submodule "addons/modular-routers"]
+	path = addons/modular-routers
+	url = https://github.com/jan-guenter/bluemap-modular-routers-addon.git
+[submodule "addons/morered"]
+	path = addons/morered
+	url = https://github.com/jan-guenter/bluemap-morered-addon.git
+[submodule "addons/natures-aura"]
+	path = addons/natures-aura
+	url = https://github.com/jan-guenter/bluemap-natures-aura-addon.git
+[submodule "addons/oritech"]
+	path = addons/oritech
+	url = https://github.com/jan-guenter/bluemap-oritech-addon.git
+[submodule "addons/pipez"]
+	path = addons/pipez
+	url = https://github.com/jan-guenter/bluemap-pipez-addon.git
+[submodule "addons/pneumaticcraft"]
+	path = addons/pneumaticcraft
+	url = https://github.com/jan-guenter/bluemap-pneumaticcraft-addon.git
+[submodule "addons/powah"]
+	path = addons/powah
+	url = https://github.com/jan-guenter/bluemap-powah-addon.git
+[submodule "addons/productive-bees"]
+	path = addons/productive-bees
+	url = https://github.com/jan-guenter/bluemap-productive-bees-addon.git
+[submodule "addons/productive-metalworks"]
+	path = addons/productive-metalworks
+	url = https://github.com/jan-guenter/bluemap-productive-metalworks-addon.git
+[submodule "addons/railcraft-reborn"]
+	path = addons/railcraft-reborn
+	url = https://github.com/jan-guenter/bluemap-railcraft-reborn-addon.git
+[submodule "addons/rechiseled"]
+	path = addons/rechiseled
+	url = https://github.com/jan-guenter/bluemap-rechiseled-addon.git
+[submodule "addons/rechiseled-create"]
+	path = addons/rechiseled-create
+	url = https://github.com/jan-guenter/bluemap-rechiseled-create-addon.git
+[submodule "addons/rftools-builder"]
+	path = addons/rftools-builder
+	url = https://github.com/jan-guenter/bluemap-rftools-builder-addon.git
+[submodule "addons/rftools-utility"]
+	path = addons/rftools-utility
+	url = https://github.com/jan-guenter/bluemap-rftools-utility-addon.git
+[submodule "addons/securitycraft"]
+	path = addons/securitycraft
+	url = https://github.com/jan-guenter/bluemap-securitycraft-addon.git
+[submodule "addons/sophisticated"]
+	path = addons/sophisticated
+	url = https://github.com/jan-guenter/bluemap-sophisticated-addon.git
+[submodule "addons/supplementaries"]
+	path = addons/supplementaries
+	url = https://github.com/jan-guenter/bluemap-supplementaries-addon.git
+[submodule "addons/tempad"]
+	path = addons/tempad
+	url = https://github.com/jan-guenter/bluemap-tempad-addon.git
+[submodule "addons/theurgy"]
+	path = addons/theurgy
+	url = https://github.com/jan-guenter/bluemap-theurgy-addon.git
+[submodule "addons/trophy-manager"]
+	path = addons/trophy-manager
+	url = https://github.com/jan-guenter/bluemap-trophy-manager-addon.git
+[submodule "addons/xnet"]
+	path = addons/xnet
+	url = https://github.com/jan-guenter/bluemap-xnet-addon.git
