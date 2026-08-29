@@ -88,6 +88,13 @@ to Trophy Manager, Laser Bridges, More Red, and Lootr.
 The [fourth cohort](toolkit-gradle-convention-cohort-4.md) applies it to XNet,
 LaserIO, Little Big Redstone, and Nature's Aura.
 
+Toolkit `v0.3.0-alpha.1` closes the v0.2 checker gap for migrated consumers.
+The exact applied convention now satisfies only its eight owned build checks;
+the three consumer-owned plugin checks remain mandatory. The
+[v0.3 contract consolidation](toolkit-v0.3-contract-consolidation.md) makes
+that pinned toolkit the meta repository's single source for the checker,
+migrator, and managed templates.
+
 ## Deduplication result
 
 Scanner v2 analyzed 2,887 eligible files and 29,115,561 bytes. Its Java pass

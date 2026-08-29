@@ -6,6 +6,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import re
 import sys
 import tempfile
 import unittest
@@ -22,6 +23,29 @@ VALIDATOR = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = VALIDATOR
 SPEC.loader.exec_module(VALIDATOR)
 
+VERSION_SPEC = importlib.util.spec_from_file_location(
+    "bluemap_addon_toolkit_version",
+    REPOSITORY_ROOT / "toolkit" / "src" / "bluemap_addon_toolkit" / "version.py",
+)
+if VERSION_SPEC is None or VERSION_SPEC.loader is None:
+    raise RuntimeError("could not load the pinned toolkit version")
+TOOLKIT_VERSION = importlib.util.module_from_spec(VERSION_SPEC)
+VERSION_SPEC.loader.exec_module(TOOLKIT_VERSION)
+
+
+def normalized_distribution_version(version: str) -> str:
+    match = re.fullmatch(
+        r"(?P<release>\d+\.\d+\.\d+)(?:-(?P<phase>alpha|beta|rc)\.(?P<number>\d+))?",
+        version,
+    )
+    if match is None:
+        raise ValueError(f"unsupported toolkit version: {version}")
+    phase = match.group("phase")
+    if phase is None:
+        return match.group("release")
+    marker = {"alpha": "a", "beta": "b", "rc": "rc"}[phase]
+    return f"{match.group('release')}{marker}{match.group('number')}"
+
 
 def valid_component() -> dict[str, object]:
     return {
@@ -30,13 +54,13 @@ def valid_component() -> dict[str, object]:
         "repository": "jan-guenter/bluemap-addon-toolkit",
         "submodule_path": "toolkit",
         "commit": "a" * 40,
-        "release_tag": "v0.2.0-alpha.1",
+        "release_tag": "v0.3.0-alpha.1",
         "artifact": {
-            "filename": "bluemap_addon_toolkit-0.2.0a1-py3-none-any.whl",
+            "filename": "bluemap_addon_toolkit-0.3.0a1-py3-none-any.whl",
             "url": (
                 "https://github.com/jan-guenter/bluemap-addon-toolkit/releases/"
-                "download/v0.2.0-alpha.1/"
-                "bluemap_addon_toolkit-0.2.0a1-py3-none-any.whl"
+                "download/v0.3.0-alpha.1/"
+                "bluemap_addon_toolkit-0.3.0a1-py3-none-any.whl"
             ),
             "size_bytes": 1,
             "sha256": "b" * 64,
@@ -64,6 +88,23 @@ class ToolingManifestTest(unittest.TestCase):
         )
         self.assertEqual([], errors)
         self.assertIsNotNone(data)
+
+    def test_real_pin_matches_checked_out_toolkit_version(self) -> None:
+        manifest = json.loads(
+            (REPOSITORY_ROOT / "tooling" / "manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        component = next(
+            item for item in manifest["components"] if item["id"] == "addon-toolkit"
+        )
+        version = TOOLKIT_VERSION.__version__
+        self.assertEqual(f"v{version}", component["release_tag"])
+        normalized = normalized_distribution_version(version)
+        self.assertEqual(
+            f"bluemap_addon_toolkit-{normalized}-py3-none-any.whl",
+            component["artifact"]["filename"],
+        )
 
     def test_rejects_wrong_kind_and_artifact_identity(self) -> None:
         component = valid_component()
@@ -95,7 +136,7 @@ class ToolingManifestTest(unittest.TestCase):
         artifact["filename"] = ".whl"
         artifact["url"] = (
             "https://github.com/jan-guenter/bluemap-addon-toolkit/releases/"
-            "download/v0.2.0-alpha.1/.whl"
+            "download/v0.3.0-alpha.1/.whl"
         )
         errors, _data = self.validate(
             {"schema_version": 1, "components": [component]}

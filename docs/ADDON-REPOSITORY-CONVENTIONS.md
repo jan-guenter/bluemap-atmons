@@ -73,9 +73,24 @@ and release gates.
 Run the contract audit against one or more checked-out repositories with:
 
 ```bash
-python tools/check_addon_conventions.py addons/*
+PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit \
+  conventions check /tmp/bluemap-addon-worktrees/example
 ```
 
-The canonical files remain mirrored under `standards/addon-v1/` for the meta
-repository gate. The pinned development toolkit packages the same reviewed
-contract for standalone consumers. It is not an installed BlueMap dependency.
+Use clean child worktrees at their intended rollout commits. Do not point this
+audit at `addons/*`: those gitlinks intentionally remain on immutable
+compatibility-release commits, many of which predate the repository-contract
+rollout.
+
+Render the managed files only into clean child worktrees:
+
+```bash
+PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit \
+  conventions migrate /tmp/bluemap-addon-worktrees/example --check
+PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit \
+  conventions migrate /tmp/bluemap-addon-worktrees/example --write
+```
+
+The exact toolkit gitlink is the canonical source for the checker, migrator,
+and managed templates. It is a development tool, not an installed BlueMap
+dependency.

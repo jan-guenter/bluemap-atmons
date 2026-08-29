@@ -102,8 +102,8 @@ fixtures and migration gates.
 
 The common child-repository contract is documented in
 [add-on repository conventions](docs/ADDON-REPOSITORY-CONVENTIONS.md). Its
-versioned files and migration checker live under `standards/addon-v1/` and
-`tools/`. The initial rollout deliberately changes no Java source, add-on
+versioned files, checker, and migrator live in the exact pinned development
+toolkit. The initial rollout deliberately changes no Java source, add-on
 version, compatibility manifest, or published release tag.
 The observed baseline, rollout boundary, validation, and extraction order are
 recorded in the [ATMons 1.2.0 consolidation report](reports/consolidation/atmons-1.2.0.md).
@@ -111,8 +111,13 @@ recorded in the [ATMons 1.2.0 consolidation report](reports/consolidation/atmons
 The development-only [BlueMap Add-on Toolkit](toolkit/README.md) is pinned as
 a separate gitlink and release artifact by [tooling/manifest.json](tooling/manifest.json).
 Its first release centralizes the validated repository contract and the two
-byte-exact artifact-verification tools. Toolkit `v0.2.0-alpha.1` also adds the
-source-distributed Java 21 Gradle convention used by artifact-parity pilots.
+byte-exact artifact-verification tools. Toolkit `v0.2.0-alpha.1` added the
+source-distributed Java 21 Gradle convention used by artifact-parity pilots;
+`v0.3.0-alpha.1` makes the canonical repository checker aware of that exact
+applied convention.
+The [v0.3 contract consolidation](reports/consolidation/toolkit-v0.3-contract-consolidation.md)
+also removes the meta repository's duplicate checker, migrator, tests, and
+template mirror.
 The toolkit is not an installed component and does not appear in an ATMons
 server manifest.
 The first [shared-verifier rollout](reports/consolidation/toolkit-verifier-rollout.md)
