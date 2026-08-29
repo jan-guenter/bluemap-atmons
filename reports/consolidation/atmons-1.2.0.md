@@ -77,6 +77,11 @@ merge commit. It records the removal of 48 duplicate scripts and 5,280
 physical lines, with a net cohort reduction of 4,631 lines after adding the
 immutable dependency pins and setup documentation.
 
+Toolkit `v0.2.0-alpha.1` adds the narrowly scoped Java build convention. Its
+first four-consumer [artifact-parity pilot](toolkit-gradle-convention-pilot.md)
+passed both portfolio Gradle versions and reproduced every accepted JAR,
+sources JAR, POM, module file, and Create gallery ZIP byte for byte.
+
 ## Deduplication result
 
 Scanner v2 analyzed 2,887 eligible files and 29,115,561 bytes. Its Java pass

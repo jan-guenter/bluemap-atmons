@@ -30,13 +30,13 @@ def valid_component() -> dict[str, object]:
         "repository": "jan-guenter/bluemap-addon-toolkit",
         "submodule_path": "toolkit",
         "commit": "a" * 40,
-        "release_tag": "v0.1.0-alpha.1",
+        "release_tag": "v0.2.0-alpha.1",
         "artifact": {
-            "filename": "bluemap_addon_toolkit-0.1.0a1-py3-none-any.whl",
+            "filename": "bluemap_addon_toolkit-0.2.0a1-py3-none-any.whl",
             "url": (
                 "https://github.com/jan-guenter/bluemap-addon-toolkit/releases/"
-                "download/v0.1.0-alpha.1/"
-                "bluemap_addon_toolkit-0.1.0a1-py3-none-any.whl"
+                "download/v0.2.0-alpha.1/"
+                "bluemap_addon_toolkit-0.2.0a1-py3-none-any.whl"
             ),
             "size_bytes": 1,
             "sha256": "b" * 64,
@@ -95,7 +95,7 @@ class ToolingManifestTest(unittest.TestCase):
         artifact["filename"] = ".whl"
         artifact["url"] = (
             "https://github.com/jan-guenter/bluemap-addon-toolkit/releases/"
-            "download/v0.1.0-alpha.1/.whl"
+            "download/v0.2.0-alpha.1/.whl"
         )
         errors, _data = self.validate(
             {"schema_version": 1, "components": [component]}

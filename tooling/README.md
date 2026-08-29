@@ -8,7 +8,8 @@ must never be added to the server installer manifest.
 and SHA-256 for the toolkit gitlink. Automation uses the full commit and wheel
 digest. The release tag is a human-readable identity.
 
-The initial toolkit release owns the `addon-v1` convention checks, exact
-candidate-artifact verification, and accepted staged-JAR entry verification.
-Gradle plugins, reusable consumer workflows, gallery formats, and production
-Java remain outside this first boundary until artifact-parity pilots pass.
+Toolkit `v0.2.0-alpha.1` owns the `addon-v1` convention checks, exact
+candidate-artifact verification, accepted staged-JAR entry verification, and
+the source-distributed Java 21 Gradle convention. Consumers load that plugin
+from their own exact toolkit gitlink. Reusable consumer workflows, gallery
+formats, and production Java remain outside the shared boundary.
