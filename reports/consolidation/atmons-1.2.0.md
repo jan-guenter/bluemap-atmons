@@ -106,6 +106,9 @@ their multi-artifact admission and installed-resource contracts.
 The [eighth cohort](toolkit-gradle-convention-cohort-8.md) applies it to Camol,
 Integrated Dynamics, Oritech, and Mekanism while preserving exact multi-input
 admission, gallery behavior, and publication-versus-acceptance boundaries.
+The [ninth cohort](toolkit-gradle-convention-cohort-9.md) applies it to
+Crystalix and Powah while retaining their distinct gallery and owner-acceptance
+evidence boundaries.
 
 ## Deduplication result
 
