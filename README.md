@@ -121,6 +121,9 @@ The [Gradle convention pilot](reports/consolidation/toolkit-gradle-convention-pi
 records the four reviewed consumers and their byte-for-byte artifact parity.
 The [second convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-2.md)
 records four additional reviewed consumers under the same parity gate.
+The [third convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-3.md)
+records Trophy Manager, Laser Bridges, More Red, and Lootr under the same
+artifact and gallery parity gate.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
