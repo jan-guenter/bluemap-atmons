@@ -132,6 +132,9 @@ artifact and gallery parity gate.
 The [fourth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-4.md)
 records XNet, LaserIO, Little Big Redstone, and Nature's Aura under the same
 gate.
+The [fifth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-5.md)
+records Tempad, Productive Metalworks, Productive Bees, and Railcraft Reborn
+under the v0.3 convention and corrected checker.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
