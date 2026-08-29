@@ -76,6 +76,6 @@ Run the contract audit against one or more checked-out repositories with:
 python tools/check_addon_conventions.py addons/*
 ```
 
-The canonical files live under `standards/addon-v1/`. They are intentionally
-small, reviewable inputs for the future development toolkit rather than an
-installed BlueMap dependency.
+The canonical files remain mirrored under `standards/addon-v1/` for the meta
+repository gate. The pinned development toolkit packages the same reviewed
+contract for standalone consumers. It is not an installed BlueMap dependency.

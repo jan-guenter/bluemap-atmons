@@ -20,6 +20,11 @@ Compatibility tags are permanent. Installer-only changes can be released with
 an independent semantic version and must not move an existing compatibility
 tag.
 
+Development-only gitlinks are recorded separately in
+`tooling/manifest.json`. They are validated and remote-audited with the source
+portfolio, but are excluded from the compatibility component count and server
+installer.
+
 ## New pack-version procedure
 
 1. Establish the exact All the Mons pack commit/export, Minecraft version,
@@ -34,6 +39,8 @@ tag.
 
    ```bash
    python tools/validate.py
+   python tests/test-tooling-manifest.py
+   PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit --version
    bash tests/test-installer.sh
    python tools/validate.py --version <pack-version> --remote
    actionlint .github/workflows/*.yml

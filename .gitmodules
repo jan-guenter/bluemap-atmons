@@ -154,3 +154,6 @@
 [submodule "addons/xnet"]
 	path = addons/xnet
 	url = https://github.com/jan-guenter/bluemap-xnet-addon.git
+[submodule "toolkit"]
+	path = toolkit
+	url = https://github.com/jan-guenter/bluemap-addon-toolkit.git

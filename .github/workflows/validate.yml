@@ -27,6 +27,10 @@ jobs:
           python-version: "3.13"
       - name: Validate manifests and gitlinks
         run: python tools/validate.py
+      - name: Test development tooling pin
+        run: |
+          python tests/test-tooling-manifest.py
+          PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit --version
       - name: Check shell syntax
         run: bash -n bin/bluemap-atmons install.sh tests/test-installer.sh
       - name: Test installer
