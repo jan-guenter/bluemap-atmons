@@ -83,6 +83,8 @@ passed both portfolio Gradle versions and reproduced every accepted JAR,
 sources JAR, POM, module file, and Create gallery ZIP byte for byte.
 The [second cohort](toolkit-gradle-convention-cohort-2.md) applies the same
 gate to Chipped, Chisel, CobbleFurnies, and Glassential.
+The [third cohort](toolkit-gradle-convention-cohort-3.md) applies the same gate
+to Trophy Manager, Laser Bridges, More Red, and Lootr.
 
 ## Deduplication result
 
