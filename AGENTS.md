@@ -1,7 +1,9 @@
 # Agent guide for BlueMap ATMons
 
 This public meta repository is the compatibility and distribution index for
-BlueMap on All the Mons. It does not contain third-party binaries. Read this
+BlueMap on All the Mons. It does not contain production or third-party mod
+binaries. Its only tracked JAR is the integration harness's Gradle wrapper,
+whose exact path and SHA-256 are enforced by `tools/validate.py`. Read this
 file and `README.md` before changing the repository.
 
 ## Repository contract
@@ -29,6 +31,22 @@ Run from the repository root:
 python tools/validate.py
 bash -n bin/bluemap-atmons install.sh tests/test-installer.sh
 bash tests/test-installer.sh
+python integration/test_build_candidate_addons.py
+python integration/galleries/test_compose.py
+python integration/test_child_gates.py
+python integration/test_runtime_suite.py
+python integration/test_structure_suite.py
+python tests/test-duplicate-scanner.py
+python tools/scan_duplicates.py --version 1.2.0 --check
+python tests/test-addon-conventions.py
+python tests/test-migrate-addon-conventions.py
+```
+
+Build the dedicated-server integration harness separately with Java 21:
+
+```bash
+cd integration/harness
+./gradlew --no-daemon clean check build
 ```
 
 After changing a workflow, also run:
@@ -58,3 +76,26 @@ runtime/rendering test with the exact manifest artifacts.
 
 Do not claim compatibility from successful compilation alone. Preserve
 unrelated changes and inspect staged paths before committing.
+
+## Integration evidence boundary
+
+- `integration/` contains reusable orchestration and the disposable
+  server-only harness. It must not change an immutable compatibility manifest
+  merely to test a candidate BlueMap branch.
+- Candidate add-on overlays are test artifacts, not releases. Never commit or
+  publish their JARs.
+- The self-contained integration harness tracks only
+  `integration/harness/gradle/wrapper/gradle-wrapper.jar`, SHA-256
+  `55243ef57851f12b070ad14f7f5bb8302daceeebc5bce5ece5fa6edb23e1145c`.
+  No other JAR may be tracked in the meta repository.
+- Runtime worlds, maps, credentials, player identities, Kubernetes Secrets,
+  logs, structure catalogs, and raw test results remain outside Git.
+- Tracked integration reports may retain reviewed result summaries, public
+  inspection links, and SHA-256 identities, but not the raw evidence files or
+  session-local access details from which those summaries were derived.
+- `reports/deduplication/` is extraction evidence, not proof that similarly
+  shaped rendering code is behaviorally interchangeable.
+- `standards/addon-v1/` is the source-preserving child-repository contract.
+  Use `tools/migrate_addon_conventions.py` only on a clean child worktree and
+  validate the result with `tools/check_addon_conventions.py`. A conventions
+  rollout must not change Java sources, versions, tags, or sealed artifacts.

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "baseline": {
+    "atmons": "1.2.0",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.248",
+    "bluemapApi": "2.8.0"
+  },
+  "borderBlocks": 4,
+  "locateRadiusPlacementRings": 100,
+  "fallbackLocateRadiusPlacementRings": 2048,
+  "customPlacementChunkRadius": 128,
+  "customPlacementCandidateBudget": 100000,
+  "customPlacementTimeBudgetMillis": 10000,
+  "maxChunksPerStructure": 4096,
+  "chunksPerTick": 1,
+  "maxForcedBatchChunks": 32,
+  "dimensionPriority": [
+    "minecraft:overworld",
+    "minecraft:the_nether",
+    "minecraft:the_end"
+  ],
+  "catalogFile": "structure-catalog.json",
+  "workStateFile": "structure-work-state.json",
+  "galleryLayoutFile": "gallery-layout.json",
+  "renderMasksFile": "structure-render-masks.json",
+  "runtimeAttestationFile": "runtime-attestation.json",
+  "structureMarkerSetId": "atmons-structures",
+  "galleryMarkerSetId": "atmons-addon-galleries"
+}

@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jan-guenter/bluemap-atmons/integration/structure-catalog.schema.json",
+  "title": "BlueMap ATMons structure catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "worldIdentity",
+    "planFingerprint",
+    "runtimeAttestationSha256",
+    "runtime",
+    "policy",
+    "structureEligibilityEvidence",
+    "dimensions",
+    "structures",
+    "registeredButUnplaced",
+    "failures",
+    "summary"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "worldIdentity": {"type": "string", "format": "uuid"},
+    "planFingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtimeAttestationSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "atmons", "packCommit", "minecraft", "neoforge", "bluemapApi",
+        "bluemapVersion", "bluemapCommit", "bluemapJarSha256"
+      ],
+      "properties": {
+        "atmons": {"const": "1.2.0"},
+        "packCommit": {"const": "c7bb230f21d14d26859d0b92548f089b3a493ad9"},
+        "minecraft": {"const": "1.21.1"},
+        "neoforge": {"const": "21.1.248"},
+        "bluemapApi": {"const": "2.8.0"},
+        "bluemapVersion": {"type": "string", "minLength": 1},
+        "bluemapCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "bluemapJarSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "policy": {"$ref": "#/$defs/policy"},
+    "structureEligibilityEvidence": {
+      "$ref": "#/$defs/structureEligibilityEvidence"
+    },
+    "dimensions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/dimension"}
+    },
+    "structures": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/structure"}
+    },
+    "registeredButUnplaced": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/resourceLocation"},
+      "uniqueItems": true
+    },
+    "failures": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/failure"}
+    },
+    "summary": {"$ref": "#/$defs/summary"}
+  },
+  "$defs": {
+    "resourceLocation": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9/_.-]+$"
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": {"type": "integer"},
+        "y": {"type": "integer"},
+        "z": {"type": "integer"}
+      }
+    },
+    "chunk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "z"],
+      "properties": {
+        "x": {"type": "integer"},
+        "z": {"type": "integer"}
+      }
+    },
+    "blockBounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minX", "minY", "minZ", "maxX", "maxY", "maxZ"],
+      "properties": {
+        "minX": {"type": "integer"},
+        "minY": {"type": "integer"},
+        "minZ": {"type": "integer"},
+        "maxX": {"type": "integer"},
+        "maxY": {"type": "integer"},
+        "maxZ": {"type": "integer"}
+      }
+    },
+    "chunkBounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minX", "minZ", "maxX", "maxZ"],
+      "properties": {
+        "minX": {"type": "integer"},
+        "minZ": {"type": "integer"},
+        "maxX": {"type": "integer"},
+        "maxZ": {"type": "integer"}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selectionMode",
+        "anchor",
+        "searchRadiusPlacementRings",
+        "fallbackRadiusPlacementRings",
+        "customPlacementChunkRadius",
+        "customPlacementCandidateBudget",
+        "customPlacementTimeBudgetMillis",
+        "maxChunksPerStructure",
+        "borderBlocks",
+        "dimensionPriority"
+      ],
+      "properties": {
+        "selectionMode": {"const": "one-per-structure"},
+        "anchor": {"const": "overworld-spawn-xz"},
+        "searchRadiusPlacementRings": {"type": "integer", "minimum": 1},
+        "fallbackRadiusPlacementRings": {"type": "integer", "minimum": 1},
+        "customPlacementChunkRadius": {"type": "integer", "minimum": 1},
+        "customPlacementCandidateBudget": {"type": "integer", "minimum": 1},
+        "customPlacementTimeBudgetMillis": {"type": "integer", "minimum": 1},
+        "maxChunksPerStructure": {"type": "integer", "minimum": 1},
+        "borderBlocks": {"type": "integer", "minimum": 0},
+        "dimensionPriority": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/resourceLocation"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "structureEligibilityEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configRules", "modRules", "disabledStructures"],
+      "properties": {
+        "configRules": {
+          "type": "array",
+          "prefixItems": [
+            {"$ref": "#/$defs/betterDungeonsConfigRule"},
+            {"$ref": "#/$defs/betterMineshaftsConfigRule"}
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "modRules": {
+          "type": "array",
+          "prefixItems": [
+            {"$ref": "#/$defs/betterStrongholdsModRule"}
+          ],
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "disabledStructures": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/disabledStructureEvidence"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "betterDungeonsConfigRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId", "configPath", "configSha256", "section", "key",
+        "value", "disabledWhenValue", "structures"
+      ],
+      "properties": {
+        "ruleId": {"const": "betterdungeons-small-nether-dungeons"},
+        "configPath": {
+          "const": "/data/config/betterdungeons-neoforge-1_21.toml"
+        },
+        "configSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "section": {
+          "const": ["YUNG's Better Dungeons", "Small Nether Dungeons"]
+        },
+        "key": {"const": "Enable Small Nether Dungeons"},
+        "value": {"type": "boolean"},
+        "disabledWhenValue": {"const": false},
+        "structures": {"const": ["betterdungeons:small_nether_dungeon"]}
+      }
+    },
+    "betterMineshaftsConfigRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId", "configPath", "configSha256", "section", "key",
+        "value", "disabledWhenValue", "structures"
+      ],
+      "properties": {
+        "ruleId": {"const": "bettermineshafts-disable-vanilla-mineshafts"},
+        "configPath": {
+          "const": "/data/config/bettermineshafts-neoforge-1_21.toml"
+        },
+        "configSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "section": {"const": ["YUNG's Better Mineshafts"]},
+        "key": {"const": "Disable Vanilla Mineshafts"},
+        "value": {"type": "boolean"},
+        "disabledWhenValue": {"const": true},
+        "structures": {
+          "const": ["minecraft:mineshaft", "minecraft:mineshaft_mesa"]
+        }
+      }
+    },
+    "betterStrongholdsModRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId", "modId", "version", "jarPath", "jarSizeBytes",
+        "jarSha256", "structures"
+      ],
+      "properties": {
+        "ruleId": {
+          "const": "betterstrongholds-disable-vanilla-strongholds-mixin"
+        },
+        "modId": {"const": "betterstrongholds"},
+        "version": {"const": "1.21.1-NeoForge-5.1.3"},
+        "jarPath": {
+          "const": "/data/mods/YungsBetterStrongholds-1.21.1-NeoForge-5.1.3.jar"
+        },
+        "jarSizeBytes": {"const": 461244},
+        "jarSha256": {
+          "const": "a9cab2fc01538368862365691f7d215309801aed0b390351681b6b60a1db7b58"
+        },
+        "structures": {"const": ["minecraft:stronghold"]}
+      }
+    },
+    "disabledStructureEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["structure", "evidenceId", "reason"],
+      "properties": {
+        "structure": {"$ref": "#/$defs/resourceLocation"},
+        "evidenceId": {
+          "enum": [
+            "betterdungeons-small-nether-dungeons",
+            "bettermineshafts-disable-vanilla-mineshafts",
+            "betterstrongholds-disable-vanilla-strongholds-mixin"
+          ]
+        },
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "safeMapId", "mapConfigFile", "anchor", "mapIds"],
+      "properties": {
+        "id": {"$ref": "#/$defs/resourceLocation"},
+        "safeMapId": {
+          "type": "string",
+          "pattern": "^atmons_[a-z0-9_]+_[0-9a-f]{12}$"
+        },
+        "mapConfigFile": {
+          "type": "string",
+          "pattern": "^maps/atmons_[a-z0-9_]+_[0-9a-f]{12}\\.conf$"
+        },
+        "anchor": {"$ref": "#/$defs/position"},
+        "mapIds": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "structureSets", "placementTypes"],
+      "properties": {
+        "dimension": {"$ref": "#/$defs/resourceLocation"},
+        "structureSets": {"type": "array", "items": {"type": "string"}},
+        "placementTypes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason", "regions", "chunkCount", "searchRadius", "elapsedMillis"],
+      "properties": {
+        "status": {"enum": ["located", "registry-only"]},
+        "reason": {"type": "string"},
+        "dimension": {"$ref": "#/$defs/resourceLocation"},
+        "locatePosition": {"$ref": "#/$defs/position"},
+        "startChunk": {"$ref": "#/$defs/chunk"},
+        "structureBounds": {"$ref": "#/$defs/blockBounds"},
+        "borderedBounds": {"$ref": "#/$defs/blockBounds"},
+        "chunkBounds": {"$ref": "#/$defs/chunkBounds"},
+        "chunkCount": {"type": "integer", "minimum": 0},
+        "regions": {"type": "array", "items": {"$ref": "#/$defs/chunk"}},
+        "markerId": {"type": "string"},
+        "searchRadius": {"type": "integer", "minimum": 0},
+        "elapsedMillis": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "located"}}},
+          "then": {
+            "required": [
+              "dimension",
+              "locatePosition",
+              "startChunk",
+              "structureBounds",
+              "borderedBounds",
+              "chunkBounds",
+              "markerId"
+            ]
+          }
+        }
+      ]
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tags", "eligibility", "selection"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "eligibility": {"type": "array", "items": {"$ref": "#/$defs/eligibility"}},
+        "selection": {"$ref": "#/$defs/selection"}
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["structure", "dimension", "status", "detail"],
+      "properties": {
+        "structure": {"type": "string"},
+        "dimension": {"$ref": "#/$defs/resourceLocation"},
+        "status": {
+          "enum": [
+            "invalid-start",
+            "not-found",
+            "custom-not-found",
+            "custom-search-budget-exhausted",
+            "custom-search-timeout"
+          ]
+        },
+        "detail": {"type": "string"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registered",
+        "placed",
+        "located",
+        "unlocated",
+        "markers",
+        "uniqueChunks",
+        "uniqueRegions"
+      ],
+      "properties": {
+        "registered": {"type": "integer", "minimum": 0},
+        "placed": {"type": "integer", "minimum": 0},
+        "located": {"type": "integer", "minimum": 0},
+        "unlocated": {"type": "integer", "minimum": 0},
+        "markers": {"type": "integer", "minimum": 0},
+        "uniqueChunks": {"type": "integer", "minimum": 0},
+        "uniqueRegions": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
