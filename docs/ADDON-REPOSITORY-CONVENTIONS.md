@@ -23,9 +23,10 @@ credentials, and build output stay untracked.
 
 ## Java and build contract
 
-- Java sources use UTF-8, LF, four-space indentation, no tabs, a final
-  newline, a 120-character non-import line limit, and the
-  `io.github.janguenter.bluemap` package root.
+- Java sources use UTF-8, LF, no tabs, a final newline, a 120-character
+  non-import line limit, and the `io.github.janguenter.bluemap` package root.
+- Editor defaults use four-space indentation. The first source-preserving
+  rollout does not mass-reindent legacy files merely to satisfy that default.
 - Production and test sources pass Checkstyle `10.18.2` with the exact
   `addon-v1` rules.
 - Java compilation targets release 21 with `-Xlint:all` and `-Werror`.

@@ -105,6 +105,8 @@ The common child-repository contract is documented in
 versioned files and migration checker live under `standards/addon-v1/` and
 `tools/`. The initial rollout deliberately changes no Java source, add-on
 version, compatibility manifest, or published release tag.
+The observed baseline, rollout boundary, validation, and extraction order are
+recorded in the [ATMons 1.2.0 consolidation report](reports/consolidation/atmons-1.2.0.md).
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
