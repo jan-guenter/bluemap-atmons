@@ -85,6 +85,8 @@ The [second cohort](toolkit-gradle-convention-cohort-2.md) applies the same
 gate to Chipped, Chisel, CobbleFurnies, and Glassential.
 The [third cohort](toolkit-gradle-convention-cohort-3.md) applies the same gate
 to Trophy Manager, Laser Bridges, More Red, and Lootr.
+The [fourth cohort](toolkit-gradle-convention-cohort-4.md) applies it to XNet,
+LaserIO, Little Big Redstone, and Nature's Aura.
 
 ## Deduplication result
 
