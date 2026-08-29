@@ -64,6 +64,19 @@ Published tags and the compatibility manifest continue to identify the exact
 accepted release commits and JARs. Tooling-only commits on child `main`
 branches are not silently substituted for those release identities.
 
+## Toolkit verifier extraction
+
+The first extraction slice is complete. The public development-only toolkit
+is pinned by exact gitlink and wheel identity, and all 24 members of the two
+byte-exact verifier cohorts now consume it. Each tooling-only PR passed its
+isolated release-candidate gate without changing renderer source, tests,
+galleries, provenance, versions, accepted seals, or tags.
+
+The [rollout record](toolkit-verifier-rollout.md) lists every reviewed PR and
+merge commit. It records the removal of 48 duplicate scripts and 5,280
+physical lines, with a net cohort reduction of 4,631 lines after adding the
+immutable dependency pins and setup documentation.
+
 ## Deduplication result
 
 Scanner v2 analyzed 2,887 eligible files and 29,115,561 bytes. Its Java pass

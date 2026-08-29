@@ -113,6 +113,8 @@ a separate gitlink and release artifact by [tooling/manifest.json](tooling/manif
 Its first release centralizes the validated repository contract and the two
 byte-exact artifact-verification tools. It is not an installed component and
 does not appear in an ATMons server manifest.
+The first [shared-verifier rollout](reports/consolidation/toolkit-verifier-rollout.md)
+removed both exact script cohorts from all 24 proven consumers.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
