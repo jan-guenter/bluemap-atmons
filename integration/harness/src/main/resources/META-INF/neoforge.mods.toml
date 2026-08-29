@@ -1,0 +1,39 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+description = '''
+Disposable dedicated-server integration catalog, fixture, marker, and render harness for BlueMap ATMons.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.248,21.2)"
+ordering = "NONE"
+side = "SERVER"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "SERVER"
+
+[[dependencies.${mod_id}]]
+modId = "bluemap"
+type = "required"
+versionRange = "[5.22,5.24)"
+ordering = "AFTER"
+side = "SERVER"
+
+[[dependencies.${mod_id}]]
+modId = "immersiveengineering"
+type = "required"
+versionRange = "[12.4.2-194]"
+ordering = "AFTER"
+side = "SERVER"

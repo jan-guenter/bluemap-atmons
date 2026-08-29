@@ -1,0 +1,6 @@
+.gradle/
+build/
+run/
+__pycache__/
+*.py[cod]
+!gradle/wrapper/gradle-wrapper.jar

@@ -1,9 +1,11 @@
 /.cache/
 /.tmp/
 /dist/
+/integration/results/
 __pycache__/
 *.py[cod]
 *.jar
+!integration/harness/gradle/wrapper/gradle-wrapper.jar
 *.log
 *.swp
 .DS_Store

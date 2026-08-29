@@ -1,0 +1,245 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.140'
+}
+
+group = mod_group_id
+version = mod_version
+
+base {
+    archivesName = artifact_id
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+neoForge {
+    version = neoforge_version
+
+    mods {
+        bluemap_atmons_integration {
+            sourceSet sourceSets.main
+        }
+    }
+
+    runs {
+        server {
+            server()
+            gameDirectory = project.file('run/server')
+            programArgument '--nogui'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri('https://repo.bluecolored.de/releases')
+        content { includeGroup 'de.bluecolored' }
+    }
+    maven {
+        url = uri('https://www.cursemaven.com')
+        content { includeGroup 'curse.maven' }
+    }
+}
+
+configurations {
+    pinnedImmersiveEngineering {
+        canBeConsumed = false
+        canBeResolved = true
+        transitive = false
+    }
+}
+
+dependencies {
+    compileOnly "de.bluecolored:bluemap-api:${bluemap_api_version}"
+
+    def installedIeJar = providers.gradleProperty('immersiveEngineeringJar')
+    if (installedIeJar.isPresent()) {
+        compileOnly files(installedIeJar.get())
+        pinnedImmersiveEngineering files(installedIeJar.get())
+    } else {
+        compileOnly("curse.maven:immersive-engineering-231951:${immersive_engineering_curse_file}") {
+            transitive = false
+        }
+        pinnedImmersiveEngineering(
+                "curse.maven:immersive-engineering-231951:${immersive_engineering_curse_file}"
+        ) {
+            transitive = false
+        }
+    }
+
+    testImplementation "de.bluecolored:bluemap-api:${bluemap_api_version}"
+    testImplementation 'com.google.code.gson:gson:2.10.1'
+    testImplementation 'com.electronwill.night-config:toml:3.8.3'
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    def values = [
+        mod_id: mod_id,
+        mod_name: mod_name,
+        mod_version: mod_version
+    ]
+    inputs.properties(values)
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(values)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+    options.compilerArgs.addAll(['-Xlint:all,-processing', '-Werror'])
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+}
+
+tasks.register('testMapConfigGenerator', Exec) {
+    group = 'verification'
+    commandLine 'python3', '-m', 'unittest', 'discover',
+            '-s', 'tools/tests', '-p', 'test_*.py'
+    inputs.files(fileTree('tools') { include '**/*.py' })
+}
+
+tasks.named('runServer', JavaExec).configure {
+    standardInput = System.in
+}
+
+tasks.register('verifyPinnedImmersiveEngineering') {
+    group = 'verification'
+    inputs.files(configurations.pinnedImmersiveEngineering)
+
+    doLast {
+        def artifacts = inputs.files.files as List
+        if (artifacts.size() != 1) {
+            throw new GradleException(
+                    "Expected one Immersive Engineering artifact, got ${artifacts}"
+            )
+        }
+        def artifact = artifacts[0]
+        def digest = java.security.MessageDigest.getInstance('SHA-256')
+        artifact.withInputStream { input ->
+            byte[] buffer = new byte[8192]
+            for (int read = input.read(buffer); read >= 0; read = input.read(buffer)) {
+                if (read > 0) {
+                    digest.update(buffer, 0, read)
+                }
+            }
+        }
+        def actual = digest.digest().encodeHex().toString()
+        if (actual != immersive_engineering_sha256) {
+            throw new GradleException(
+                    "Immersive Engineering SHA-256 mismatch: ${actual}"
+            )
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn 'verifyPinnedBlueMapApi'
+    dependsOn tasks.named('verifyPinnedImmersiveEngineering')
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes(
+                'Automatic-Module-Name': 'io.github.janguenter.bluemap.atmons.integration',
+                'Implementation-Title': mod_name,
+                'Implementation-Version': project.version.toString()
+        )
+    }
+    from('LICENSE') {
+        into 'META-INF'
+        rename { 'LICENSE-bluemap-atmons-integration-harness' }
+    }
+}
+
+def productionJar = tasks.named('jar', Jar).flatMap { it.archiveFile }
+def blueMapApiSourceDirectory = providers.gradleProperty('blueMapApiSourcePath')
+        .map { file(it) }
+        .orElse(providers.provider { file('../../bluemap/api') })
+
+tasks.register('verifyPinnedBlueMapApi') {
+    group = 'verification'
+    inputs.property('expectedCommit', bluemap_api_commit)
+
+    doLast {
+        def sourceDirectory = blueMapApiSourceDirectory.get()
+        def actual = providers.exec {
+            commandLine 'git', '-C', sourceDirectory.absolutePath, 'rev-parse', 'HEAD'
+        }.standardOutput.asText.get().trim()
+        if (actual != bluemap_api_commit) {
+            throw new GradleException(
+                    "BlueMapAPI commit mismatch: expected ${bluemap_api_commit}, got ${actual}"
+            )
+        }
+        def dirty = providers.exec {
+            commandLine 'git', '-C', sourceDirectory.absolutePath,
+                    'status', '--porcelain=v1', '--untracked-files=all'
+        }.standardOutput.asText.get().trim()
+        if (!dirty.isEmpty()) {
+            throw new GradleException(
+                    'BlueMapAPI source checkout is dirty; exact source provenance is required:\n'
+                            + dirty
+            )
+        }
+    }
+}
+
+tasks.register('verifyProductionJar') {
+    group = 'verification'
+    dependsOn tasks.named('jar')
+    inputs.file(productionJar)
+
+    doLast {
+        def jarFile = inputs.files.singleFile
+        def entries = []
+        new java.util.zip.ZipFile(jarFile).withCloseable { archive ->
+            archive.entries().each { entry -> entries.add(entry.name) }
+        }
+
+        [
+            'META-INF/neoforge.mods.toml',
+            'bluemap-atmons/default-integration-harness.json',
+            'bluemap-atmons/structure-catalog.schema.json',
+            'data/immersiveengineering_gallery_helper/function/form.mcfunction',
+            'data/immersiveengineering_gallery_helper/function/verify.mcfunction',
+            'BlueMapAtmonsIntegrationMod.class'
+        ].each { suffix ->
+            if (!entries.any { it.endsWith(suffix) }) {
+                throw new GradleException("Production JAR is missing ${suffix}")
+            }
+        }
+
+        def forbidden = entries.findAll {
+            it.startsWith('net/minecraft/client/')
+                    || it.contains('/net/minecraft/client/')
+                    || it.startsWith('assets/')
+                    || it.contains('/assets/')
+                    || it.startsWith('META-INF/jarjar/')
+                    || it.endsWith('.jar')
+        }
+        if (!forbidden.isEmpty()) {
+            throw new GradleException("Server-only JAR has forbidden entries: ${forbidden}")
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('verifyPinnedBlueMapApi')
+    dependsOn tasks.named('verifyPinnedImmersiveEngineering')
+    dependsOn tasks.named('verifyProductionJar')
+    dependsOn tasks.named('testMapConfigGenerator')
+}

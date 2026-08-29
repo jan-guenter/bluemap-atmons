@@ -21,6 +21,10 @@ HEX64 = re.compile(r"^[0-9a-f]{64}$")
 VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REPOSITORY = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+ALLOWED_TRACKED_JARS = {
+    "integration/harness/gradle/wrapper/gradle-wrapper.jar":
+        "55243ef57851f12b070ad14f7f5bb8302daceeebc5bce5ece5fa6edb23e1145c",
+}
 
 
 class DuplicateKeyError(ValueError):
@@ -287,7 +291,29 @@ def validate_submodules(components: list[dict[str, Any]]) -> list[str]:
         if mode == "160000":
             gitlinks[path_value] = object_id
         if path_value.endswith(".jar"):
-            tracked_jars.append(path_value)
+            expected_digest = ALLOWED_TRACKED_JARS.get(path_value)
+            if expected_digest is None:
+                tracked_jars.append(path_value)
+            else:
+                blob = subprocess.run(
+                    ["git", "cat-file", "blob", object_id],
+                    cwd=ROOT,
+                    check=False,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                if blob.returncode:
+                    errors.append(
+                        f"cannot read tracked JAR {path_value}: "
+                        f"{blob.stderr.decode(errors='replace').strip()}"
+                    )
+                else:
+                    actual_digest = hashlib.sha256(blob.stdout).hexdigest()
+                    if actual_digest != expected_digest:
+                        errors.append(
+                            f"tracked JAR {path_value}: expected SHA-256 "
+                            f"{expected_digest}, got {actual_digest}"
+                        )
     if set(gitlinks) != set(expected):
         errors.append(
             "gitlinks differ; "

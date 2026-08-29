@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jan-guenter/bluemap-atmons/integration/gallery-layout.schema.json",
+  "title": "BlueMap ATMons gallery layout",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "compositionId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "composerVersion": {"const": "2.4.0"},
+    "runtime": {"$ref": "#/$defs/runtime"},
+    "dimension": {"$ref": "#/$defs/resourceLocation"},
+    "mapId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]{0,127}$"},
+    "surfaceY": {"type": "integer"},
+    "bounds": {"$ref": "#/$defs/bounds"},
+    "summary": {"$ref": "#/$defs/summary"},
+    "galleries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/gallery"}
+    },
+    "areas": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/area"}
+    },
+    "points": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/point"}
+    }
+  },
+  "anyOf": [
+    {"required": [
+      "compositionId", "composerVersion", "dimension", "mapId", "bounds", "galleries"
+    ]},
+    {"required": ["areas", "points"]}
+  ],
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"},
+    "resourceLocation": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+:[a-z0-9/._-]+$"
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": {"type": "number"},
+        "y": {"type": "number"},
+        "z": {"type": "number"}
+      }
+    },
+    "integerPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": {"type": "integer"},
+        "y": {"type": "integer"},
+        "z": {"type": "integer"}
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minX", "minY", "minZ", "maxX", "maxY", "maxZ"],
+      "properties": {
+        "minX": {"type": "integer"},
+        "minY": {"type": "integer"},
+        "minZ": {"type": "integer"},
+        "maxX": {"type": "integer"},
+        "maxY": {"type": "integer"},
+        "maxZ": {"type": "integer"}
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["atmons", "minecraft", "neoforge", "packCommit"],
+      "properties": {
+        "atmons": {"const": "1.2.0"},
+        "minecraft": {"const": "1.21.1"},
+        "neoforge": {"const": "21.1.248"},
+        "packCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["galleryCount"],
+      "properties": {
+        "galleryCount": {"type": "integer", "minimum": 1}
+      }
+    },
+    "functions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["load", "prepare", "build", "verify", "release", "clear"],
+      "properties": {
+        "load": {"$ref": "#/$defs/resourceLocation"},
+        "prepare": {"$ref": "#/$defs/resourceLocation"},
+        "build": {"$ref": "#/$defs/resourceLocation"},
+        "verify": {"$ref": "#/$defs/resourceLocation"},
+        "release": {"$ref": "#/$defs/resourceLocation"},
+        "clear": {"$ref": "#/$defs/resourceLocation"}
+      }
+    },
+    "marker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "position"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1, "maxLength": 256},
+        "position": {"$ref": "#/$defs/position"}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failurePlayer", "mirroredChecks", "mode", "nativeObjective", "objective"],
+      "properties": {
+        "failurePlayer": {"type": "string", "minLength": 1},
+        "mirroredChecks": {"type": "integer", "minimum": 0},
+        "mode": {"type": "string", "minLength": 1},
+        "nativeObjective": {"type": ["string", "null"]},
+        "objective": {"type": "string", "minLength": 1}
+      }
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "objective", "player", "delayTicks", "timeoutTicks"],
+      "properties": {
+        "mode": {
+          "enum": ["scheduled-game-tick-barrier", "terminal-predicate"]
+        },
+        "objective": {"const": "bma_done"},
+        "player": {"type": "string", "pattern": "^#[a-z0-9_]{1,39}$"},
+        "delayTicks": {"type": ["integer", "null"], "minimum": 1},
+        "timeoutTicks": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"mode": {"const": "scheduled-game-tick-barrier"}}},
+          "then": {
+            "properties": {
+              "delayTicks": {"type": "integer", "minimum": 1},
+              "timeoutTicks": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"mode": {"const": "terminal-predicate"}}},
+          "then": {
+            "properties": {
+              "delayTicks": {"type": "null"},
+              "timeoutTicks": {"type": "integer", "minimum": 1}
+            }
+          }
+        }
+      ]
+    },
+    "gallery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "repository", "commit", "namespace", "surface", "bounds",
+        "tileBounds", "sourceBounds", "offset", "marker", "functions", "verification",
+        "completion"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "namespace": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+        "surface": {"$ref": "#/$defs/resourceLocation"},
+        "bounds": {"$ref": "#/$defs/bounds"},
+        "tileBounds": {"$ref": "#/$defs/bounds"},
+        "sourceBounds": {"$ref": "#/$defs/bounds"},
+        "offset": {"$ref": "#/$defs/integerPosition"},
+        "marker": {"$ref": "#/$defs/marker"},
+        "functions": {"$ref": "#/$defs/functions"},
+        "verification": {"$ref": "#/$defs/verification"},
+        "completion": {"$ref": "#/$defs/completion"}
+      }
+    },
+    "area": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "addonId", "label", "dimension", "bounds"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "addonId": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1, "maxLength": 256},
+        "detail": {"type": "string"},
+        "dimension": {"$ref": "#/$defs/resourceLocation"},
+        "color": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"},
+        "bounds": {"$ref": "#/$defs/bounds"}
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "addonId", "label", "dimension", "position"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "addonId": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1, "maxLength": 256},
+        "detail": {"type": "string"},
+        "dimension": {"$ref": "#/$defs/resourceLocation"},
+        "position": {"$ref": "#/$defs/position"}
+      }
+    }
+  }
+}

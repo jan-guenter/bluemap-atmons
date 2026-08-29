@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.neoforged.net/releases' }
+    }
+}
+
+rootProject.name = 'bluemap-atmons-integration-harness'
+
+def blueMapApiSource = providers.gradleProperty('blueMapApiSourcePath')
+        .orElse(file('../../bluemap/api').absolutePath)
+        .get()
+def blueMapApiSettings = file(blueMapApiSource).toPath().resolve('settings.gradle.kts')
+if (!java.nio.file.Files.isRegularFile(blueMapApiSettings)) {
+    throw new GradleException(
+            'BlueMapAPI source is required at commit '
+                    + '285c9a60eff3ac2b0cab308ce1058d1565be0971. '
+                    + 'Initialize bluemap/api or set -PblueMapApiSourcePath.'
+    )
+}
+includeBuild(blueMapApiSource)

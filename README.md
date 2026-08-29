@@ -75,6 +75,28 @@ git clone --branch atmons-1.2.0 --recurse-submodules \
   https://github.com/jan-guenter/bluemap-atmons.git
 ```
 
+## Combined integration testing
+
+The [`integration/`](integration/README.md) layer composes every pinned
+add-on gallery into one divided test campus, runs all 51 gallery assertions on
+one exact ATMons server, catalogs live world structures, and drives bounded
+BlueMap renders. Candidate BlueMap branches use staging-only compatibility
+overlays; published compatibility manifests and child releases remain
+immutable.
+
+The dedicated-server integration harness includes a hash-pinned Gradle wrapper
+JAR so `./gradlew` works from a fresh checkout. The repository validator rejects
+that file if its bytes change and rejects every other tracked JAR.
+
+The current feature-branch evidence is collected in the
+[ATMons 1.2.0 candidate integration report](reports/integration/atmons-1.2.0-candidate.md).
+It is a test record, not a replacement for the immutable compatibility tag.
+
+The current source-wide consolidation evidence is the
+[ATMons 1.2.0 deduplication audit](reports/deduplication/atmons-1.2.0.md).
+It identifies reusable development, runtime, adapter, rendering, and
+connected-texture layers without moving code between child repositories.
+
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
 
