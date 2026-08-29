@@ -141,6 +141,9 @@ same exact artifact, gallery, PR CI, and post-merge CI parity gate.
 The [seventh convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-7.md)
 records Extreme Reactors, Ars Creo, Ars Energistique, and Ars Technica under
 the same boundary, including their multi-artifact and resource-pin gates.
+The [eighth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-8.md)
+records Camol, Integrated Dynamics, Oritech, and Mekanism with their exact
+multi-input, gallery, acceptance-state, PR CI, and post-merge CI boundaries.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.

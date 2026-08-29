@@ -103,6 +103,9 @@ the same complete parity boundary.
 The [seventh cohort](toolkit-gradle-convention-cohort-7.md) applies it to
 Extreme Reactors, Ars Creo, Ars Energistique, and Ars Technica while retaining
 their multi-artifact admission and installed-resource contracts.
+The [eighth cohort](toolkit-gradle-convention-cohort-8.md) applies it to Camol,
+Integrated Dynamics, Oritech, and Mekanism while preserving exact multi-input
+admission, gallery behavior, and publication-versus-acceptance boundaries.
 
 ## Deduplication result
 
