@@ -30,6 +30,7 @@ jobs:
       - name: Test development tooling pin
         run: |
           python tests/test-tooling-manifest.py
+          PYTHONPATH=toolkit/src python -m unittest discover -s toolkit/tests -p 'test_*.py'
           PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit --version
       - name: Check shell syntax
         run: bash -n bin/bluemap-atmons install.sh tests/test-installer.sh
@@ -46,10 +47,6 @@ jobs:
         run: |
           python tests/test-duplicate-scanner.py
           python tools/scan_duplicates.py --version 1.2.0 --check
-      - name: Test add-on repository conventions
-        run: |
-          python tests/test-addon-conventions.py
-          python tests/test-migrate-addon-conventions.py
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
