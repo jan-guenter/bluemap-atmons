@@ -94,6 +94,9 @@ the three consumer-owned plugin checks remain mandatory. The
 [v0.3 contract consolidation](toolkit-v0.3-contract-consolidation.md) makes
 that pinned toolkit the meta repository's single source for the checker,
 migrator, and managed templates.
+The [fifth cohort](toolkit-gradle-convention-cohort-5.md) applies that v0.3
+contract to Tempad, Productive Metalworks, Productive Bees, and Railcraft
+Reborn with exact artifact, gallery, PR CI, and post-merge CI parity.
 
 ## Deduplication result
 
