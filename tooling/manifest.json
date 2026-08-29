@@ -6,13 +6,13 @@
       "kind": "development-tool",
       "repository": "jan-guenter/bluemap-addon-toolkit",
       "submodule_path": "toolkit",
-      "commit": "ce02e66412e595ec0c002cfe1579af65c7e17e0d",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "f58da04567f10efe615c582797f3ab00b7a7343f",
+      "release_tag": "v0.2.0-alpha.1",
       "artifact": {
-        "filename": "bluemap_addon_toolkit-0.1.0a1-py3-none-any.whl",
-        "url": "https://github.com/jan-guenter/bluemap-addon-toolkit/releases/download/v0.1.0-alpha.1/bluemap_addon_toolkit-0.1.0a1-py3-none-any.whl",
-        "size_bytes": 19376,
-        "sha256": "1a82280178a6a8468b485893c2759f834e58743143bfe518d16d155512ca9491"
+        "filename": "bluemap_addon_toolkit-0.2.0a1-py3-none-any.whl",
+        "url": "https://github.com/jan-guenter/bluemap-addon-toolkit/releases/download/v0.2.0-alpha.1/bluemap_addon_toolkit-0.2.0a1-py3-none-any.whl",
+        "size_bytes": 19827,
+        "sha256": "cbfbad7ea12ea631b9f36a5261482dde3ca4d8f270df1b5faf75310020b115f9"
       }
     }
   ]
