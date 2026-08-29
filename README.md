@@ -124,6 +124,9 @@ records four additional reviewed consumers under the same parity gate.
 The [third convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-3.md)
 records Trophy Manager, Laser Bridges, More Red, and Lootr under the same
 artifact and gallery parity gate.
+The [fourth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-4.md)
+records XNet, LaserIO, Little Big Redstone, and Nature's Aura under the same
+gate.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
