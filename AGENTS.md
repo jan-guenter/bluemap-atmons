@@ -38,6 +38,8 @@ python integration/test_runtime_suite.py
 python integration/test_structure_suite.py
 python tests/test-duplicate-scanner.py
 python tools/scan_duplicates.py --version 1.2.0 --check
+python tests/test-addon-conventions.py
+python tests/test-migrate-addon-conventions.py
 ```
 
 Build the dedicated-server integration harness separately with Java 21:
@@ -93,3 +95,7 @@ unrelated changes and inspect staged paths before committing.
   session-local access details from which those summaries were derived.
 - `reports/deduplication/` is extraction evidence, not proof that similarly
   shaped rendering code is behaviorally interchangeable.
+- `standards/addon-v1/` is the source-preserving child-repository contract.
+  Use `tools/migrate_addon_conventions.py` only on a clean child worktree and
+  validate the result with `tools/check_addon_conventions.py`. A conventions
+  rollout must not change Java sources, versions, tags, or sealed artifacts.

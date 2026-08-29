@@ -10,9 +10,20 @@ This is a deterministic source audit of the exact 51 add-on commits pinned by th
 - Exact file groups: **7** (103 occurrences).
 - Whole-Java-file token groups: **45 exact**, **47 renamed**.
 - Java method groups (minimum 36 tokens): **374 exact**, **195 renamed**.
+- Parsed Python/Gradle/GitHub Actions/Bash groups (minimum 12 units): **265 exact**, **9 conservative local-renamed**.
+- Structured inventory fingerprint: `79a0753f11aaec87fac5ec422ef8c55172630ac2fe9002aaa9587382bc479910` (9479 parsed units; 8508 eligible).
 - Exact method layers: behavioral 239, mixed 2, scaffolding 76, test_scaffolding 16, test_support 41; renamed method layers: behavioral 73, mixed 5, scaffolding 73, test_scaffolding 15, test_support 29.
 
 The full JSON report records every qualifying occurrence with its add-on commit, path, line range where applicable, token count, and content fingerprint.
+
+## Parsed non-Java duplication
+
+| Language | Parsed units | Exact groups | Local-renamed groups |
+| --- | ---: | ---: | ---: |
+| github_actions | 1322 | 33 | 0 |
+| gradle | 5289 | 131 | 2 |
+| python | 2200 | 89 | 7 |
+| shell | 668 | 12 | 0 |
 
 ## Strong exact-copy evidence
 
@@ -28,23 +39,23 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 
 ## Repeated families
 
-| Family | Add-ons | Files | Exact file groups | Exact / renamed method groups |
-| --- | ---: | ---: | ---: | ---: |
-| Runtime activation and diagnostics | 51 | 165 | 0 | 8 / 18 |
-| Artifact identity and profiles | 50 | 186 | 0 | 28 / 12 |
-| BlueMap adapter bootstrap | 51 | 215 | 0 | 41 / 43 |
-| Build, release, and quality configuration | 51 | 304 | 2 | 0 / 0 |
-| Artifact verification tooling | 44 | 117 | 3 | 0 / 0 |
-| Gallery generation and lifecycle harness | 51 | 431 | 1 | 0 / 0 |
-| Rendering and geometry primitives | 27 | 43 | 0 | 32 / 4 |
-| Installed model compilers | 13 | 28 | 0 | 46 / 14 |
-| Connected-texture engine | 11 | 78 | 0 | 103 / 19 |
+| Family | Add-ons | Files | Exact file groups | Exact / renamed methods | Exact / local structured |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Runtime activation and diagnostics | 51 | 165 | 0 | 8 / 18 | 0 / 0 |
+| Artifact identity and profiles | 50 | 186 | 0 | 28 / 12 | 0 / 0 |
+| BlueMap adapter bootstrap | 51 | 215 | 0 | 41 / 43 | 0 / 0 |
+| Build, release, and quality configuration | 51 | 304 | 2 | 0 / 0 | 176 / 2 |
+| Artifact verification tooling | 44 | 117 | 3 | 0 / 0 | 42 / 3 |
+| Gallery generation and lifecycle harness | 51 | 431 | 1 | 0 / 0 | 47 / 5 |
+| Rendering and geometry primitives | 27 | 43 | 0 | 32 / 4 | 0 / 0 |
+| Installed model compilers | 13 | 28 | 0 | 46 / 14 | 0 / 0 |
+| Connected-texture engine | 11 | 78 | 0 | 103 / 19 | 0 / 0 |
 
 ## Recommended extraction order
 
 ### 1. `bluemap-addon-dev-toolkit` — Development and release toolkit
 
-Evidence: 852 family-matched files across 51 add-ons and 6 content clone groups.
+Evidence: 852 family-matched files across 51 add-ons and 280 content clone groups.
 
 Recommendation: Extract first as versioned CLI/Gradle conventions. Keep generated gallery data in each add-on.
 
@@ -124,7 +135,8 @@ Coupling/ABI risks:
 
 ## Guardrails for consolidation
 
-- Treat exact byte/token matches as mechanical evidence. Review alpha-renamed matches before extraction; literals and identifiers are intentionally abstracted.
+- Treat exact byte/token matches as mechanical evidence. Java alpha-renamed matches abstract identifiers and literal values, so review them before extraction.
+- Parsed Python and Gradle local-renamed matches preserve literals and external/API names. GitHub Actions and Bash identifiers are never renamed. These are still review candidates, not proof of equivalent behavior.
 - Keep profile pins, resource manifests, gallery case data, and mod-specific render decisions in their owning repositories.
 - Do not introduce a shared server runtime JAR until class loading, dependency installation, independent add-on version skew, and removal behavior are tested together.
 - Put visual conformance fixtures around any geometry, UV, connected-texture, translucency, or block-entity helper before moving it.

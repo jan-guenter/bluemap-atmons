@@ -11,12 +11,15 @@ reports.
 from __future__ import annotations
 
 import argparse
+import ast
 import collections
+import copy
 import dataclasses
 import hashlib
 import io
 import json
 import re
+import shlex
 import subprocess
 import sys
 import tarfile
@@ -24,10 +27,11 @@ from pathlib import Path, PurePosixPath
 from typing import Iterable, Sequence
 
 
-SCHEMA_VERSION = 1
-SCANNER_VERSION = "1.1.0"
+SCHEMA_VERSION = 2
+SCANNER_VERSION = "2.0.0"
 DEFAULT_MIN_METHOD_TOKENS = 36
 DEFAULT_MIN_FILE_TOKENS = 80
+DEFAULT_MIN_STRUCTURED_UNITS = 12
 
 JAVA_KEYWORDS = frozenset(
     {
@@ -206,6 +210,27 @@ class MethodRecord:
     layer: str
     exact_hash: str
     renamed_hash: str
+
+
+@dataclasses.dataclass(frozen=True)
+class StructuredRecord:
+    addon: str
+    path: str
+    commit: str
+    language: str
+    kind: str
+    name: str
+    start_line: int
+    end_line: int
+    unit_count: int
+    layer: str
+    exact_hash: str
+    normalized_hash: str
+    parser: str
+
+    @property
+    def evidence_path(self) -> str:
+        return f"addons/{self.addon}/{self.path}"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -638,6 +663,61 @@ def lex_java(text: str) -> list[JavaToken]:
     return tokens
 
 
+def lex_gradle(text: str) -> list[JavaToken]:
+    """Tokenize the Groovy subset used by the pinned Gradle scripts."""
+
+    tokens: list[JavaToken] = []
+    line = 1
+    position = 0
+    previous_significant = ""
+    while position < len(text):
+        value: str | None = None
+        if text.startswith("'''", position):
+            end = text.find("'''", position + 3)
+            if end < 0:
+                raise ValueError(f"unterminated Groovy triple-single-quoted string at line {line}")
+            value = text[position : end + 3]
+        elif text.startswith("$/", position):
+            end = text.find("/$", position + 2)
+            if end < 0:
+                raise ValueError(f"unterminated Groovy dollar-slashy string at line {line}")
+            value = text[position : end + 2]
+        elif text[position] == "/" and previous_significant == "~":
+            cursor = position + 1
+            escaped = False
+            while cursor < len(text):
+                character = text[cursor]
+                if character == "\n":
+                    break
+                if character == "/" and not escaped:
+                    value = text[position : cursor + 1]
+                    break
+                escaped = character == "\\" and not escaped
+                if character != "\\":
+                    escaped = False
+                cursor += 1
+            if value is None:
+                raise ValueError(f"unterminated Groovy slashy string at line {line}")
+        if value is not None:
+            tokens.append(JavaToken(value, "string", line))
+            line += value.count("\n")
+            position += len(value)
+            previous_significant = value[-1:]
+            continue
+
+        match = TOKEN_RE.match(text, position)
+        if match is None:  # pragma: no cover - TOKEN_RE has an all-character fallback
+            raise ValueError(f"Gradle lexer stalled at character {position}")
+        kind = match.lastgroup or "other"
+        value = match.group(0)
+        if kind not in {"space", "line_comment", "block_comment"}:
+            tokens.append(JavaToken(value, kind, line))
+            previous_significant = value
+        line += value.count("\n")
+        position = match.end()
+    return tokens
+
+
 def strip_package_and_imports(tokens: Sequence[JavaToken]) -> list[JavaToken]:
     result: list[JavaToken] = []
     index = 0
@@ -678,6 +758,938 @@ def renamed_token_stream(tokens: Sequence[JavaToken]) -> str:
 
 def digest_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def ast_fingerprint(node: ast.AST) -> str:
+    """Return a position-independent AST fingerprint without erasing values."""
+
+    return digest_text(ast.dump(node, annotate_fields=True, include_attributes=False))
+
+
+class PythonLocalCollector(ast.NodeVisitor):
+    """Collect bindings in one function scope while leaving nested scopes alone."""
+
+    def __init__(self, root: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        self.root = root
+        self.bindings: list[str] = []
+        self._binding_set: set[str] = set()
+        self.imported: set[str] = set()
+        self.external: set[str] = set()
+
+    def _bind(self, name: str) -> None:
+        if name not in self._binding_set:
+            self._binding_set.add(name)
+            self.bindings.append(name)
+
+    def collect(self) -> list[str]:
+        arguments = self.root.args
+        for argument in (
+            *arguments.posonlyargs,
+            *arguments.args,
+            *arguments.kwonlyargs,
+        ):
+            self._bind(argument.arg)
+        if arguments.vararg is not None:
+            self._bind(arguments.vararg.arg)
+        if arguments.kwarg is not None:
+            self._bind(arguments.kwarg.arg)
+        for statement in self.root.body:
+            self.visit(statement)
+        return [name for name in self.bindings if name not in self.imported and name not in self.external]
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        if node is not self.root:
+            self._bind(node.name)
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        if node is not self.root:
+            self._bind(node.name)
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        self._bind(node.name)
+
+    def visit_Lambda(self, _node: ast.Lambda) -> None:
+        return
+
+    def visit_Name(self, node: ast.Name) -> None:
+        if isinstance(node.ctx, (ast.Store, ast.Del)):
+            self._bind(node.id)
+
+    def visit_Import(self, node: ast.Import) -> None:
+        for alias in node.names:
+            self.imported.add(alias.asname or alias.name.split(".", 1)[0])
+
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        for alias in node.names:
+            self.imported.add(alias.asname or alias.name)
+
+    def visit_Global(self, node: ast.Global) -> None:
+        self.external.update(node.names)
+
+    def visit_Nonlocal(self, node: ast.Nonlocal) -> None:
+        self.external.update(node.names)
+
+    def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
+        if node.name:
+            self._bind(node.name)
+        self.generic_visit(node)
+
+    def visit_MatchAs(self, node: ast.MatchAs) -> None:
+        if node.name:
+            self._bind(node.name)
+        self.generic_visit(node)
+
+    def visit_MatchStar(self, node: ast.MatchStar) -> None:
+        if node.name:
+            self._bind(node.name)
+
+    def visit_MatchMapping(self, node: ast.MatchMapping) -> None:
+        if node.rest:
+            self._bind(node.rest)
+        self.generic_visit(node)
+
+
+class PythonLocalRenamer(ast.NodeTransformer):
+    """Rename only proven local bindings in one function scope."""
+
+    def __init__(self, root: ast.FunctionDef | ast.AsyncFunctionDef, names: Sequence[str]) -> None:
+        self.root = root
+        self.replacements = {name: f"LOCAL{index}" for index, name in enumerate(names)}
+
+    def _replacement(self, name: str) -> str:
+        return self.replacements.get(name, name)
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST:
+        if node is not self.root:
+            return node
+        self._rename_root_body(node)
+        return node
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> ast.AST:
+        if node is not self.root:
+            return node
+        self._rename_root_body(node)
+        return node
+
+    def _rename_root_body(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        arguments = node.args
+        for argument in (*arguments.posonlyargs, *arguments.args, *arguments.kwonlyargs):
+            argument.arg = self._replacement(argument.arg)
+        if arguments.vararg is not None:
+            arguments.vararg.arg = self._replacement(arguments.vararg.arg)
+        if arguments.kwarg is not None:
+            arguments.kwarg.arg = self._replacement(arguments.kwarg.arg)
+        node.body = [self.visit(statement) for statement in node.body]
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> ast.AST:
+        return node
+
+    def visit_Lambda(self, node: ast.Lambda) -> ast.AST:
+        return node
+
+    def visit_arg(self, node: ast.arg) -> ast.AST:
+        node.arg = self._replacement(node.arg)
+        return node
+
+    def visit_Name(self, node: ast.Name) -> ast.AST:
+        node.id = self._replacement(node.id)
+        return node
+
+    def visit_ExceptHandler(self, node: ast.ExceptHandler) -> ast.AST:
+        if node.name:
+            node.name = self._replacement(node.name)
+        return self.generic_visit(node)
+
+    def visit_MatchAs(self, node: ast.MatchAs) -> ast.AST:
+        if node.name:
+            node.name = self._replacement(node.name)
+        return self.generic_visit(node)
+
+    def visit_MatchStar(self, node: ast.MatchStar) -> ast.AST:
+        if node.name:
+            node.name = self._replacement(node.name)
+        return node
+
+    def visit_MatchMapping(self, node: ast.MatchMapping) -> ast.AST:
+        if node.rest:
+            node.rest = self._replacement(node.rest)
+        return self.generic_visit(node)
+
+
+def normalized_python_fingerprint(node: ast.AST) -> str:
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return ast_fingerprint(node)
+    clone = copy.deepcopy(node)
+    names = PythonLocalCollector(clone).collect()
+    normalized = PythonLocalRenamer(clone, names).visit(clone)
+    return ast_fingerprint(normalized)
+
+
+def extract_python_records(source: SourceFile) -> list[StructuredRecord]:
+    text = source.data.decode("utf-8")
+    try:
+        tree = ast.parse(text, filename=source.evidence_path, type_comments=True)
+    except SyntaxError as exc:
+        line = exc.lineno or 1
+        raise RuntimeError(f"Python parse failed closed: {source.evidence_path}:{line}: {exc.msg}") from exc
+
+    nodes = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+    ]
+    records: list[StructuredRecord] = []
+    for node in sorted(nodes, key=lambda item: (item.lineno, item.end_lineno or item.lineno, item.name)):
+        if isinstance(node, ast.ClassDef):
+            kind = "python_class"
+        elif isinstance(node, ast.AsyncFunctionDef):
+            kind = "python_async_function"
+        else:
+            kind = "python_function"
+        records.append(
+            StructuredRecord(
+                addon=source.addon,
+                path=source.path,
+                commit=source.commit,
+                language="python",
+                kind=kind,
+                name=node.name,
+                start_line=node.lineno,
+                end_line=node.end_lineno or node.lineno,
+                unit_count=sum(1 for _item in ast.walk(node)),
+                layer=source.layer,
+                exact_hash=ast_fingerprint(node),
+                normalized_hash=normalized_python_fingerprint(node),
+                parser="python-ast-stdlib",
+            )
+        )
+    return records
+
+
+def strict_delimiter_pairs(
+    tokens: Sequence[JavaToken],
+    source: SourceFile,
+) -> tuple[dict[int, int], dict[int, int], dict[int, int]]:
+    opening_to_closing = {"{": "}", "(": ")", "[": "]"}
+    closing_to_opening = {closing: opening for opening, closing in opening_to_closing.items()}
+    pairs_by_opening: dict[str, dict[int, int]] = {opening: {} for opening in opening_to_closing}
+    stack: list[tuple[str, int]] = []
+    for index, token in enumerate(tokens):
+        if token.text in opening_to_closing:
+            stack.append((token.text, index))
+            continue
+        expected_opening = closing_to_opening.get(token.text)
+        if expected_opening is None:
+            continue
+        if not stack or stack[-1][0] != expected_opening:
+            raise RuntimeError(
+                f"Gradle parse failed closed: {source.evidence_path}:{token.line}: unmatched {token.text}"
+            )
+        opening, start = stack.pop()
+        pairs_by_opening[opening][start] = index
+        pairs_by_opening[opening][index] = start
+    if stack:
+        opening, index = stack[-1]
+        raise RuntimeError(
+            f"Gradle parse failed closed: {source.evidence_path}:{tokens[index].line}: unmatched {opening}"
+        )
+    return pairs_by_opening["{"], pairs_by_opening["("], pairs_by_opening["["]
+
+
+def gradle_header_start(tokens: Sequence[JavaToken], opening_index: int) -> int:
+    index = opening_index - 1
+    paren_depth = 0
+    bracket_depth = 0
+    while index >= 0:
+        value = tokens[index].text
+        if value == ")":
+            paren_depth += 1
+        elif value == "(":
+            paren_depth -= 1
+        elif value == "]":
+            bracket_depth += 1
+        elif value == "[":
+            bracket_depth -= 1
+        if paren_depth == 0 and bracket_depth == 0 and value in {";", "{", "}"}:
+            return index + 1
+        index -= 1
+    return 0
+
+
+def classify_gradle_structure(tokens: Sequence[JavaToken], opening_index: int, depth: int) -> tuple[str, str]:
+    header_start = gradle_header_start(tokens, opening_index)
+    header_tokens = tokens[header_start:opening_index]
+    compact = "".join(token.text for token in header_tokens)
+    task_pattern = re.search(r"(?:^|[^A-Za-z0-9_$])tasks?\.(?:register|named|withType|configure)\b", compact)
+    leading_task = bool(header_tokens and header_tokens[0].text == "task")
+    if task_pattern or leading_task:
+        kind = "gradle_task"
+    elif depth == 0:
+        kind = "gradle_block"
+    else:
+        kind = "gradle_closure"
+
+    name = next((token.text for token in header_tokens if token.kind in {"string", "char"}), "")
+    if not name:
+        identifiers = [token.text for token in header_tokens if token.kind == "identifier"]
+        name = ".".join(identifiers[-3:]) if identifiers else kind
+    return kind, name[:160]
+
+
+def normalized_gradle_stream(tokens: Sequence[JavaToken], opening_offset: int) -> str:
+    local_names: list[str] = []
+    local_name_set: set[str] = set()
+
+    def add_local(name: str) -> None:
+        if name not in local_name_set:
+            local_name_set.add(name)
+            local_names.append(name)
+
+    for index, token in enumerate(tokens[:-1]):
+        if token.text == "def" and tokens[index + 1].kind == "identifier":
+            add_local(tokens[index + 1].text)
+
+    arrow_index: int | None = None
+    nested = 0
+    for index in range(opening_offset + 1, len(tokens)):
+        value = tokens[index].text
+        if value == "{":
+            nested += 1
+        elif value == "}":
+            if nested == 0:
+                break
+            nested -= 1
+        elif value == "->" and nested == 0:
+            arrow_index = index
+            break
+        elif value in {";", "="} and nested == 0:
+            break
+    if arrow_index is not None:
+        for token in tokens[opening_offset + 1 : arrow_index]:
+            if token.kind == "identifier" and token.text not in JAVA_KEYWORDS:
+                add_local(token.text)
+
+    replacements = {name: f"LOCAL{index}" for index, name in enumerate(local_names)}
+    normalized: list[str] = []
+    for index, token in enumerate(tokens):
+        previous = tokens[index - 1].text if index else ""
+        following = tokens[index + 1].text if index + 1 < len(tokens) else ""
+        if (
+            token.kind == "identifier"
+            and token.text in replacements
+            and previous != "."
+            and following != ":"
+        ):
+            normalized.append(replacements[token.text])
+        else:
+            normalized.append(token.text)
+    return "\x1f".join(normalized)
+
+
+def extract_gradle_records(source: SourceFile) -> list[StructuredRecord]:
+    try:
+        tokens = lex_gradle(source.data.decode("utf-8"))
+    except ValueError as exc:
+        raise RuntimeError(f"Gradle parse failed closed: {source.evidence_path}: {exc}") from exc
+    brace_pairs, _paren_pairs, _bracket_pairs = strict_delimiter_pairs(tokens, source)
+    records: list[StructuredRecord] = []
+    depth = 0
+    for opening_index, token in enumerate(tokens):
+        if token.text == "}":
+            depth -= 1
+            continue
+        if token.text != "{":
+            continue
+        closing_index = brace_pairs[opening_index]
+        header_start = gradle_header_start(tokens, opening_index)
+        structure_tokens = tokens[header_start : closing_index + 1]
+        opening_offset = opening_index - header_start
+        kind, name = classify_gradle_structure(tokens, opening_index, depth)
+        exact_stream = exact_token_stream(structure_tokens)
+        records.append(
+            StructuredRecord(
+                addon=source.addon,
+                path=source.path,
+                commit=source.commit,
+                language="gradle",
+                kind=kind,
+                name=name,
+                start_line=structure_tokens[0].line,
+                end_line=tokens[closing_index].line,
+                unit_count=len(structure_tokens),
+                layer=source.layer,
+                exact_hash=digest_text(exact_stream),
+                normalized_hash=digest_text(normalized_gradle_stream(structure_tokens, opening_offset)),
+                parser="groovy-balanced-token-v1",
+            )
+        )
+        depth += 1
+    return records
+
+
+HEREDOC_RE = re.compile(
+    r"(?<!<)<<(?P<strip>-)?[ \t]*(?P<quote>['\"]?)(?P<delimiter>[A-Za-z_][A-Za-z0-9_]*)(?P=quote)"
+)
+
+
+def replace_heredoc_bodies(text: str, *, preserve_width: bool) -> str:
+    lines = text.splitlines(keepends=True)
+    output: list[str] = []
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        matches = list(HEREDOC_RE.finditer(line))
+        output.append(line)
+        index += 1
+        for match in matches:
+            delimiter = match.group("delimiter")
+            strip_tabs = bool(match.group("strip"))
+            body: list[str] = []
+            while index < len(lines):
+                candidate = lines[index]
+                comparable = candidate.lstrip("\t") if strip_tabs else candidate
+                if comparable.rstrip("\r\n") == delimiter:
+                    break
+                body.append(candidate)
+                index += 1
+            if index >= len(lines):
+                return text
+            if preserve_width:
+                output.extend("".join("\n" if character == "\n" else "\r" if character == "\r" else " " for character in item) for item in body)
+            else:
+                body_hash = hashlib.sha256("".join(body).encode("utf-8")).hexdigest()
+                output.append(f"__HEREDOC_SHA256_{body_hash}__\n")
+            output.append(lines[index])
+            index += 1
+    return "".join(output)
+
+
+def protect_shell_quotes(text: str) -> str:
+    output: list[str] = []
+    index = 0
+    while index < len(text):
+        quote = text[index]
+        previous = text[index - 1] if index else "\n"
+        if quote == "#" and (previous.isspace() or previous in ";|&("):
+            end = text.find("\n", index)
+            if end < 0:
+                output.append(text[index:])
+                break
+            output.append(text[index : end + 1])
+            index = end + 1
+            continue
+        if quote not in {"'", '"', "`"}:
+            output.append(quote)
+            index += 1
+            continue
+        cursor = index + 1
+        escaped = False
+        while cursor < len(text):
+            character = text[cursor]
+            if quote != "'" and escaped:
+                escaped = False
+            elif quote != "'" and character == "\\":
+                escaped = True
+            elif character == quote:
+                cursor += 1
+                break
+            cursor += 1
+        if cursor > len(text) or not text[index:cursor].endswith(quote):
+            raise RuntimeError("shell tokenization failed closed: unterminated quoted string")
+        raw = text[index:cursor]
+        marker = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+        output.append(f"__SHELL_QUOTE_{ord(quote)}_{marker}__")
+        index = cursor
+    return "".join(output)
+
+
+def shell_token_stream(text: str) -> tuple[str, int]:
+    protected = protect_shell_quotes(replace_heredoc_bodies(text, preserve_width=False))
+    lexer = shlex.shlex(protected, posix=True, punctuation_chars="();<>|&{}")
+    lexer.whitespace_split = True
+    lexer.commenters = "#"
+    try:
+        tokens = list(lexer)
+    except ValueError as exc:
+        raise RuntimeError(f"shell tokenization failed closed: {exc}") from exc
+    return "\x1f".join(tokens), len(tokens)
+
+
+def mask_shell_nonstructural_text(text: str) -> str:
+    protected = replace_heredoc_bodies(text, preserve_width=True)
+    output = list(protected)
+    quote: str | None = None
+    escaped = False
+    parameter_depth = 0
+    index = 0
+    while index < len(protected):
+        character = protected[index]
+        following = protected[index + 1] if index + 1 < len(protected) else ""
+        previous = protected[index - 1] if index else "\n"
+        if character == "\n":
+            quote = None if quote == "comment" else quote
+            escaped = False
+            index += 1
+            continue
+        if quote == "comment":
+            output[index] = " "
+            index += 1
+            continue
+        if quote in {"'", '"', "`"}:
+            output[index] = " "
+            if quote != "'" and escaped:
+                escaped = False
+            elif quote != "'" and character == "\\":
+                escaped = True
+            elif character == quote:
+                quote = None
+            index += 1
+            continue
+        if parameter_depth:
+            output[index] = " "
+            if character == "$" and following == "{":
+                output[index + 1] = " "
+                parameter_depth += 1
+                index += 2
+                continue
+            if character == "}":
+                parameter_depth -= 1
+            index += 1
+            continue
+        if character == "$" and following == "{":
+            output[index] = output[index + 1] = " "
+            parameter_depth = 1
+            index += 2
+            continue
+        if character in {"'", '"', "`"}:
+            output[index] = " "
+            quote = character
+            index += 1
+            continue
+        if character == "#" and (previous.isspace() or previous in ";|&("):
+            output[index] = " "
+            quote = "comment"
+            index += 1
+            continue
+        index += 1
+    return "".join(output)
+
+
+def validate_bash(text: str, evidence_path: str, *, base_line: int = 1, github_expressions: bool = False) -> None:
+    candidate = text
+    if github_expressions:
+        candidate = re.sub(r"\$\{\{.*?\}\}", "GITHUB_EXPRESSION", candidate, flags=re.DOTALL)
+    result = subprocess.run(
+        ["bash", "-n"],
+        input=candidate.encode("utf-8"),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode == 0:
+        return
+    detail = result.stderr.decode("utf-8", errors="replace").strip().replace("\n", "; ")
+    match = re.search(r"line (\d+)", detail)
+    line = base_line + int(match.group(1)) - 1 if match else base_line
+    raise RuntimeError(f"Bash parse failed closed: {evidence_path}:{line}: {detail}")
+
+
+SHELL_FUNCTION_RE = re.compile(
+    r"(?m)(?:^|[;\n])\s*(?:(?:function\s+(?P<function>[A-Za-z_][A-Za-z0-9_]*)\s*(?:\(\s*\))?)|"
+    r"(?P<posix>[A-Za-z_][A-Za-z0-9_]*)\s*\(\s*\))\s*\{"
+)
+
+
+def extract_shell_function_ranges(text: str) -> list[tuple[str, int, int]]:
+    masked = mask_shell_nonstructural_text(text)
+    ranges: list[tuple[str, int, int]] = []
+    for match in SHELL_FUNCTION_RE.finditer(masked):
+        opening = masked.find("{", match.start(), match.end())
+        depth = 0
+        closing: int | None = None
+        for index in range(opening, len(masked)):
+            if masked[index] == "{":
+                depth += 1
+            elif masked[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    closing = index
+                    break
+        if closing is None:
+            continue
+        name = match.group("function") or match.group("posix")
+        name_start = match.start("function") if match.group("function") else match.start("posix")
+        ranges.append((name, name_start, closing + 1))
+    return ranges
+
+
+def shell_record(
+    source: SourceFile,
+    *,
+    kind: str,
+    name: str,
+    text: str,
+    start_line: int,
+    end_line: int,
+    parser: str = "bash-n+shlex-v1",
+) -> StructuredRecord:
+    try:
+        stream, token_count = shell_token_stream(text)
+    except RuntimeError as exc:
+        raise RuntimeError(f"{exc}: {source.evidence_path}:{start_line}") from exc
+    fingerprint = digest_text(stream)
+    return StructuredRecord(
+        addon=source.addon,
+        path=source.path,
+        commit=source.commit,
+        language="shell",
+        kind=kind,
+        name=name,
+        start_line=start_line,
+        end_line=end_line,
+        unit_count=token_count,
+        layer=source.layer,
+        exact_hash=fingerprint,
+        normalized_hash=fingerprint,
+        parser=parser,
+    )
+
+
+def extract_shell_records(source: SourceFile) -> list[StructuredRecord]:
+    text = source.data.decode("utf-8")
+    validate_bash(text, source.evidence_path)
+    records: list[StructuredRecord] = []
+    for name, start, end in extract_shell_function_ranges(text):
+        start_line = text.count("\n", 0, start) + 1
+        end_line = text.count("\n", 0, end) + 1
+        records.append(
+            shell_record(
+                source,
+                kind="shell_function",
+                name=name,
+                text=text[start:end],
+                start_line=start_line,
+                end_line=end_line,
+            )
+        )
+    return records
+
+
+@dataclasses.dataclass(frozen=True)
+class YamlSyntaxLine:
+    index: int
+    indent: int
+    text: str
+
+
+def strip_yaml_comment(value: str) -> str:
+    single = False
+    double = False
+    escaped = False
+    for index, character in enumerate(value):
+        if double and escaped:
+            escaped = False
+            continue
+        if double and character == "\\":
+            escaped = True
+            continue
+        if character == "'" and not double:
+            single = not single
+        elif character == '"' and not single:
+            double = not double
+        elif character == "#" and not single and not double and (index == 0 or value[index - 1].isspace()):
+            return value[:index].rstrip()
+    if single or double:
+        raise ValueError("unterminated quoted scalar")
+    return value.rstrip()
+
+
+def yaml_mapping_value(text: str) -> tuple[str, str] | None:
+    candidate = text[2:].lstrip() if text.startswith("- ") else text
+    match = re.match(r"(?P<key>[A-Za-z0-9_.-]+):(?:[ \t]*(?P<value>.*))?$", candidate)
+    if not match:
+        return None
+    return match.group("key"), match.group("value") or ""
+
+
+def parse_workflow_syntax(
+    source: SourceFile,
+) -> tuple[list[str], list[YamlSyntaxLine], dict[int, tuple[str, int, int]]]:
+    raw_lines = source.data.decode("utf-8").splitlines()
+    syntax: list[YamlSyntaxLine] = []
+    blocks: dict[int, tuple[str, int, int]] = {}
+    index = 0
+    while index < len(raw_lines):
+        raw = raw_lines[index]
+        leading = raw[: len(raw) - len(raw.lstrip(" \t"))]
+        if "\t" in leading:
+            raise RuntimeError(f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{index + 1}: tab indentation")
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            index += 1
+            continue
+        indent = len(leading)
+        try:
+            text = strip_yaml_comment(raw[indent:])
+        except ValueError as exc:
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{index + 1}: {exc}"
+            ) from exc
+        if not text:
+            index += 1
+            continue
+        if text.startswith("---") or text.startswith("..."):
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{index + 1}: document markers unsupported"
+            )
+        if "<<:" in text or re.search(r"(?:^|[ :])(?:&|\*)[A-Za-z0-9_.-]+(?:$|[ ,}])", text):
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{index + 1}: aliases and anchors unsupported"
+            )
+        mapping = yaml_mapping_value(text)
+        if mapping is None and not text.startswith("- "):
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{index + 1}: expected mapping or sequence entry"
+            )
+        syntax.append(YamlSyntaxLine(index=index, indent=indent, text=text))
+        value = mapping[1] if mapping is not None else ""
+        if re.fullmatch(r"[|>][+-]?[1-9]?", value):
+            content_start = index + 1
+            cursor = content_start
+            while cursor < len(raw_lines):
+                candidate = raw_lines[cursor]
+                if candidate.strip():
+                    candidate_indent = len(candidate) - len(candidate.lstrip(" "))
+                    if candidate_indent <= indent:
+                        break
+                cursor += 1
+            content = raw_lines[content_start:cursor]
+            nonblank_indents = [len(line) - len(line.lstrip(" ")) for line in content if line.strip()]
+            content_indent = min(nonblank_indents, default=indent + 2)
+            script = "\n".join(line[content_indent:] if line.strip() else "" for line in content)
+            if content:
+                script += "\n"
+            blocks[index] = (script, content_start + 1, max(content_start + 1, cursor))
+            index = cursor
+            continue
+        index += 1
+
+    top_level = [entry for entry in syntax if entry.indent == 0]
+    if not top_level or any(yaml_mapping_value(entry.text) is None for entry in top_level):
+        raise RuntimeError(f"GitHub Actions YAML parse failed closed: {source.evidence_path}: no valid top-level mapping")
+    return raw_lines, syntax, blocks
+
+
+def canonical_yaml_region(
+    syntax: Sequence[YamlSyntaxLine],
+    blocks: dict[int, tuple[str, int, int]],
+    start: int,
+    end: int,
+    *,
+    base_indent: int = 0,
+) -> str:
+    canonical: list[str] = []
+    for entry in syntax:
+        if not start <= entry.index < end:
+            continue
+        canonical.append(f"{entry.indent - base_indent}:{entry.text}")
+        if entry.index in blocks:
+            script = blocks[entry.index][0]
+            canonical.append(f"block-sha256:{hashlib.sha256(script.encode('utf-8')).hexdigest()}")
+    return "\n".join(canonical)
+
+
+def yaml_unit_count(canonical: str) -> int:
+    return len(re.findall(r"[^\s:,\[\]{}]+|[:,\-\[\]{}]", canonical))
+
+
+def yaml_record(
+    source: SourceFile,
+    *,
+    kind: str,
+    name: str,
+    start_line: int,
+    end_line: int,
+    canonical: str,
+) -> StructuredRecord:
+    fingerprint = digest_text(canonical)
+    return StructuredRecord(
+        addon=source.addon,
+        path=source.path,
+        commit=source.commit,
+        language="github_actions",
+        kind=kind,
+        name=name,
+        start_line=start_line,
+        end_line=end_line,
+        unit_count=yaml_unit_count(canonical),
+        layer=source.layer,
+        exact_hash=fingerprint,
+        normalized_hash=fingerprint,
+        parser="github-actions-yaml-subset-v1",
+    )
+
+
+def section_end(syntax: Sequence[YamlSyntaxLine], position: int, file_end: int) -> int:
+    entry = syntax[position]
+    for following in syntax[position + 1 :]:
+        if following.indent <= entry.indent:
+            return following.index
+    return file_end
+
+
+def extract_workflow_records(source: SourceFile) -> list[StructuredRecord]:
+    raw_lines, syntax, blocks = parse_workflow_syntax(source)
+    jobs_positions = [index for index, entry in enumerate(syntax) if entry.indent == 0 and entry.text == "jobs:"]
+    if len(jobs_positions) != 1:
+        raise RuntimeError(
+            f"GitHub Actions YAML parse failed closed: {source.evidence_path}: expected exactly one top-level jobs mapping"
+        )
+    jobs_position = jobs_positions[0]
+    jobs_entry = syntax[jobs_position]
+    jobs_end = section_end(syntax, jobs_position, len(raw_lines))
+    job_candidates = [entry for entry in syntax if jobs_entry.index < entry.index < jobs_end and entry.indent > 0]
+    if not job_candidates:
+        raise RuntimeError(f"GitHub Actions YAML parse failed closed: {source.evidence_path}: jobs mapping is empty")
+    job_indent = min(entry.indent for entry in job_candidates)
+    jobs = [entry for entry in job_candidates if entry.indent == job_indent]
+    job_names: list[str] = []
+    for entry in jobs:
+        mapping = yaml_mapping_value(entry.text)
+        if mapping is None or mapping[1]:
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{entry.index + 1}: invalid job mapping"
+            )
+        job_names.append(mapping[0])
+    if len(job_names) != len(set(job_names)):
+        raise RuntimeError(f"GitHub Actions YAML parse failed closed: {source.evidence_path}: duplicate job id")
+
+    context = canonical_yaml_region(syntax, blocks, 0, jobs_entry.index)
+    if jobs_end < len(raw_lines):
+        context += "\n" + canonical_yaml_region(syntax, blocks, jobs_end, len(raw_lines))
+    records: list[StructuredRecord] = []
+    for job_index, job_entry in enumerate(jobs):
+        job_end = jobs[job_index + 1].index if job_index + 1 < len(jobs) else jobs_end
+        job_name = job_names[job_index]
+        job_canonical = context + "\nJOB\n" + canonical_yaml_region(
+            syntax, blocks, job_entry.index, job_end, base_indent=job_entry.indent
+        )
+        records.append(
+            yaml_record(
+                source,
+                kind="workflow_job",
+                name=job_name,
+                start_line=job_entry.index + 1,
+                end_line=job_end,
+                canonical=job_canonical,
+            )
+        )
+
+        steps_entries = [
+            entry
+            for entry in syntax
+            if job_entry.index < entry.index < job_end and entry.indent > job_entry.indent and entry.text == "steps:"
+        ]
+        if len(steps_entries) > 1:
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{job_entry.index + 1}: duplicate steps mapping"
+            )
+        if not steps_entries:
+            continue
+        steps_entry = steps_entries[0]
+        step_candidates = [
+            entry for entry in syntax if steps_entry.index < entry.index < job_end and entry.indent > steps_entry.indent
+        ]
+        if not step_candidates:
+            continue
+        step_indent = min(entry.indent for entry in step_candidates)
+        steps = [entry for entry in step_candidates if entry.indent == step_indent and entry.text.startswith("- ")]
+        if not steps:
+            raise RuntimeError(
+                f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{steps_entry.index + 1}: steps is not a sequence"
+            )
+        for step_index, step_entry in enumerate(steps):
+            step_end = steps[step_index + 1].index if step_index + 1 < len(steps) else job_end
+            step_syntax = [entry for entry in syntax if step_entry.index <= entry.index < step_end]
+            step_name = ""
+            for entry in step_syntax:
+                mapping = yaml_mapping_value(entry.text)
+                if mapping and mapping[0] in {"name", "uses"}:
+                    step_name = mapping[1]
+                    if mapping[0] == "name":
+                        break
+            if not step_name:
+                step_name = f"step@{step_entry.index + 1}"
+            step_canonical = canonical_yaml_region(
+                syntax, blocks, step_entry.index, step_end, base_indent=step_entry.indent
+            )
+            records.append(
+                yaml_record(
+                    source,
+                    kind="workflow_step",
+                    name=step_name[:160],
+                    start_line=step_entry.index + 1,
+                    end_line=step_end,
+                    canonical=step_canonical,
+                )
+            )
+
+            shell_value = ""
+            for entry in step_syntax:
+                mapping = yaml_mapping_value(entry.text)
+                if mapping and mapping[0] == "shell":
+                    shell_value = mapping[1].strip("'\"")
+            run_entries = [
+                entry for entry in step_syntax if (mapping := yaml_mapping_value(entry.text)) and mapping[0] == "run"
+            ]
+            if len(run_entries) > 1:
+                raise RuntimeError(
+                    f"GitHub Actions YAML parse failed closed: {source.evidence_path}:{step_entry.index + 1}: duplicate run mapping"
+                )
+            if not run_entries or (shell_value and not shell_value.startswith("bash")):
+                continue
+            run_entry = run_entries[0]
+            run_mapping = yaml_mapping_value(run_entry.text)
+            assert run_mapping is not None
+            if run_entry.index in blocks:
+                script, run_start_line, run_end_line = blocks[run_entry.index]
+            else:
+                script = run_mapping[1].strip()
+                if len(script) >= 2 and script[0] == script[-1] and script[0] in {"'", '"'}:
+                    script = script[1:-1]
+                script += "\n"
+                run_start_line = run_end_line = run_entry.index + 1
+            validate_bash(
+                script,
+                source.evidence_path,
+                base_line=run_start_line,
+                github_expressions=True,
+            )
+            records.append(
+                shell_record(
+                    source,
+                    kind="workflow_run",
+                    name=step_name[:160],
+                    text=script,
+                    start_line=run_start_line,
+                    end_line=run_end_line,
+                    parser="github-actions-bash-n+shlex-v1",
+                )
+            )
+            for function_name, start, end in extract_shell_function_ranges(script):
+                function_start = run_start_line + script.count("\n", 0, start)
+                function_end = run_start_line + script.count("\n", 0, end)
+                records.append(
+                    shell_record(
+                        source,
+                        kind="shell_function",
+                        name=function_name,
+                        text=script[start:end],
+                        start_line=function_start,
+                        end_line=function_end,
+                        parser="github-actions-bash-n+shlex-v1",
+                    )
+                )
+    return records
 
 
 def matching_pairs(tokens: Sequence[JavaToken], opening: str, closing: str) -> dict[int, int]:
@@ -915,11 +1927,136 @@ def java_file_clone_groups(
     return exact, renamed, fingerprints
 
 
+def extract_structured_records(sources: Sequence[SourceFile]) -> list[StructuredRecord]:
+    records: list[StructuredRecord] = []
+    for source in sources:
+        suffix = PurePosixPath(source.path).suffix.lower()
+        if suffix == ".py":
+            records.extend(extract_python_records(source))
+        elif suffix in {".gradle", ".kts"}:
+            records.extend(extract_gradle_records(source))
+        elif source.category == "ci_config" and suffix in {".yml", ".yaml"}:
+            records.extend(extract_workflow_records(source))
+        elif suffix == ".sh":
+            records.extend(extract_shell_records(source))
+    return sorted(
+        records,
+        key=lambda record: (
+            record.addon,
+            record.path,
+            record.start_line,
+            record.end_line,
+            record.language,
+            record.kind,
+            record.name,
+        ),
+    )
+
+
+def structured_occurrence(record: StructuredRecord) -> dict[str, object]:
+    return {
+        "addon": record.addon,
+        "path": record.evidence_path,
+        "commit": record.commit,
+        "language": record.language,
+        "kind": record.kind,
+        "name": record.name,
+        "start_line": record.start_line,
+        "end_line": record.end_line,
+        "unit_count": record.unit_count,
+        "layer": record.layer,
+        "parser": record.parser,
+        "exact_syntax_sha256": record.exact_hash,
+    }
+
+
+def structured_clone_groups(
+    records: Sequence[StructuredRecord], minimum_units: int
+) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    eligible = [record for record in records if record.unit_count >= minimum_units]
+
+    exact: list[dict[str, object]] = []
+    for group in cross_addon_groups(
+        eligible,
+        lambda record: f"{record.language}\0{record.kind}\0{record.exact_hash}",
+    ):
+        ordered = sorted(group, key=lambda record: (record.addon, record.path, record.start_line, record.name))
+        first = ordered[0]
+        exact.append(
+            {
+                "id": f"structured-{first.language}-{first.kind}-exact-{first.exact_hash[:16]}",
+                "language": first.language,
+                "kind": first.kind,
+                "confidence": "syntax-normalized-exact-literals-preserved",
+                "syntax_sha256": first.exact_hash,
+                "addon_count": len({record.addon for record in ordered}),
+                "occurrence_count": len(ordered),
+                "minimum_unit_count": min(record.unit_count for record in ordered),
+                "layer": group_layer(record.layer for record in ordered),
+                "parsers": sorted({record.parser for record in ordered}),
+                "occurrences": [structured_occurrence(record) for record in ordered],
+            }
+        )
+
+    normalized: list[dict[str, object]] = []
+    for group in cross_addon_groups(
+        eligible,
+        lambda record: f"{record.language}\0{record.kind}\0{record.normalized_hash}",
+    ):
+        exact_fingerprints = {record.exact_hash for record in group}
+        if len(exact_fingerprints) < 2:
+            continue
+        ordered = sorted(group, key=lambda record: (record.addon, record.path, record.start_line, record.name))
+        first = ordered[0]
+        normalized.append(
+            {
+                "id": f"structured-{first.language}-{first.kind}-local-{first.normalized_hash[:16]}",
+                "language": first.language,
+                "kind": first.kind,
+                "confidence": "local-identifiers-renamed-literals-and-external-names-preserved",
+                "normalized_syntax_sha256": first.normalized_hash,
+                "distinct_exact_syntax_fingerprints": len(exact_fingerprints),
+                "addon_count": len({record.addon for record in ordered}),
+                "occurrence_count": len(ordered),
+                "minimum_unit_count": min(record.unit_count for record in ordered),
+                "layer": group_layer(record.layer for record in ordered),
+                "parsers": sorted({record.parser for record in ordered}),
+                "occurrences": [structured_occurrence(record) for record in ordered],
+            }
+        )
+    return exact, normalized
+
+
+def make_structured_inventory_digest(records: Sequence[StructuredRecord]) -> str:
+    digest = hashlib.sha256()
+    for record in records:
+        fields = (
+            record.addon,
+            record.commit,
+            record.path,
+            record.language,
+            record.kind,
+            record.name,
+            str(record.start_line),
+            str(record.end_line),
+            str(record.unit_count),
+            record.exact_hash,
+            record.normalized_hash,
+            record.parser,
+        )
+        for field in fields:
+            digest.update(field.encode("utf-8"))
+            digest.update(b"\0")
+    return digest.hexdigest()
+
+
 def scaffold_families(
     sources: Sequence[SourceFile],
     exact_files: Sequence[dict[str, object]],
     exact_methods: Sequence[dict[str, object]],
     renamed_methods: Sequence[dict[str, object]],
+    exact_structured: Sequence[dict[str, object]],
+    local_structured: Sequence[dict[str, object]],
 ) -> list[dict[str, object]]:
     result: list[dict[str, object]] = []
     for rule in FAMILY_RULES:
@@ -942,6 +2079,16 @@ def scaffold_families(
             for group in renamed_methods
             if any(occurrence["path"] in evidence_paths for occurrence in group["occurrences"])
         )
+        exact_structured_ids = sorted(
+            group["id"]
+            for group in exact_structured
+            if any(occurrence["path"] in evidence_paths for occurrence in group["occurrences"])
+        )
+        local_structured_ids = sorted(
+            group["id"]
+            for group in local_structured
+            if any(occurrence["path"] in evidence_paths for occurrence in group["occurrences"])
+        )
         result.append(
             {
                 "id": rule.identifier,
@@ -956,6 +2103,8 @@ def scaffold_families(
                 "exact_file_clone_group_ids": exact_file_ids,
                 "exact_method_clone_group_ids": exact_method_ids,
                 "renamed_method_clone_group_ids": renamed_method_ids,
+                "exact_structured_clone_group_ids": exact_structured_ids,
+                "local_structured_clone_group_ids": local_structured_ids,
                 "occurrences": [source_occurrence(source) for source in matched],
             }
         )
@@ -976,6 +2125,8 @@ def candidate_modules(families: Sequence[dict[str, object]]) -> list[dict[str, o
                     "exact_file_clone_group_ids",
                     "exact_method_clone_group_ids",
                     "renamed_method_clone_group_ids",
+                    "exact_structured_clone_group_ids",
+                    "local_structured_clone_group_ids",
                 )
                 for clone_id in family[key]
             }
@@ -1021,6 +2172,7 @@ def build_report(
     *,
     minimum_method_tokens: int = DEFAULT_MIN_METHOD_TOKENS,
     minimum_file_tokens: int = DEFAULT_MIN_FILE_TOKENS,
+    minimum_structured_units: int = DEFAULT_MIN_STRUCTURED_UNITS,
     expected_addons: int = 51,
 ) -> dict[str, object]:
     manifest_identity, manifest_gitlinks = load_version_manifest(
@@ -1045,10 +2197,26 @@ def build_report(
     java_files_exact, java_files_renamed, file_fingerprints = java_file_clone_groups(
         java_sources, minimum_tokens=minimum_file_tokens
     )
-    families = scaffold_families(sources, files_exact, methods_exact, methods_renamed)
+    structured_records = extract_structured_records(sources)
+    structured_exact, structured_local = structured_clone_groups(
+        structured_records,
+        minimum_units=minimum_structured_units,
+    )
+    families = scaffold_families(
+        sources,
+        files_exact,
+        methods_exact,
+        methods_renamed,
+        structured_exact,
+        structured_local,
+    )
 
     category_counts = collections.Counter(source.category for source in sources)
     layer_file_counts = collections.Counter(source.layer for source in sources)
+    structured_counts = collections.Counter(record.kind for record in structured_records)
+    structured_language_counts = collections.Counter(record.language for record in structured_records)
+    structured_exact_by_language = collections.Counter(str(group["language"]) for group in structured_exact)
+    structured_local_by_language = collections.Counter(str(group["language"]) for group in structured_local)
     report: dict[str, object] = {
         "schema_version": SCHEMA_VERSION,
         "scanner": {
@@ -1085,10 +2253,18 @@ def build_report(
             "layer_file_counts": dict(sorted(layer_file_counts.items())),
             "java_file_count_eligible_for_token_clones": len(file_fingerprints),
             "java_method_count_eligible_for_clones": len(methods),
+            "structured_unit_inventory_sha256": make_structured_inventory_digest(structured_records),
+            "structured_unit_count": len(structured_records),
+            "structured_unit_count_eligible_for_clones": sum(
+                record.unit_count >= minimum_structured_units for record in structured_records
+            ),
+            "structured_unit_counts": dict(sorted(structured_counts.items())),
+            "structured_language_counts": dict(sorted(structured_language_counts.items())),
             "included": [
                 "tracked src/main/java and src/test/java sources",
-                "tracked Gradle, CI/release, and quality configuration",
-                "tracked UTF-8 tools and gallery generator/lifecycle data",
+                "tracked Gradle blocks/tasks/closures and GitHub Actions jobs/steps/run blocks",
+                "tracked UTF-8 Python AST functions/classes and Bash functions",
+                "tracked CI/release, quality configuration, tools, and gallery lifecycle data",
                 "tracked BlueMap add-on and NeoForge metadata",
             ],
             "excluded": [
@@ -1101,10 +2277,15 @@ def build_report(
         "methodology": {
             "minimum_java_method_tokens": minimum_method_tokens,
             "minimum_java_file_tokens": minimum_file_tokens,
+            "minimum_structured_units": minimum_structured_units,
             "exact_files": "SHA-256 of complete tracked file bytes; cross-add-on groups only.",
             "exact_java_tokens": "Comments/whitespace and package/import declarations are removed; identifiers and literals, including complete Java text blocks, are preserved.",
             "renamed_java_tokens": "Each identifier is alpha-renamed by first occurrence and literal values, including text blocks, are typed; groups must contain at least two exact-token fingerprints.",
             "method_boundary_note": "Method declarations are recognized with a deterministic lexical brace/parenthesis pass. Whole-file token fingerprints cover Java constructs the method pass does not recognize.",
+            "python_ast": "The standard-library AST parser fingerprints functions, async functions, and classes. Local normalization renames only proven function arguments and bindings; literals, attributes, imports, keyword names, and declared API names remain exact.",
+            "gradle_syntax": "A fail-closed balanced Groovy token pass recognizes slashy and triple-quoted literals, then fingerprints blocks, task declarations, and closures. Only def bindings and direct closure parameters may be normalized; coordinates, task names, properties, paths, URLs, and hashes remain exact.",
+            "github_actions_syntax": "A fail-closed GitHub Actions YAML subset parser fingerprints jobs with workflow context and individual steps. Mapping order, triggers, permissions, action references, scalar values, and run-block content hashes are preserved; anchors and aliases are rejected.",
+            "shell_syntax": "Tracked Bash files and GitHub Actions Bash run blocks must pass bash -n. shlex fingerprints preserve command words, flags, variables, paths, URLs, hashes, and heredoc-body hashes; shell identifiers are not renamed.",
             "interpretation_note": "Renamed clones are candidates for review, not proof of equivalent behavior. Layer labels keep infrastructure/test repetition separate from behavior-heavy rendering code.",
         },
         "summary": {
@@ -1114,6 +2295,10 @@ def build_report(
             "renamed_java_file_token_clone_groups": len(java_files_renamed),
             "exact_java_method_clone_groups": len(methods_exact),
             "renamed_java_method_clone_groups": len(methods_renamed),
+            "exact_structured_clone_groups": len(structured_exact),
+            "local_structured_clone_groups": len(structured_local),
+            "exact_structured_groups_by_language": dict(sorted(structured_exact_by_language.items())),
+            "local_structured_groups_by_language": dict(sorted(structured_local_by_language.items())),
             "exact_method_groups_by_layer": layer_counts(methods_exact),
             "renamed_method_groups_by_layer": layer_counts(methods_renamed),
             "scaffold_family_count": len(families),
@@ -1121,6 +2306,7 @@ def build_report(
         "exact_file_clones": files_exact,
         "java_file_token_clones": {"exact": java_files_exact, "renamed": java_files_renamed},
         "java_method_clones": {"exact": methods_exact, "renamed": methods_renamed},
+        "structured_unit_clones": {"exact": structured_exact, "local_renamed": structured_local},
         "repeated_families": families,
         "reusable_module_candidates": candidate_modules(families),
     }
@@ -1162,17 +2348,38 @@ def render_markdown(report: dict[str, object]) -> str:
         f"- Java method groups (minimum {methodology['minimum_java_method_tokens']} tokens): "
         f"**{summary['exact_java_method_clone_groups']} exact**, "
         f"**{summary['renamed_java_method_clone_groups']} renamed**.",
+        f"- Parsed Python/Gradle/GitHub Actions/Bash groups (minimum {methodology['minimum_structured_units']} units): "
+        f"**{summary['exact_structured_clone_groups']} exact**, "
+        f"**{summary['local_structured_clone_groups']} conservative local-renamed**.",
+        f"- Structured inventory fingerprint: `{scope['structured_unit_inventory_sha256']}` "
+        f"({scope['structured_unit_count']} parsed units; {scope['structured_unit_count_eligible_for_clones']} eligible).",
         f"- Exact method layers: {format_count_by_layer(summary['exact_method_groups_by_layer'])}; "
         f"renamed method layers: {format_count_by_layer(summary['renamed_method_groups_by_layer'])}.",
         "",
         "The full JSON report records every qualifying occurrence with its add-on commit, path, line range where applicable, "
         "token count, and content fingerprint.",
         "",
+        "## Parsed non-Java duplication",
+        "",
+        "| Language | Parsed units | Exact groups | Local-renamed groups |",
+        "| --- | ---: | ---: | ---: |",
+    ]
+    for language in sorted(scope["structured_language_counts"]):
+        lines.append(
+            f"| {language} | {scope['structured_language_counts'][language]} | "
+            f"{summary['exact_structured_groups_by_language'].get(language, 0)} | "
+            f"{summary['local_structured_groups_by_language'].get(language, 0)} |"
+        )
+
+    lines.extend(
+        [
+        "",
         "## Strong exact-copy evidence",
         "",
         "| Files | Add-ons | Layer | Evidence |",
         "| --- | ---: | --- | --- |",
-    ]
+        ]
+    )
     exact_groups = report["exact_file_clones"]
     for group in exact_groups[:12]:
         lines.append(
@@ -1186,15 +2393,16 @@ def render_markdown(report: dict[str, object]) -> str:
             "",
             "## Repeated families",
             "",
-            "| Family | Add-ons | Files | Exact file groups | Exact / renamed method groups |",
-            "| --- | ---: | ---: | ---: | ---: |",
+            "| Family | Add-ons | Files | Exact file groups | Exact / renamed methods | Exact / local structured |",
+            "| --- | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
     for family in report["repeated_families"]:
         lines.append(
             f"| {family['title']} | {family['addon_count']} | {family['file_count']} | "
             f"{len(family['exact_file_clone_group_ids'])} | "
-            f"{len(family['exact_method_clone_group_ids'])} / {len(family['renamed_method_clone_group_ids'])} |"
+            f"{len(family['exact_method_clone_group_ids'])} / {len(family['renamed_method_clone_group_ids'])} | "
+            f"{len(family['exact_structured_clone_group_ids'])} / {len(family['local_structured_clone_group_ids'])} |"
         )
 
     lines.extend(
@@ -1230,7 +2438,8 @@ def render_markdown(report: dict[str, object]) -> str:
         [
             "## Guardrails for consolidation",
             "",
-            "- Treat exact byte/token matches as mechanical evidence. Review alpha-renamed matches before extraction; literals and identifiers are intentionally abstracted.",
+            "- Treat exact byte/token matches as mechanical evidence. Java alpha-renamed matches abstract identifiers and literal values, so review them before extraction.",
+            "- Parsed Python and Gradle local-renamed matches preserve literals and external/API names. GitHub Actions and Bash identifiers are never renamed. These are still review candidates, not proof of equivalent behavior.",
             "- Keep profile pins, resource manifests, gallery case data, and mod-specific render decisions in their owning repositories.",
             "- Do not introduce a shared server runtime JAR until class loading, dependency installation, independent add-on version skew, and removal behavior are tested together.",
             "- Put visual conformance fixtures around any geometry, UV, connected-texture, translucency, or block-entity helper before moving it.",
@@ -1277,6 +2486,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--expected-addons", type=int, default=51)
     parser.add_argument("--minimum-method-tokens", type=int, default=DEFAULT_MIN_METHOD_TOKENS)
     parser.add_argument("--minimum-file-tokens", type=int, default=DEFAULT_MIN_FILE_TOKENS)
+    parser.add_argument("--minimum-structured-units", type=int, default=DEFAULT_MIN_STRUCTURED_UNITS)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true", help="write the JSON and Markdown reports")
     mode.add_argument("--check", action="store_true", help="verify committed reports are current")
@@ -1303,6 +2513,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         args.version,
         minimum_method_tokens=args.minimum_method_tokens,
         minimum_file_tokens=args.minimum_file_tokens,
+        minimum_structured_units=args.minimum_structured_units,
         expected_addons=args.expected_addons,
     )
     default_json, default_markdown = default_report_paths(root, args.version)

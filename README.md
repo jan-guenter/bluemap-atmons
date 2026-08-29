@@ -92,10 +92,19 @@ The current feature-branch evidence is collected in the
 [ATMons 1.2.0 candidate integration report](reports/integration/atmons-1.2.0-candidate.md).
 It is a test record, not a replacement for the immutable compatibility tag.
 
-The current source-wide consolidation evidence is the
-[ATMons 1.2.0 deduplication audit](reports/deduplication/atmons-1.2.0.md).
-It identifies reusable development, runtime, adapter, rendering, and
-connected-texture layers without moving code between child repositories.
+The current source-wide consolidation evidence consists of the generated
+[ATMons 1.2.0 clone inventory](reports/deduplication/atmons-1.2.0.md) and its
+[semantic extraction review](reports/deduplication/atmons-1.2.0-review.md).
+The scanner covers Java plus structured Python, Gradle, GitHub Actions, and
+shell units without reading mutable child worktrees. The review separates
+safe development-tooling reuse from source modules that still require shared
+fixtures and migration gates.
+
+The common child-repository contract is documented in
+[add-on repository conventions](docs/ADDON-REPOSITORY-CONVENTIONS.md). Its
+versioned files and migration checker live under `standards/addon-v1/` and
+`tools/`. The initial rollout deliberately changes no Java source, add-on
+version, compatibility manifest, or published release tag.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.

@@ -42,6 +42,10 @@ jobs:
         run: |
           python tests/test-duplicate-scanner.py
           python tools/scan_duplicates.py --version 1.2.0 --check
+      - name: Test add-on repository conventions
+        run: |
+          python tests/test-addon-conventions.py
+          python tests/test-migrate-addon-conventions.py
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
