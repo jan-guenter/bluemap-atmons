@@ -203,6 +203,17 @@ for these small disjoint masks and chooses a located structure as each map's
 presentation anchor. The final suite above is a complete fresh rerender after
 that correction; its result supersedes the earlier render receipt.
 
+Owner review then exposed a marker lifecycle problem. BlueMap retained the
+marker JSON on disk after a restart, but the harness did not restore structure
+markers to the live API, and browser-local visibility state could hide the
+shared marker-set ID on every map. The corrected harness replays only a
+catalog with its matching sealed generation receipt, publishes the versioned
+`atmons-structures-v2` set, and disables depth testing for underground bounds.
+The public endpoints expose all 313 markers across the ten maps with exact
+counts `4, 42, 1, 4, 3, 204, 7, 11, 33, 4`. A fresh Chromium profile loaded
+the Overworld set as visible with all 204 markers and an active WebGL 2
+context. No structure rerender was required.
+
 ## Public inspection
 
 - [BlueMap base](https://bluemap-atmons.guenter.cloud/)
@@ -305,15 +316,22 @@ Candidate integration work is isolated on
 `feature/integration-testing-atmons-1.2.0`. This run does not authorize a new
 compatibility tag, a BlueMap release, or altered child add-on releases.
 
-The final implementation state is commit
-`27dc37991748f780e264ea99b0cc53f2175edd8d`, pushed to
+The initial completed implementation state was commit
+`27dc37991748f780e264ea99b0cc53f2175edd8d`. The subsequent structure-marker
+lifecycle correction is commit
+`de8bf48a95ce9113e8562b09534ad11740dc2388`. Both were pushed to
 `origin/feature/integration-testing-atmons-1.2.0` and reviewed in
 [pull request #1](https://github.com/jan-guenter/bluemap-atmons/pull/1).
 
 The complete 13-command local validation matrix passed for that implementation
 state, including the 15-test child gate suite and the integration harness
-`clean check build`. The production harness JAR is 190,653 bytes with SHA-256
-`b35fc567c60d79a56ad4c20857979f94d900d3c09169f9ff87f1ac538f7826ed`.
+`clean check build`. The corrected production harness JAR is 191,145 bytes
+with SHA-256
+`6eba5639fc97760a784d765e7b9eab692b4ef9b18d36fc0b1992bf2f7328646a`.
+The corrected build also passed the repository validator, structure-suite unit
+checks, its full Gradle gate, and the observed restart/public-browser test.
 GitHub Actions
 [Validate run 33236458241](https://github.com/jan-guenter/bluemap-atmons/actions/runs/33236458241)
-also passed for the exact implementation commit in 4 minutes 8 seconds.
+passed for the initial implementation commit, and
+[Validate run 33251833741](https://github.com/jan-guenter/bluemap-atmons/actions/runs/33251833741)
+passed for the exact marker-correction commit in 1 minute 32 seconds.
