@@ -100,6 +100,9 @@ Reborn with exact artifact, gallery, PR CI, and post-merge CI parity.
 The [sixth cohort](toolkit-gradle-convention-cohort-6.md) applies the same
 contract to Theurgy, Draconic Evolution, PneumaticCraft, and Ars Nouveau with
 the same complete parity boundary.
+The [seventh cohort](toolkit-gradle-convention-cohort-7.md) applies it to
+Extreme Reactors, Ars Creo, Ars Energistique, and Ars Technica while retaining
+their multi-artifact admission and installed-resource contracts.
 
 ## Deduplication result
 
