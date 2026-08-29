@@ -330,13 +330,37 @@ FAMILY_RULES = (
             r"^(?:ShapeFamily|TextureLayout)\.java$",
         ),
     ),
+    FamilyRule(
+        "athena-resource-models",
+        "Athena resource models",
+        "Athena connection selection, face vocabulary, and quad emission.",
+        basenames=(
+            "AthenaQuadEmitter.java",
+            "CtmConnections.java",
+            "CtmSelector.java",
+            "CubeFace.java",
+        ),
+    ),
+    FamilyRule(
+        "fusion-resource-models",
+        "Fusion resource models",
+        "Fusion direction, predicate, orientation, texture selection, and mesh emission.",
+        basenames=(
+            "AxisVector.java",
+            "FusionDirection.java",
+            "FusionModelEmitter.java",
+            "FusionPredicate.java",
+            "FusionTextureSelector.java",
+            "TextureOrientation.java",
+        ),
+    ),
 )
 
 
 CANDIDATE_SPECS = (
     {
         "order": 1,
-        "id": "bluemap-addon-dev-toolkit",
+        "id": "bluemap-addon-toolkit",
         "title": "Development and release toolkit",
         "families": ("build-release-quality", "artifact-verification-tools", "gallery-toolchain"),
         "benefits": (
@@ -366,6 +390,66 @@ CANDIDATE_SPECS = (
     },
     {
         "order": 3,
+        "id": "athena-resource-models",
+        "title": "Athena resource-model source module",
+        "families": ("athena-resource-models",),
+        "benefits": (
+            "Shares the four-consumer Athena face and connection vocabulary behind conformance fixtures.",
+            "Keeps exact resource interpretation in one source module without adding an installed dependency.",
+        ),
+        "risks": (
+            "The two emitter variants have real culling and top-only differences that need a tested strategy.",
+            "Consumer allowlists, artifact profiles, and generated resource closures must remain local.",
+        ),
+        "recommendation": "Extract after freezing the Chipped, Chisel, CobbleFurnies, and Factory Blocks fixtures.",
+    },
+    {
+        "order": 4,
+        "id": "fusion-resource-models",
+        "title": "Fusion resource-model source module",
+        "families": ("fusion-resource-models",),
+        "benefits": (
+            "Shares the proven four-consumer Fusion direction, orientation, texture, and emission contracts.",
+            "Creates one fixture-backed home for connected-face and UV correctness.",
+        ),
+        "risks": (
+            "Format profiles and namespace routing differ and cannot be normalized mechanically.",
+            "BlueMap-derived emitter mechanics require their existing notice and provenance boundary.",
+        ),
+        "recommendation": "Extract the exact common contract; keep format versions, catalogs, and route allowlists local.",
+    },
+    {
+        "order": 5,
+        "id": "bluemap-addon-render-core",
+        "title": "Neutral rendering primitives",
+        "families": ("render-primitives",),
+        "benefits": (
+            "Shares proven lighting, immutable geometry records, and transforms without owning block routes.",
+            "Lets behavior-heavy add-ons focus on state and block-entity interpretation.",
+        ),
+        "risks": (
+            "Similar helper names do not prove identical UV, lighting, coordinate, or material semantics.",
+            "BlueMap mesh emission must remain isolated in a version-specific adapter module.",
+        ),
+        "recommendation": "Start only with exact multi-consumer APIs such as the seven-copy FaceLighting contract.",
+    },
+    {
+        "order": 6,
+        "id": "installed-geo-resource-models",
+        "title": "Installed Geo resource-model source module",
+        "families": ("installed-model-compilers",),
+        "benefits": (
+            "Shares the three-Ars-consumer installed Geo hierarchy, UV, and mesh compilation contract.",
+            "Reduces repeated bounded parser and malformed-input behavior.",
+        ),
+        "risks": (
+            "Wavefront, OBJ, Blockbench/BBS, and Gecko-style formats are not one generic compiler.",
+            "The three consumers need a common malformed-input and fallback fixture suite first.",
+        ),
+        "recommendation": "Treat as provisional until Ars Nouveau, Ars Technica, and Ars Creo pass one parity suite.",
+    },
+    {
+        "order": 7,
         "id": "bluemap-addon-adapter-api",
         "title": "BlueMap adapter bootstrap API",
         "families": ("adapter-bootstrap",),
@@ -378,36 +462,6 @@ CANDIDATE_SPECS = (
             "Extracting while the 5.23 backport is under integration could freeze the wrong ABI.",
         ),
         "recommendation": "Design now, but publish only after the 5.23 integration branch has a stable combined runtime gate.",
-    },
-    {
-        "order": 4,
-        "id": "bluemap-addon-render-core",
-        "title": "Pure rendering and installed-model core",
-        "families": ("render-primitives", "installed-model-compilers"),
-        "benefits": (
-            "Shares tested geometry, face-lighting, model parsing, and mesh-emission primitives.",
-            "Lets behavior-heavy add-ons focus on block-state and block-entity interpretation.",
-        ),
-        "risks": (
-            "Similar class names do not prove identical UV, lighting, coordinate, or material semantics.",
-            "Changes in a common renderer have a much larger visual regression radius.",
-        ),
-        "recommendation": "Extract only clone groups proven pure by fixture tests; preserve add-on-specific emitters.",
-    },
-    {
-        "order": 5,
-        "id": "bluemap-addon-connected-textures",
-        "title": "Connected-texture/fusion module",
-        "families": ("connected-texture-engine",),
-        "benefits": (
-            "Unifies the repeated CTM/fusion topology and texture-selection implementations.",
-            "Creates one place for connected-face correctness and adjacency regression fixtures.",
-        ),
-        "risks": (
-            "Mods use different CTM dialects, edge rules, fallback textures, and resource schemas.",
-            "A false abstraction can silently make visually distinct blocks look uniformly wrong.",
-        ),
-        "recommendation": "Extract last, as a strategy-based module with per-mod conformance fixtures and visual gates.",
     },
 )
 
@@ -2442,6 +2496,7 @@ def render_markdown(report: dict[str, object]) -> str:
             "- Parsed Python and Gradle local-renamed matches preserve literals and external/API names. GitHub Actions and Bash identifiers are never renamed. These are still review candidates, not proof of equivalent behavior.",
             "- Keep profile pins, resource manifests, gallery case data, and mod-specific render decisions in their owning repositories.",
             "- Do not introduce a shared server runtime JAR until class loading, dependency installation, independent add-on version skew, and removal behavior are tested together.",
+            "- Do not create one generic connected-texture engine. Athena, Fusion, and CTM keep separate format contracts and fixture suites.",
             "- Put visual conformance fixtures around any geometry, UV, connected-texture, translucency, or block-entity helper before moving it.",
             "- Re-run this audit and the full combined integration suite after each extraction slice; do not migrate all 51 repositories in one release wave.",
             "",

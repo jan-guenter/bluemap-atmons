@@ -50,10 +50,12 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 | Rendering and geometry primitives | 27 | 43 | 0 | 32 / 4 | 0 / 0 |
 | Installed model compilers | 13 | 28 | 0 | 46 / 14 | 0 / 0 |
 | Connected-texture engine | 11 | 78 | 0 | 103 / 19 | 0 / 0 |
+| Athena resource models | 4 | 16 | 0 | 16 / 1 | 0 / 0 |
+| Fusion resource models | 5 | 26 | 0 | 60 / 5 | 0 / 0 |
 
 ## Recommended extraction order
 
-### 1. `bluemap-addon-dev-toolkit` — Development and release toolkit
+### 1. `bluemap-addon-toolkit` — Development and release toolkit
 
 Evidence: 852 family-matched files across 51 add-ons and 280 content clone groups.
 
@@ -85,7 +87,71 @@ Coupling/ABI risks:
 - A shared runtime JAR creates ABI/version-skew and class-loader questions across independently released packs.
 - Artifact profiles contain add-on-specific pins and must remain declarative inputs, not shared mutable state.
 
-### 3. `bluemap-addon-adapter-api` — BlueMap adapter bootstrap API
+### 3. `athena-resource-models` — Athena resource-model source module
+
+Evidence: 16 family-matched files across 4 add-ons and 17 content clone groups.
+
+Recommendation: Extract after freezing the Chipped, Chisel, CobbleFurnies, and Factory Blocks fixtures.
+
+Benefits:
+
+- Shares the four-consumer Athena face and connection vocabulary behind conformance fixtures.
+- Keeps exact resource interpretation in one source module without adding an installed dependency.
+
+Coupling/ABI risks:
+
+- The two emitter variants have real culling and top-only differences that need a tested strategy.
+- Consumer allowlists, artifact profiles, and generated resource closures must remain local.
+
+### 4. `fusion-resource-models` — Fusion resource-model source module
+
+Evidence: 26 family-matched files across 5 add-ons and 65 content clone groups.
+
+Recommendation: Extract the exact common contract; keep format versions, catalogs, and route allowlists local.
+
+Benefits:
+
+- Shares the proven four-consumer Fusion direction, orientation, texture, and emission contracts.
+- Creates one fixture-backed home for connected-face and UV correctness.
+
+Coupling/ABI risks:
+
+- Format profiles and namespace routing differ and cannot be normalized mechanically.
+- BlueMap-derived emitter mechanics require their existing notice and provenance boundary.
+
+### 5. `bluemap-addon-render-core` — Neutral rendering primitives
+
+Evidence: 43 family-matched files across 27 add-ons and 36 content clone groups.
+
+Recommendation: Start only with exact multi-consumer APIs such as the seven-copy FaceLighting contract.
+
+Benefits:
+
+- Shares proven lighting, immutable geometry records, and transforms without owning block routes.
+- Lets behavior-heavy add-ons focus on state and block-entity interpretation.
+
+Coupling/ABI risks:
+
+- Similar helper names do not prove identical UV, lighting, coordinate, or material semantics.
+- BlueMap mesh emission must remain isolated in a version-specific adapter module.
+
+### 6. `installed-geo-resource-models` — Installed Geo resource-model source module
+
+Evidence: 28 family-matched files across 13 add-ons and 60 content clone groups.
+
+Recommendation: Treat as provisional until Ars Nouveau, Ars Technica, and Ars Creo pass one parity suite.
+
+Benefits:
+
+- Shares the three-Ars-consumer installed Geo hierarchy, UV, and mesh compilation contract.
+- Reduces repeated bounded parser and malformed-input behavior.
+
+Coupling/ABI risks:
+
+- Wavefront, OBJ, Blockbench/BBS, and Gecko-style formats are not one generic compiler.
+- The three consumers need a common malformed-input and fallback fixture suite first.
+
+### 7. `bluemap-addon-adapter-api` — BlueMap adapter bootstrap API
 
 Evidence: 215 family-matched files across 51 add-ons and 84 content clone groups.
 
@@ -101,44 +167,13 @@ Coupling/ABI risks:
 - The code is coupled to BlueMap internals and currently names the 5.22 adapter generation.
 - Extracting while the 5.23 backport is under integration could freeze the wrong ABI.
 
-### 4. `bluemap-addon-render-core` — Pure rendering and installed-model core
-
-Evidence: 71 family-matched files across 32 add-ons and 96 content clone groups.
-
-Recommendation: Extract only clone groups proven pure by fixture tests; preserve add-on-specific emitters.
-
-Benefits:
-
-- Shares tested geometry, face-lighting, model parsing, and mesh-emission primitives.
-- Lets behavior-heavy add-ons focus on block-state and block-entity interpretation.
-
-Coupling/ABI risks:
-
-- Similar class names do not prove identical UV, lighting, coordinate, or material semantics.
-- Changes in a common renderer have a much larger visual regression radius.
-
-### 5. `bluemap-addon-connected-textures` — Connected-texture/fusion module
-
-Evidence: 78 family-matched files across 11 add-ons and 122 content clone groups.
-
-Recommendation: Extract last, as a strategy-based module with per-mod conformance fixtures and visual gates.
-
-Benefits:
-
-- Unifies the repeated CTM/fusion topology and texture-selection implementations.
-- Creates one place for connected-face correctness and adjacency regression fixtures.
-
-Coupling/ABI risks:
-
-- Mods use different CTM dialects, edge rules, fallback textures, and resource schemas.
-- A false abstraction can silently make visually distinct blocks look uniformly wrong.
-
 ## Guardrails for consolidation
 
 - Treat exact byte/token matches as mechanical evidence. Java alpha-renamed matches abstract identifiers and literal values, so review them before extraction.
 - Parsed Python and Gradle local-renamed matches preserve literals and external/API names. GitHub Actions and Bash identifiers are never renamed. These are still review candidates, not proof of equivalent behavior.
 - Keep profile pins, resource manifests, gallery case data, and mod-specific render decisions in their owning repositories.
 - Do not introduce a shared server runtime JAR until class loading, dependency installation, independent add-on version skew, and removal behavior are tested together.
+- Do not create one generic connected-texture engine. Athena, Fusion, and CTM keep separate format contracts and fixture suites.
 - Put visual conformance fixtures around any geometry, UV, connected-texture, translucency, or block-entity helper before moving it.
 - Re-run this audit and the full combined integration suite after each extraction slice; do not migrate all 51 repositories in one release wave.
 
