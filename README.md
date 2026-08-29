@@ -108,6 +108,12 @@ version, compatibility manifest, or published release tag.
 The observed baseline, rollout boundary, validation, and extraction order are
 recorded in the [ATMons 1.2.0 consolidation report](reports/consolidation/atmons-1.2.0.md).
 
+The development-only [BlueMap Add-on Toolkit](toolkit/README.md) is pinned as
+a separate gitlink and release artifact by [tooling/manifest.json](tooling/manifest.json).
+Its first release centralizes the validated repository contract and the two
+byte-exact artifact-verification tools. It is not an installed component and
+does not appear in an ATMons server manifest.
+
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
 

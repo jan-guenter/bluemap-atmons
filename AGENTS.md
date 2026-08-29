@@ -19,6 +19,8 @@ file and `README.md` before changing the repository.
   selected only by the meta-repository tag and its manifest.
 - BlueMap installs to `<server>/mods/`; add-ons install to
   `<server>/config/bluemap/packs/`.
+- Development tools are pinned separately by `tooling/manifest.json`. They are
+  exact gitlinks and release artifacts, but never installed server components.
 - Installer state is limited to `<server>/.bluemap-atmons/`. Never remove or
   replace an untracked server file.
 - Do not move or recreate published compatibility tags.
@@ -40,6 +42,8 @@ python tests/test-duplicate-scanner.py
 python tools/scan_duplicates.py --version 1.2.0 --check
 python tests/test-addon-conventions.py
 python tests/test-migrate-addon-conventions.py
+python tests/test-tooling-manifest.py
+PYTHONPATH=toolkit/src python -m bluemap_addon_toolkit --version
 ```
 
 Build the dedicated-server integration harness separately with Java 21:

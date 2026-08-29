@@ -83,7 +83,7 @@ def validate_manifest(path: Path) -> tuple[list[str], dict[str, Any] | None]:
         {"schema_version", "atmons", "runtime", "release", "components"},
     ):
         return errors, data
-    if data["schema_version"] != 1:
+    if not integer(data["schema_version"], 1) or data["schema_version"] != 1:
         errors.append(f"{rel}: schema_version must be 1")
 
     atmons = data["atmons"]
@@ -150,12 +150,14 @@ def validate_manifest(path: Path) -> tuple[list[str], dict[str, Any] | None]:
             errors.append(f"{where}: invalid repository")
         elif repository in repositories:
             errors.append(f"{where}: duplicate repository {repository}")
-        repositories.add(repository)
+        else:
+            repositories.add(repository)
         if not isinstance(path_value, str):
             errors.append(f"{where}: submodule_path must be a string")
         elif path_value in paths:
             errors.append(f"{where}: duplicate submodule_path {path_value}")
-        paths.add(path_value)
+        else:
+            paths.add(path_value)
         if not isinstance(component["commit"], str) or not HEX40.fullmatch(component["commit"]):
             errors.append(f"{where}: invalid commit")
         if not isinstance(component["release_tag"], str) or not component["release_tag"]:
@@ -192,7 +194,8 @@ def validate_manifest(path: Path) -> tuple[list[str], dict[str, Any] | None]:
             errors.append(f"{where}: invalid artifact filename")
         elif filename in filenames:
             errors.append(f"{where}: duplicate artifact filename {filename}")
-        filenames.add(filename)
+        else:
+            filenames.add(filename)
         expected_url = (
             f"https://github.com/{repository}/releases/download/"
             f"{component['release_tag']}/{filename}"
@@ -210,7 +213,11 @@ def validate_manifest(path: Path) -> tuple[list[str], dict[str, Any] | None]:
         errors.append(f"{rel}: component ids must be unique")
     if blue_count != 1:
         errors.append(f"{rel}: exactly one BlueMap component is required")
-    addon_count = sum(1 for component in components if component.get("kind") == "addon")
+    addon_count = sum(
+        1
+        for component in components
+        if isinstance(component, dict) and component.get("kind") == "addon"
+    )
     if isinstance(release, dict):
         if release.get("component_count") != len(components):
             errors.append(f"{rel}: release.component_count is incorrect")
@@ -233,7 +240,114 @@ def git_output(*args: str) -> str:
     return result.stdout
 
 
-def validate_submodules(components: list[dict[str, Any]]) -> list[str]:
+def validate_tooling_manifest(path: Path) -> tuple[list[str], dict[str, Any] | None]:
+    errors: list[str] = []
+    rel = path.relative_to(ROOT)
+    try:
+        data = load_json(path)
+    except ValueError as exc:
+        return [str(exc)], None
+    if not exact_keys(errors, str(rel), data, {"schema_version", "components"}):
+        return errors, data
+    if not integer(data["schema_version"], 1) or data["schema_version"] != 1:
+        errors.append(f"{rel}: schema_version must be 1")
+    components = data["components"]
+    if not isinstance(components, list) or not components:
+        errors.append(f"{rel}: components must be a non-empty array")
+        return errors, data
+
+    ids: list[str] = []
+    repositories: set[str] = set()
+    paths: set[str] = set()
+    filenames: set[str] = set()
+    for index, component in enumerate(components):
+        where = f"{rel}: components[{index}]"
+        if not exact_keys(
+            errors,
+            where,
+            component,
+            {
+                "id",
+                "kind",
+                "repository",
+                "submodule_path",
+                "commit",
+                "release_tag",
+                "artifact",
+            },
+        ):
+            continue
+        component_id = component["id"]
+        repository = component["repository"]
+        path_value = component["submodule_path"]
+        if not isinstance(component_id, str) or not ID.fullmatch(component_id):
+            errors.append(f"{where}: invalid id")
+        else:
+            ids.append(component_id)
+        if not isinstance(repository, str) or not REPOSITORY.fullmatch(repository):
+            errors.append(f"{where}: invalid repository")
+        elif repository in repositories:
+            errors.append(f"{where}: duplicate repository {repository}")
+        else:
+            repositories.add(repository)
+        if (
+            not isinstance(path_value, str)
+            or not ID.fullmatch(path_value)
+            or path_value in {"addons", "bluemap"}
+        ):
+            errors.append(f"{where}: invalid development-tool submodule_path")
+        elif path_value in paths:
+            errors.append(f"{where}: duplicate submodule_path {path_value}")
+        else:
+            paths.add(path_value)
+        if component["kind"] != "development-tool":
+            errors.append(f"{where}: kind must be development-tool")
+        if not isinstance(component["commit"], str) or not HEX40.fullmatch(component["commit"]):
+            errors.append(f"{where}: invalid commit")
+        if not isinstance(component["release_tag"], str) or not component["release_tag"]:
+            errors.append(f"{where}: invalid release_tag")
+
+        artifact = component["artifact"]
+        if not exact_keys(
+            errors,
+            f"{where}: artifact",
+            artifact,
+            {"filename", "url", "size_bytes", "sha256"},
+        ):
+            continue
+        filename = artifact["filename"]
+        if (
+            not isinstance(filename, str)
+            or not filename.endswith(".whl")
+            or "/" in filename
+            or filename in {".whl", "..whl"}
+            or filename in filenames
+        ):
+            errors.append(f"{where}: invalid or duplicate artifact filename")
+        else:
+            filenames.add(filename)
+        expected_url = (
+            f"https://github.com/{repository}/releases/download/"
+            f"{component['release_tag']}/{filename}"
+        )
+        if artifact["url"] != expected_url:
+            errors.append(f"{where}: artifact URL is not the exact repository/tag/filename URL")
+        if not integer(artifact["size_bytes"], 1):
+            errors.append(f"{where}: artifact size_bytes must be positive")
+        if not isinstance(artifact["sha256"], str) or not HEX64.fullmatch(artifact["sha256"]):
+            errors.append(f"{where}: invalid artifact sha256")
+
+    if ids != sorted(ids):
+        errors.append(f"{rel}: components must be sorted by id")
+    if len(ids) != len(set(ids)):
+        errors.append(f"{rel}: component ids must be unique")
+    return errors, data
+
+
+def validate_submodules(
+    components: list[dict[str, Any]],
+    tooling_components: list[dict[str, Any]],
+) -> list[str]:
     errors: list[str] = []
     modules_file = ROOT / ".gitmodules"
     if not modules_file.is_file():
@@ -244,7 +358,7 @@ def validate_submodules(components: list[dict[str, Any]]) -> list[str]:
             "url": f"https://github.com/{component['repository']}.git",
             "commit": component["commit"],
         }
-        for component in components
+        for component in components + tooling_components
     }
     try:
         path_lines = git_output(
@@ -417,6 +531,12 @@ def main() -> int:
             versions.add(version)
             manifests.append(data)
 
+    tooling_errors, tooling = validate_tooling_manifest(ROOT / "tooling" / "manifest.json")
+    errors.extend(tooling_errors)
+    tooling_components: list[dict[str, Any]] = []
+    if tooling is not None and not tooling_errors:
+        tooling_components = tooling["components"]
+
     selected: dict[str, Any] | None = None
     if manifests:
         if args.version:
@@ -432,8 +552,8 @@ def main() -> int:
                 errors.append(f"no manifest exists for requested version {args.version}")
         else:
             selected = manifests[-1]
-        if selected is not None:
-            errors.extend(validate_submodules(selected["components"]))
+        if selected is not None and not tooling_errors:
+            errors.extend(validate_submodules(selected["components"], tooling_components))
 
     if errors:
         for error in errors:
@@ -446,7 +566,7 @@ def main() -> int:
             component
             for manifest in remote_manifests
             for component in manifest["components"]
-        ]
+        ] + tooling_components
         print(f"Remote-auditing {len(components)} component releases ...")
         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
             failures = [failure for failure in executor.map(remote_check, components) if failure]
@@ -458,7 +578,8 @@ def main() -> int:
     counts = [manifest["release"]["component_count"] for manifest in manifests]
     print(
         f"Validated {len(manifests)} compatibility manifest(s), "
-        f"{sum(counts)} component record(s), and the current pinned submodule set."
+        f"{sum(counts)} installed component record(s), "
+        f"{len(tooling_components)} development tool(s), and the current pinned submodule set."
     )
     if args.remote:
         print("All annotated tag targets and release asset identities match.")
