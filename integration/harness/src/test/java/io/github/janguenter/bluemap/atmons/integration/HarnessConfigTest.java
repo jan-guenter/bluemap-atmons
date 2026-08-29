@@ -19,6 +19,7 @@ class HarnessConfigTest {
         assertEquals(4, config.borderBlocks);
         assertEquals(2048, config.fallbackLocateRadiusPlacementRings);
         assertEquals("structure-catalog.json", config.catalogFile);
+        assertEquals("atmons-structures", config.structureMarkerSetId);
     }
 
     @Test

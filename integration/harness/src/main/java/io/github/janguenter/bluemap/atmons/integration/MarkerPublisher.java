@@ -29,6 +29,9 @@ import net.minecraft.world.level.Level;
 
 /** Idempotent BlueMap marker publication and exact affected-region scheduling. */
 final class MarkerPublisher {
+    // BlueMap persists marker-set visibility by ID in each browser.
+    private static final String STRUCTURE_MARKER_SET_REVISION = "-v2";
+
     private final BlueMapAPI api;
     private final MinecraftServer server;
     private final HarnessConfig config;
@@ -50,11 +53,40 @@ final class MarkerPublisher {
         if (Files.isRegularFile(galleryPath())) {
             publishGalleries();
         }
+        if (Files.isRegularFile(catalogPath())
+                && Files.isRegularFile(directory.resolve(GenerationReceipt.FILE_NAME))) {
+            IntegrationController.ActionResult result = replayCompletedStructures();
+            if (!result.successful()) {
+                throw new IOException(result.message());
+            }
+        }
     }
 
     IntegrationController.ActionResult publishStructures() throws IOException {
         StructureCatalog catalog = JsonFiles.read(catalogPath(), StructureCatalog.class);
-        new StructureCatalogService(server, config, directory).validateLiveCatalog(catalog);
+        new StructureCatalogService(server, config, directory)
+                .validateLiveCatalog(catalog);
+        return publishStructureMarkers(catalog);
+    }
+
+    private IntegrationController.ActionResult replayCompletedStructures()
+            throws IOException {
+        StructureCatalog catalog = JsonFiles.read(catalogPath(), StructureCatalog.class);
+        catalog.validateComplete();
+        StructureCatalogService catalogService =
+                new StructureCatalogService(server, config, directory);
+        GenerationReceipt.loadAndValidate(
+                directory,
+                catalogPath(),
+                catalog,
+                catalogService.generationTargets(catalog)
+        );
+        return publishStructureMarkers(catalog);
+    }
+
+    private IntegrationController.ActionResult publishStructureMarkers(
+            StructureCatalog catalog
+    ) throws IOException {
         validateStructureMaps(catalog);
         Map<String, MarkerSet> sets = new HashMap<>();
         int markers = 0;
@@ -92,6 +124,7 @@ final class MarkerPublisher {
                     .lineWidth(2)
                     .lineColor(new Color(255, 170, 0, 0.9F))
                     .fillColor(new Color(255, 170, 0, 0.08F))
+                    .depthTestEnabled(false)
                     .build();
             set.put(selection.markerId, marker);
             markers++;
@@ -103,7 +136,7 @@ final class MarkerPublisher {
                 BlueMapMapContract.safeMapId(dimension)
         ));
         Publication publication = publishSets(
-                config.structureMarkerSetId,
+                config.structureMarkerSetId + STRUCTURE_MARKER_SET_REVISION,
                 sets,
                 expectedMapIds
         );
