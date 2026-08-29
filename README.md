@@ -117,6 +117,8 @@ The toolkit is not an installed component and does not appear in an ATMons
 server manifest.
 The first [shared-verifier rollout](reports/consolidation/toolkit-verifier-rollout.md)
 removed both exact script cohorts from all 24 proven consumers.
+The [Gradle convention pilot](reports/consolidation/toolkit-gradle-convention-pilot.md)
+records the four reviewed consumers and their byte-for-byte artifact parity.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
