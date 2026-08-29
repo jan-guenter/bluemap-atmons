@@ -97,6 +97,9 @@ migrator, and managed templates.
 The [fifth cohort](toolkit-gradle-convention-cohort-5.md) applies that v0.3
 contract to Tempad, Productive Metalworks, Productive Bees, and Railcraft
 Reborn with exact artifact, gallery, PR CI, and post-merge CI parity.
+The [sixth cohort](toolkit-gradle-convention-cohort-6.md) applies the same
+contract to Theurgy, Draconic Evolution, PneumaticCraft, and Ars Nouveau with
+the same complete parity boundary.
 
 ## Deduplication result
 

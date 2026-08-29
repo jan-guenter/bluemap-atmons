@@ -135,6 +135,9 @@ gate.
 The [fifth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-5.md)
 records Tempad, Productive Metalworks, Productive Bees, and Railcraft Reborn
 under the v0.3 convention and corrected checker.
+The [sixth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-6.md)
+records Theurgy, Draconic Evolution, PneumaticCraft, and Ars Nouveau under the
+same exact artifact, gallery, PR CI, and post-merge CI parity gate.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
