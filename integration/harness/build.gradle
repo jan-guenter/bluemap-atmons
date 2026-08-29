@@ -187,7 +187,10 @@ tasks.register('verifyPinnedBlueMapApi') {
         }
         def dirty = providers.exec {
             commandLine 'git', '-C', sourceDirectory.absolutePath,
-                    'status', '--porcelain=v1', '--untracked-files=all'
+                    // Gradle can create transient buildSrc/.kotlin session files while
+                    // configuring the included BlueMap build. They are not source
+                    // provenance, so only tracked changes invalidate the exact commit.
+                    'status', '--porcelain=v1', '--untracked-files=no'
         }.standardOutput.asText.get().trim()
         if (!dirty.isEmpty()) {
             throw new GradleException(
