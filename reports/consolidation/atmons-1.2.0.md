@@ -81,6 +81,8 @@ Toolkit `v0.2.0-alpha.1` adds the narrowly scoped Java build convention. Its
 first four-consumer [artifact-parity pilot](toolkit-gradle-convention-pilot.md)
 passed both portfolio Gradle versions and reproduced every accepted JAR,
 sources JAR, POM, module file, and Create gallery ZIP byte for byte.
+The [second cohort](toolkit-gradle-convention-cohort-2.md) applies the same
+gate to Chipped, Chisel, CobbleFurnies, and Glassential.
 
 ## Deduplication result
 
