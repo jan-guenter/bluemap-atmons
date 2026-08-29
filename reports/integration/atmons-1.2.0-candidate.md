@@ -305,6 +305,15 @@ Candidate integration work is isolated on
 `feature/integration-testing-atmons-1.2.0`. This run does not authorize a new
 compatibility tag, a BlueMap release, or altered child add-on releases.
 
-<!-- PENDING: Record the final feature-branch commit and confirmed remote push state. -->
+The final implementation state is commit
+`27dc37991748f780e264ea99b0cc53f2175edd8d`, pushed to
+`origin/feature/integration-testing-atmons-1.2.0` and reviewed in
+[pull request #1](https://github.com/jan-guenter/bluemap-atmons/pull/1).
 
-<!-- PENDING: Record the final local validation matrix and GitHub Actions result for that exact commit. -->
+The complete 13-command local validation matrix passed for that implementation
+state, including the 15-test child gate suite and the integration harness
+`clean check build`. The production harness JAR is 190,653 bytes with SHA-256
+`b35fc567c60d79a56ad4c20857979f94d900d3c09169f9ff87f1ac538f7826ed`.
+GitHub Actions
+[Validate run 33236458241](https://github.com/jan-guenter/bluemap-atmons/actions/runs/33236458241)
+also passed for the exact implementation commit in 4 minutes 8 seconds.
