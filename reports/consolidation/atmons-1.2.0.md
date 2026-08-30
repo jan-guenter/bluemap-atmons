@@ -125,6 +125,9 @@ XNet and Nature's Aura also adopt the corrected repository checker.
 The [fourteenth cohort](toolkit-gradle-convention-cohort-14.md) begins the
 remaining inline-consumer migration with Factory Blocks, Functional Storage,
 Logistics Networks, and Rechiseled while preserving their exact outputs.
+The [fifteenth cohort](toolkit-gradle-convention-cohort-15.md) continues that
+migration with Modular Routers, Rechiseled Create, Cobblemon Stone Statues,
+and Botany Pots under the same exact artifact and gallery parity boundary.
 
 ## Deduplication result
 

@@ -163,6 +163,9 @@ and Nature's Aura while retaining exact publication and gallery parity.
 The [fourteenth shared-convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-14.md)
 begins the remaining inline-consumer migration with Factory Blocks, Functional
 Storage, Logistics Networks, and Rechiseled.
+The [fifteenth shared-convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-15.md)
+continues with Modular Routers, Rechiseled Create, Cobblemon Stone Statues,
+and Botany Pots while preserving their exact outputs and release identities.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
