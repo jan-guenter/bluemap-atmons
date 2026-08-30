@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Build staging-only add-on JAR overlays for one exact BlueMap identity.
 
-Published add-ons deliberately reject unknown BlueMap internals. This tool
-keeps their released commits and artifacts immutable, compiles only a copied
-AdapterCompatibility class with one added candidate identity, rewrites the
-entrypoint to require a successful Boolean adapter-install result, replaces
-those two classes in verified release JARs, and records every resulting hash. The
-ordinary source gates are run separately by ``run_child_gates.py``. Nothing
-produced here is published.
+Published add-ons deliberately reject unknown BlueMap internals. For legacy
+release bases, this tool compiles a copied AdapterCompatibility class with one
+added candidate identity and rewrites the entrypoint. Explicit local release
+overrides already migrated to the exact 5.23 feature backport keep their
+shipped compatibility class and adapter intact; only their entrypoint is
+rewritten to prove the Boolean install result and emit the integration marker.
+Every replacement and resulting artifact is hashed. The ordinary source gates
+are run separately by ``run_child_gates.py``. Nothing produced here is
+published.
 """
 
 from __future__ import annotations
@@ -52,6 +54,47 @@ INSTALL_SIGNATURE = re.compile(
 ENTRYPOINT_CLASS = re.compile(
     r"public\s+final\s+class\s+BlueMap[A-Za-z0-9]+Addon\s+implements\s+Runnable"
 )
+FEATURE_BACKPORT_VERSION = "5.22-feature.backport-5.23-stateless-java-web-server-46"
+FEATURE_BACKPORT_COMMIT = "7e07f4e74ec1e92a6ead9aa1e66054af3e133aac"
+FEATURE_BACKPORT_API_COMMIT = "285c9a60eff3ac2b0cab308ce1058d1565be0971"
+ADAPTER_API_VERSION = "0.1.0-alpha.2"
+ADAPTER_API_TAG = "v0.1.0-alpha.2"
+ADAPTER_API_COMMIT = "e81f08bc4bfbf02d810ec8949a019130e2e61634"
+ADAPTER_API_SOURCE_TREE = "2f974c9bb2ba13888d69682f86f30f58922d30eb"
+ADAPTER_API_GITLINK = "modules/bluemap-addon-adapter-api"
+ADAPTER_API_CLASS_PREFIX = (
+    "io/github/janguenter/bluemap/addon/adapter/api/bluemap523/"
+)
+ADAPTER_API_CLASSES = {
+    ADAPTER_API_CLASS_PREFIX + name + ".class"
+    for name in (
+        "BlueMapRuntimeCompatibility",
+        "RegistryGuard",
+        "ResourceExtensionType",
+        "SyntheticDispatch",
+    )
+}
+# Exact class payloads from the audited module release and audited
+# source-bundled consumer builds. The two compiler variants produce identical
+# ``javap -p -c -s -constants`` output for every class.
+ADAPTER_API_CLASS_SHA256 = {
+    ADAPTER_API_CLASS_PREFIX + "BlueMapRuntimeCompatibility.class": {
+        "feeb9e6bcf6c3cf241314df6b70e33a0296abd54f9da63dc5bdc735762605006",
+        "eb7fe1bfecb61700007b9029e2cb2870fa363a8e4ec9435e803ace6e42bb11e6",
+    },
+    ADAPTER_API_CLASS_PREFIX + "RegistryGuard.class": {
+        "ccb6493f162472e2e24705fe4c5e905889c85fb6ec7febcab6a2f5cd3fbb43d6",
+        "58c107277da1df273c6329253f76abf46b47fe2c1fcf006fe51700e2c45bef91",
+    },
+    ADAPTER_API_CLASS_PREFIX + "ResourceExtensionType.class": {
+        "37d04ae4892c2ce967a58d408f5e9c5f0709ee18fb1ac8c1f94e08da014d8b5f",
+        "e3e01aa1bafec529f50005a1c76125a686f967a9db1dab694217bb7915c0b5a2",
+    },
+    ADAPTER_API_CLASS_PREFIX + "SyntheticDispatch.class": {
+        "8f8e04e7a2613d9a482015eb7d9d28925fba5f670c39c84a56d1417f5bebf70d",
+        "270bcd0add7db596cd9fba2bf78454421ff19503d62f762634227faac6d6d988",
+    },
+}
 
 
 class CandidateError(RuntimeError):
@@ -212,6 +255,227 @@ def _validate_override_release_provenance(
     }
 
 
+def _main_java_paths(checkout: Path, commit: str) -> list[str]:
+    return run(
+        ["git", "ls-tree", "-r", "--name-only", commit, "--", "src/main/java"],
+        checkout,
+    ).stdout.splitlines()
+
+
+def _normalize_adapter_api_migration(
+    checkout: Path, commit: str, component_id: str
+) -> dict:
+    provenance_path = "provenance/release.json"
+    try:
+        value = json.loads(
+            run(["git", "show", f"{commit}:{provenance_path}"], checkout).stdout
+        )
+    except (CandidateError, json.JSONDecodeError) as exc:
+        raise CandidateError(
+            f"{component_id}: native feature-backport migration provenance is unreadable"
+        ) from exc
+    candidates = [
+        (name, value.get(name))
+        for name in ("adapter_api_migration", "adapter_api_module_migration")
+        if isinstance(value.get(name), dict)
+    ]
+    if len(candidates) != 1:
+        raise CandidateError(
+            f"{component_id}: expected one Adapter API migration provenance section"
+        )
+    section_name, section = candidates[0]
+
+    def field(label: str, *names: str) -> str:
+        present = [section[name] for name in names if name in section]
+        if len(present) != 1 or not isinstance(present[0], str):
+            raise CandidateError(
+                f"{component_id}: Adapter API migration {label} is ambiguous or missing"
+            )
+        return present[0]
+
+    normalized = {
+        "section": section_name,
+        "repository": field("repository", "repository", "module_repository"),
+        "version": field("version", "version", "module_version"),
+        "tag": field("tag", "tag", "module_tag"),
+        "commit": field(
+            "commit", "release_target_commit", "module_release_commit", "commit"
+        ),
+        "sourceTree": field(
+            "source tree", "source_tree", "module_source_tree"
+        ),
+        "blueMapCommit": field(
+            "BlueMap commit", "bluemap_commit", "target_bluemap_commit"
+        ),
+    }
+    expected = {
+        "repository": "https://github.com/jan-guenter/bluemap-addon-adapter-api",
+        "version": ADAPTER_API_VERSION,
+        "tag": ADAPTER_API_TAG,
+        "commit": ADAPTER_API_COMMIT,
+        "sourceTree": ADAPTER_API_SOURCE_TREE,
+        "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+    }
+    for key, expected_value in expected.items():
+        if normalized[key] != expected_value:
+            raise CandidateError(
+                f"{component_id}: Adapter API migration {key} differs from the exact "
+                "5.23 contract"
+            )
+    target_version = section.get("target_bluemap_version")
+    if target_version is not None and target_version != FEATURE_BACKPORT_VERSION:
+        raise CandidateError(
+            f"{component_id}: Adapter API migration BlueMap version is not exact"
+        )
+    optional_standalone_fields = {
+        key: section[key]
+        for key in (
+            "standalone_module_jar_bundled",
+            "standalone_module_jar_nested",
+        )
+        if key in section
+    }
+    if section.get("standalone_module_jar_installed") is not False or any(
+        value is not False for value in optional_standalone_fields.values()
+    ):
+        raise CandidateError(
+            f"{component_id}: Adapter API migration does not prove a source-only module"
+        )
+    normalized["standaloneModuleJar"] = "not-bundled-or-installed"
+    return normalized
+
+
+def _native_feature_backport_contract(
+    checkout: Path,
+    commit: str,
+    component_id: str,
+    artifact_path: Path,
+) -> dict | None:
+    paths = _main_java_paths(checkout, commit)
+    compatibility_paths = [
+        path for path in paths if path.endswith("/AdapterCompatibility.java")
+    ]
+    if compatibility_paths:
+        if len(compatibility_paths) != 1:
+            raise CandidateError(
+                f"{component_id}: expected at most one AdapterCompatibility.java"
+            )
+        return None
+
+    adapter_paths = sorted(
+        path for path in paths if path.endswith("/adapter/bluemap523/BlueMap523Adapter.java")
+    )
+    if len(adapter_paths) != 1:
+        raise CandidateError(
+            f"{component_id}: native feature-backport override must contain exactly one "
+            "adapter/bluemap523/BlueMap523Adapter.java"
+        )
+    entrypoint = discover_entrypoint(checkout, commit)
+    entrypoint_source = run(["git", "show", f"{commit}:{entrypoint}"], checkout).stdout
+    adapter_source = run(
+        ["git", "show", f"{commit}:{adapter_paths[0]}"], checkout
+    ).stdout
+    migration = _normalize_adapter_api_migration(checkout, commit, component_id)
+    direct_runtime_gate = entrypoint_source.count(
+        "BlueMapRuntimeCompatibility.matchesCurrent()"
+    )
+    forwarded_runtime_gate = int(
+        entrypoint_source.count("runtimeSupported(BlueMap.VERSION, BlueMap.GIT_HASH)")
+        == 1
+        and entrypoint_source.count("BlueMapRuntimeCompatibility.matches(") == 1
+    )
+    requirements = {
+        "public synchronized Boolean adapter install": len(
+            INSTALL_SIGNATURE.findall(adapter_source)
+        ),
+        "Runnable BlueMap add-on entrypoint": len(
+            ENTRYPOINT_CLASS.findall(entrypoint_source)
+        ),
+        "5.23 runtime compatibility import": entrypoint_source.count(
+            "io.github.janguenter.bluemap.addon.adapter.api.bluemap523."
+            "BlueMapRuntimeCompatibility"
+        ),
+        "5.23 runtime compatibility gate": direct_runtime_gate + forwarded_runtime_gate,
+        "reflective install lookup": entrypoint_source.count('getMethod("install")'),
+        "reflective install invocation": len(INSTALL_INVOKE.findall(entrypoint_source)),
+    }
+    invalid = [label for label, count in requirements.items() if count != 1]
+    if invalid:
+        raise CandidateError(
+            f"{component_id}: native feature-backport install contract changed: "
+            + ", ".join(invalid)
+        )
+
+    gitlink = run(
+        ["git", "ls-tree", commit, "--", ADAPTER_API_GITLINK], checkout
+    ).stdout.strip()
+    expected_gitlink = (
+        f"160000 commit {ADAPTER_API_COMMIT}\t{ADAPTER_API_GITLINK}"
+    )
+    if gitlink != expected_gitlink:
+        raise CandidateError(
+            f"{component_id}: native feature-backport override does not pin the exact "
+            f"Adapter API commit {ADAPTER_API_COMMIT}"
+        )
+
+    with zipfile.ZipFile(artifact_path, "r") as archive:
+        names = archive.namelist()
+        class_sha256 = {
+            name: hashlib.sha256(archive.read(name)).hexdigest()
+            for name in ADAPTER_API_CLASSES
+            if name in names
+        }
+    shared_classes = {
+        name
+        for name in names
+        if name.startswith(ADAPTER_API_CLASS_PREFIX) and name.endswith(".class")
+    }
+    nested_jars = [name for name in names if name.lower().endswith(".jar")]
+    stale_522_classes = [
+        name
+        for name in names
+        if re.search(r"(?:^|/)bluemap522/", name) and name.endswith(".class")
+    ]
+    if shared_classes != ADAPTER_API_CLASSES:
+        raise CandidateError(
+            f"{component_id}: native feature-backport artifact does not contain the exact "
+            "four-class Adapter API roster"
+        )
+    invalid_class_bytes = sorted(
+        name
+        for name, digest in class_sha256.items()
+        if digest not in ADAPTER_API_CLASS_SHA256[name]
+    )
+    if invalid_class_bytes:
+        raise CandidateError(
+            f"{component_id}: native feature-backport artifact contains unrecognized "
+            "Adapter API bytecode"
+        )
+    if nested_jars:
+        raise CandidateError(
+            f"{component_id}: native feature-backport artifact contains nested JARs"
+        )
+    if stale_522_classes:
+        raise CandidateError(
+            f"{component_id}: native feature-backport artifact contains 5.22-package classes"
+        )
+
+    return {
+        "blueMapVersion": FEATURE_BACKPORT_VERSION,
+        "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+        "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+        "adapterApiVersion": ADAPTER_API_VERSION,
+        "adapterApiTag": ADAPTER_API_TAG,
+        "adapterApiCommit": ADAPTER_API_COMMIT,
+        "adapterApiSourceTree": ADAPTER_API_SOURCE_TREE,
+        "adapterApiGitlink": ADAPTER_API_GITLINK,
+        "adapterApiClassCount": len(ADAPTER_API_CLASSES),
+        "adapterApiClassSha256": class_sha256,
+        "migrationProvenance": migration,
+        "standaloneModuleJarBundled": False,
+    }
+
+
 def load_addon_override_lock(path: Path, manifest: dict) -> dict:
     if not path.is_absolute():
         raise CandidateError("--addon-override-lock must be an absolute path")
@@ -335,6 +599,9 @@ def load_addon_override_lock(path: Path, manifest: dict) -> dict:
         release_provenance = _validate_override_release_provenance(
             checkout, source_commit, component_id, artifact
         )
+        native_feature_backport = _native_feature_backport_contract(
+            checkout, source_commit, component_id, artifact_path
+        )
         artifact_paths.add(artifact_path)
         records[component_id] = {
             "checkout": checkout,
@@ -347,6 +614,7 @@ def load_addon_override_lock(path: Path, manifest: dict) -> dict:
                 "version": version,
             },
             "releaseProvenance": release_provenance,
+            "nativeFeatureBackport": native_feature_backport,
         }
     ordered_ids = [component_id for component_id in known if component_id in records]
     return {
@@ -437,22 +705,31 @@ def patch_entrypoint(path: Path) -> str:
     return hashlib.sha256(source.encode("utf-8")).hexdigest()
 
 
-def discover_adapter(checkout: Path, commit: str) -> str:
-    result = run(
-        [
-            "git",
-            "ls-tree",
-            "-r",
-            "--name-only",
-            commit,
-            "--",
-            "src/main/java",
-        ],
-        checkout,
+def patch_native_entrypoint(path: Path, component_id: str, commit: str) -> str:
+    source = path.read_text(encoding="utf-8")
+    matches = list(INSTALL_INVOKE.finditer(source))
+    if len(matches) != 1:
+        raise CandidateError(f"{path}: expected one reflective adapter install call")
+    match = matches[0]
+    indent = match.group("indent")
+    replacement = (
+        f"{indent}Object integrationCandidateInstallResult = install.invoke(null);\n"
+        f"{indent}if (!Boolean.TRUE.equals(integrationCandidateInstallResult)) {{\n"
+        f'{indent}    inactive("candidate adapter installation rejected", null);\n'
+        f"{indent}    return;\n"
+        f"{indent}}}\n"
+        f'{indent}System.out.println("BlueMap ATMons integration candidate activated: '
+        f'{component_id}@{commit}");'
     )
+    source = source[: match.start()] + replacement + source[match.end() :]
+    path.write_text(source, encoding="utf-8", newline="\n")
+    return hashlib.sha256(source.encode("utf-8")).hexdigest()
+
+
+def discover_adapter(checkout: Path, commit: str) -> str:
     candidates = sorted(
         path
-        for path in result.stdout.splitlines()
+        for path in _main_java_paths(checkout, commit)
         if path.endswith("/AdapterCompatibility.java")
     )
     if len(candidates) != 1:
@@ -532,6 +809,7 @@ def prepare_component_sources(
     commit: str,
     source_root: Path | None = None,
     source_commit: str | None = None,
+    native_feature_backport: dict | None = None,
 ) -> tuple[list[Path], list[dict[str, str]]]:
     source_root = source_root or ROOT / component["submodule_path"]
     source_commit = source_commit or component["commit"]
@@ -540,14 +818,23 @@ def prepare_component_sources(
         raise CandidateError(
             f"{component['id']}: source checkout is {actual_commit}, expected {source_commit}"
         )
-    adapter_path = discover_adapter(source_root, source_commit)
     entrypoint_path = discover_entrypoint(source_root, source_commit)
-    validate_install_contract(
-        component["id"], source_root, source_commit, adapter_path, entrypoint_path
-    )
+    if native_feature_backport is None:
+        adapter_path = discover_adapter(source_root, source_commit)
+        validate_install_contract(
+            component["id"], source_root, source_commit, adapter_path, entrypoint_path
+        )
+        source_specs = (("compatibility", adapter_path), ("entrypoint", entrypoint_path))
+    else:
+        if version != FEATURE_BACKPORT_VERSION or commit != FEATURE_BACKPORT_COMMIT:
+            raise CandidateError(
+                f"{component['id']}: native feature-backport release can only be tested "
+                f"against {FEATURE_BACKPORT_VERSION}@{FEATURE_BACKPORT_COMMIT}"
+            )
+        source_specs = (("entrypoint", entrypoint_path),)
     prepared: list[Path] = []
     replacements: list[dict[str, str]] = []
-    for kind, source_path in (("compatibility", adapter_path), ("entrypoint", entrypoint_path)):
+    for kind, source_path in source_specs:
         source = run(
             ["git", "show", f"{source_commit}:{source_path}"], source_root
         ).stdout
@@ -566,11 +853,16 @@ def prepare_component_sources(
         )
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(source, encoding="utf-8", newline="\n")
-        source_sha = (
-            patch_compatibility(destination, version, commit, component["id"])
-            if kind == "compatibility"
-            else patch_entrypoint(destination)
-        )
+        if kind == "compatibility":
+            source_sha = patch_compatibility(
+                destination, version, commit, component["id"]
+            )
+        elif native_feature_backport is None:
+            source_sha = patch_entrypoint(destination)
+        else:
+            source_sha = patch_native_entrypoint(
+                destination, component["id"], commit
+            )
         class_name = f"{package_path}/{Path(source_path).stem}.class"
         prepared.append(destination)
         replacements.append(
@@ -602,7 +894,12 @@ def select_component_inputs(
         "sourceRoot": override["checkout"],
         "sourceCommit": override["sourceCommit"],
         "baseJar": override["artifactPath"],
-        "gateMode": "local-candidate-two-class-surgical-overlay",
+        "gateMode": (
+            "local-native-523-entrypoint-overlay"
+            if override["nativeFeatureBackport"] is not None
+            else "local-candidate-two-class-surgical-overlay"
+        ),
+        "nativeFeatureBackport": override["nativeFeatureBackport"],
     }
 
 
@@ -705,6 +1002,7 @@ def build_surgical_components(
             candidate_commit,
             selected["sourceRoot"],
             selected["sourceCommit"],
+            selected.get("nativeFeatureBackport"),
         )
         prepared_components.append(
             (component, override, selected, sources, replacements)
@@ -731,12 +1029,17 @@ def build_surgical_components(
         }
         if not all(path.is_file() for path in class_files.values()):
             raise CandidateError(f"{component['id']}: compiled candidate classes are missing")
-        compatibility_class = next(
+        identity_class = next(
             class_files[replacement["class"]]
             for replacement in replacements
-            if replacement["kind"] == "compatibility"
+            if replacement["kind"]
+            == (
+                "entrypoint"
+                if selected.get("nativeFeatureBackport") is not None
+                else "compatibility"
+            )
         )
-        if candidate_commit.encode("ascii") not in compatibility_class.read_bytes():
+        if candidate_commit.encode("ascii") not in identity_class.read_bytes():
             raise CandidateError(f"{component['id']}: compiled candidate identity mismatch")
         destination = output / component["artifact"]["filename"]
         if destination.resolve() == base_jar.resolve():
@@ -790,6 +1093,10 @@ def build_surgical_components(
                     "sha256": override["artifact"]["sha256"],
                 },
             }
+            if override["nativeFeatureBackport"] is not None:
+                record["localCandidateBase"]["nativeFeatureBackport"] = override[
+                    "nativeFeatureBackport"
+                ]
         records.append(record)
     return records
 

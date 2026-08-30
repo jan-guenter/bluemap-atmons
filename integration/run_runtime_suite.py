@@ -29,7 +29,7 @@ COMPOSER_PATH = ROOT / "integration" / "galleries" / "compose.py"
 COMPOSER_VERSION = "2.4.0"
 COMPOSER_SHA256 = "708099496c437b3d3aa926f45f076f50d46b34882bdbaef27fa0ce8fb1d3a3bf"
 CANDIDATE_BUILDER_PATH = ROOT / "integration" / "build_candidate_addons.py"
-CANDIDATE_BUILDER_SHA256 = "895aabaa37e3a8e51b2a5527817cab9f343f983c2765f1e773c452314f6a05b0"
+CANDIDATE_BUILDER_SHA256 = "5f3f4943a3a35769031c64508e2b18437bc35a7375a7f25a45752049caf7c5f0"
 EXPECTED_COMPOSITION_OPTIONS = {
     "minimumY": 195,
     "originX": 8192,
@@ -365,6 +365,14 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
     expected = [
         component for component in tracked["components"] if component["kind"] == "addon"
     ]
+    candidate_identity = value.get("candidateBlueMap")
+    if (
+        not isinstance(candidate_identity, dict)
+        or not isinstance(candidate_identity.get("version"), str)
+        or not re.fullmatch(r"[0-9A-Za-z][0-9A-Za-z._+-]{0,127}", candidate_identity["version"])
+        or not re.fullmatch(r"[0-9a-f]{40}", candidate_identity.get("commit", ""))
+    ):
+        raise SuiteError("candidate BlueMap identity is invalid")
     override_header = value.get("localCandidateOverrides")
     if override_header is None and override_lock is not None:
         raise SuiteError(
@@ -404,11 +412,28 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
         artifact = candidate.get("artifact")
         gate = candidate.get("gate")
         replacements = candidate.get("replacements")
-        expected_gate_mode = (
-            "local-candidate-two-class-surgical-overlay"
-            if override is not None
-            else "two-class-surgical-overlay"
+        native_feature_backport = (
+            override.get("nativeFeatureBackport") if override is not None else None
         )
+        if native_feature_backport is not None and (
+            native_feature_backport.get("blueMapVersion")
+            != candidate_identity["version"]
+            or native_feature_backport.get("blueMapCommit")
+            != candidate_identity["commit"]
+        ):
+            raise SuiteError(
+                f"native candidate BlueMap identity mismatch: {released['id']}"
+            )
+        expected_gate_mode = (
+            "local-native-523-entrypoint-overlay"
+            if native_feature_backport is not None
+            else (
+                "local-candidate-two-class-surgical-overlay"
+                if override is not None
+                else "two-class-surgical-overlay"
+            )
+        )
+        expected_replacement_count = 1 if native_feature_backport is not None else 2
         if (
             candidate.get("sourceCommit") != released["commit"]
             or candidate.get("sourceReleaseTag") != released["release_tag"]
@@ -425,7 +450,7 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
             or gate.get("javacRelease") != 21
             or gate.get("zipIntegrity") != "passed"
             or not isinstance(replacements, list)
-            or len(replacements) != 2
+            or len(replacements) != expected_replacement_count
         ):
             raise SuiteError(f"candidate overlay contract is invalid: {released['id']}")
         if override is None:
@@ -453,6 +478,8 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
                     "sha256": override["artifact"]["sha256"],
                 },
             }
+            if native_feature_backport is not None:
+                expected_local_base["nativeFeatureBackport"] = native_feature_backport
             if candidate.get("releasedBaseline") != expected_released_baseline:
                 raise SuiteError(
                     f"candidate released baseline identity mismatch: {released['id']}"
@@ -467,7 +494,12 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
             for replacement in replacements
             if isinstance(replacement, dict)
         }
-        if set(by_kind) != {"compatibility", "entrypoint"}:
+        expected_kinds = (
+            {"entrypoint"}
+            if native_feature_backport is not None
+            else {"compatibility", "entrypoint"}
+        )
+        if set(by_kind) != expected_kinds:
             raise SuiteError(f"candidate replacement classes are invalid: {released['id']}")
         for kind, replacement in by_kind.items():
             source = replacement.get("source", "")

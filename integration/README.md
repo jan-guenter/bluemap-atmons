@@ -12,10 +12,12 @@ candidate to be tested against all 51 add-ons together.
    by the manifest. An explicit candidate-source run is a useful negative gate:
    the add-ons must reject an unknown BlueMap commit before compilation.
 2. `build_candidate_addons.py` verifies every released add-on JAR and its exact
-   pinned source, then compiles a candidate-aware `AdapterCompatibility` plus
-   an entrypoint that requires the adapter's Boolean install result to be
-   `true`. Those two classes are replaced in a staging-only JAR and emit a
-   post-install activation marker. These artifacts are never published.
+   pinned source. Legacy bases receive a candidate-aware
+   `AdapterCompatibility` and a strict entrypoint. Explicit release overrides
+   already migrated to the exact 5.23 feature backport keep their shipped
+   compatibility and adapter classes; only the entrypoint is rewritten to
+   require a `true` Boolean install result. Both paths emit a post-install
+   activation marker, and neither staging artifact is published.
 3. `galleries/compose.py` translates all 51 tracked galleries to non-overlapping
    tiles on one high, divided surface. It emits bounded load/release functions,
    a deterministic datapack ZIP, a layout file, BlueMap marker coordinates, and
@@ -63,7 +65,7 @@ python integration/build_candidate_addons.py \
 The output must contain 51 JARs and a `candidate-manifest.json` whose summary is
 `passed` with 51 components.
 
-To test unreleased add-on candidates, pass an absolute JSON lock with
+To test explicit alternate add-on releases or sealed candidates, pass an absolute JSON lock with
 `--addon-override-lock`. Each listed checkout must be clean and at the declared
 HEAD. The exact commit's tracked `provenance/release.json` must identify the
 same version, filename, size, and SHA-256 as the artifact, and the JAR manifest
@@ -93,11 +95,20 @@ production JAR:
 }
 ```
 
-The builder copies that local base JAR, overlays the two candidate classes, and
-retains the compatibility manifest's canonical output filename. Its output
-manifest records the released baseline, local base and release-provenance
-identities, and lock hash. It does not record local paths, including on a failed
-overlay build. A release-only invocation retains the existing schema and
+The builder copies that local base JAR and retains the compatibility manifest's
+canonical output filename. Ordinary overrides receive the two-class overlay.
+A native 5.23 override is admitted only when its source has no local
+`AdapterCompatibility`, pins Adapter API `v0.1.0-alpha.2` at commit
+`e81f08bc4bfbf02d810ec8949a019130e2e61634`, ships the exact four shared API
+classes without a nested module JAR or any `bluemap522` package classes, and
+uses one `BlueMap523Adapter` behind
+`BlueMapRuntimeCompatibility.matchesCurrent()` or its exact explicit-identity
+wrapper. That path overlays only the
+entrypoint and is accepted solely for BlueMap commit
+`7e07f4e74ec1e92a6ead9aa1e66054af3e133aac`. The output manifest records the
+released baseline, local base, native-contract and release-provenance
+identities, plus the lock hash. It never records local paths, including on a
+failed build. A release-only invocation retains the existing schema and
 behavior.
 
 ## Individual add-on gates
