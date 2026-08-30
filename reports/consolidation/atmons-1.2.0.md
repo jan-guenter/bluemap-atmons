@@ -237,7 +237,7 @@ module commit and compile its source into their own add-on JARs.
 
 Ars Technica and Ars Nouveau removed their local compiler and model copies.
 Ars Creo exercises the sampled-pose path while retaining its animation parser
-and wheel renderer. All three published signed, attested `0.1.0-alpha.2`
+and wheel renderer. All three published signed, attested `v0.1.0-alpha.2`
 releases after exact ordered-mesh, archive, gallery, PR CI, and exact-main
 gates. The exact module, consumer, artifact, and cumulative runtime identities
 are recorded in the [installed GEO report](installed-geo-resource-models.md).

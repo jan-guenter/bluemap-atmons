@@ -7,8 +7,8 @@ It does not own installed assets, resource paths, named model contracts,
 animation parsing, BlueMap mesh emission, registration, or fallback policy.
 
 Consumers pin the module as a Git submodule and compile its source into their
-own add-on JAR. The standalone module JAR is publication evidence, not a server
-component.
+respective add-on JARs. The standalone module JAR is publication evidence, not
+a server component.
 
 ## Released source module
 
