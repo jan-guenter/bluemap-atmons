@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -26,9 +27,9 @@ TRACKED_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 TRACKED_MANIFEST_SHA256 = "c181203ddaf4ad353cecf7975af21acb1f55011b5a8c8f1b25bf79a8202db138"
 COMPOSER_PATH = ROOT / "integration" / "galleries" / "compose.py"
 COMPOSER_VERSION = "2.4.0"
-COMPOSER_SHA256 = "d1492bc695e6b7cd7228ffd3acb20415b0c068e4afd20efaa17ba922919fba13"
+COMPOSER_SHA256 = "708099496c437b3d3aa926f45f076f50d46b34882bdbaef27fa0ce8fb1d3a3bf"
 CANDIDATE_BUILDER_PATH = ROOT / "integration" / "build_candidate_addons.py"
-CANDIDATE_BUILDER_SHA256 = "99ed1c759c1187edf29c97ed80cf146bfdb01082a5ab77219b360104d010d44a"
+CANDIDATE_BUILDER_SHA256 = "895aabaa37e3a8e51b2a5527817cab9f343f983c2765f1e773c452314f6a05b0"
 EXPECTED_COMPOSITION_OPTIONS = {
     "minimumY": 195,
     "originX": 8192,
@@ -238,6 +239,22 @@ def require_pinned_manifest() -> None:
         )
 
 
+def load_addon_override_lock(path: Path, tracked: dict) -> dict:
+    if sha256(CANDIDATE_BUILDER_PATH) != CANDIDATE_BUILDER_SHA256:
+        raise SuiteError("candidate builder differs from its reviewed immutable digest")
+    spec = importlib.util.spec_from_file_location(
+        "bluemap_atmons_candidate_builder", CANDIDATE_BUILDER_PATH
+    )
+    if spec is None or spec.loader is None:
+        raise SuiteError("cannot load the pinned candidate builder")
+    builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(builder)
+    try:
+        return builder.load_addon_override_lock(path, tracked)
+    except builder.CandidateError as exc:
+        raise SuiteError(str(exc)) from exc
+
+
 def load_trusted_base_inventory(
     path: Path,
 ) -> tuple[dict[str, dict[str, int | str]], str]:
@@ -326,14 +343,15 @@ def validate_activation_log(log_text: str, component_ids: list[str], commit: str
     return len(component_ids)
 
 
-def load_candidate_manifest(path: Path) -> dict:
+def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> dict:
     require_pinned_manifest()
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise SuiteError(f"cannot read candidate manifest {path}: {exc}") from exc
     if (
-        value.get("schemaVersion") != 1
+        type(value.get("schemaVersion")) is not int
+        or value.get("schemaVersion") != 1
         or value.get("atmons", {}).get("version") != "1.2.0"
         or value.get("summary", {}).get("status") != "passed"
         or value.get("summary", {}).get("passed") != 51
@@ -347,6 +365,30 @@ def load_candidate_manifest(path: Path) -> dict:
     expected = [
         component for component in tracked["components"] if component["kind"] == "addon"
     ]
+    override_header = value.get("localCandidateOverrides")
+    if override_header is None and override_lock is not None:
+        raise SuiteError(
+            "--addon-override-lock was supplied for a release-based candidate manifest"
+        )
+    if override_header is not None and override_lock is None:
+        raise SuiteError(
+            "candidate manifest uses local add-on candidates but no matching "
+            "--addon-override-lock was supplied"
+        )
+    if override_lock is not None:
+        if (
+            not isinstance(override_header, dict)
+            or type(override_header.get("schemaVersion")) is not int
+        ):
+            raise SuiteError("candidate manifest add-on override schema is invalid")
+        expected_header = {
+            "schemaVersion": 1,
+            "atmons": "1.2.0",
+            "lockSha256": override_lock["lockSha256"],
+            "componentIds": override_lock["componentIds"],
+        }
+        if override_header != expected_header:
+            raise SuiteError("candidate manifest add-on override lock identity mismatch")
     components = value["components"]
     if [component.get("id") for component in components] != [
         component["id"] for component in expected
@@ -354,9 +396,19 @@ def load_candidate_manifest(path: Path) -> dict:
         raise SuiteError("candidate components do not equal the canonical ordered add-on set")
     filenames: set[str] = set()
     for candidate, released in zip(components, expected, strict=True):
+        override = (
+            override_lock["records"].get(released["id"])
+            if override_lock is not None
+            else None
+        )
         artifact = candidate.get("artifact")
         gate = candidate.get("gate")
         replacements = candidate.get("replacements")
+        expected_gate_mode = (
+            "local-candidate-two-class-surgical-overlay"
+            if override is not None
+            else "two-class-surgical-overlay"
+        )
         if (
             candidate.get("sourceCommit") != released["commit"]
             or candidate.get("sourceReleaseTag") != released["release_tag"]
@@ -368,7 +420,7 @@ def load_candidate_manifest(path: Path) -> dict:
             or artifact["sizeBytes"] < 1
             or not re.fullmatch(r"[0-9a-f]{64}", artifact.get("sha256", ""))
             or not isinstance(gate, dict)
-            or gate.get("mode") != "two-class-surgical-overlay"
+            or gate.get("mode") != expected_gate_mode
             or gate.get("status") != "passed"
             or gate.get("javacRelease") != 21
             or gate.get("zipIntegrity") != "passed"
@@ -376,6 +428,39 @@ def load_candidate_manifest(path: Path) -> dict:
             or len(replacements) != 2
         ):
             raise SuiteError(f"candidate overlay contract is invalid: {released['id']}")
+        if override is None:
+            if "releasedBaseline" in candidate or "localCandidateBase" in candidate:
+                raise SuiteError(
+                    f"unexpected local candidate state: {released['id']}"
+                )
+        else:
+            expected_released_baseline = {
+                "sourceCommit": released["commit"],
+                "releaseTag": released["release_tag"],
+                "artifact": {
+                    "filename": released["artifact"]["filename"],
+                    "sizeBytes": released["artifact"]["size_bytes"],
+                    "sha256": released["artifact"]["sha256"],
+                },
+            }
+            expected_local_base = {
+                "sourceCommit": override["sourceCommit"],
+                "version": override["artifact"]["version"],
+                "releaseProvenance": override["releaseProvenance"],
+                "artifact": {
+                    "filename": override["artifact"]["filename"],
+                    "sizeBytes": override["artifact"]["sizeBytes"],
+                    "sha256": override["artifact"]["sha256"],
+                },
+            }
+            if candidate.get("releasedBaseline") != expected_released_baseline:
+                raise SuiteError(
+                    f"candidate released baseline identity mismatch: {released['id']}"
+                )
+            if candidate.get("localCandidateBase") != expected_local_base:
+                raise SuiteError(
+                    f"candidate local base identity mismatch: {released['id']}"
+                )
         filenames.add(artifact["filename"])
         by_kind = {
             replacement.get("kind"): replacement
@@ -421,7 +506,36 @@ def stable_candidate_manifest(value: dict) -> dict:
     return stable
 
 
-def reproduce_candidate_overlays(path: Path, value: dict) -> dict[str, str | int]:
+def candidate_reproduction_command(
+    identity: dict,
+    output: Path,
+    work: Path,
+    override_lock_path: Path | None = None,
+) -> list[str]:
+    command = [
+        sys.executable,
+        str(CANDIDATE_BUILDER_PATH),
+        "--manifest",
+        str(TRACKED_MANIFEST),
+        "--bluemap-version",
+        identity["version"],
+        "--bluemap-commit",
+        identity["commit"],
+        "--output",
+        str(output),
+        "--work-root",
+        str(work),
+    ]
+    if override_lock_path is not None:
+        command.extend(["--addon-override-lock", str(override_lock_path)])
+    return command
+
+
+def reproduce_candidate_overlays(
+    path: Path,
+    value: dict,
+    override_lock_path: Path | None = None,
+) -> dict[str, str | int]:
     if sha256(CANDIDATE_BUILDER_PATH) != CANDIDATE_BUILDER_SHA256:
         raise SuiteError("candidate builder differs from its reviewed immutable digest")
     if path.name != "candidate-manifest.json":
@@ -432,20 +546,9 @@ def reproduce_candidate_overlays(path: Path, value: dict) -> dict[str, str | int
     ) as temporary:
         output = Path(temporary) / "output"
         work = Path(temporary) / "work"
-        command = [
-            sys.executable,
-            str(CANDIDATE_BUILDER_PATH),
-            "--manifest",
-            str(TRACKED_MANIFEST),
-            "--bluemap-version",
-            identity["version"],
-            "--bluemap-commit",
-            identity["commit"],
-            "--output",
-            str(output),
-            "--work-root",
-            str(work),
-        ]
+        command = candidate_reproduction_command(
+            identity, output, work, override_lock_path
+        )
         result = subprocess.run(
             command,
             cwd=ROOT,
@@ -1275,6 +1378,11 @@ def main() -> int:
     )
     parser.add_argument("--bluemap-commit", required=True)
     parser.add_argument("--candidate-manifest", type=Path, required=True)
+    parser.add_argument(
+        "--addon-override-lock",
+        type=Path,
+        help="absolute schema-1 JSON lock required by local add-on candidate manifests",
+    )
     parser.add_argument("--bluemap-jar", type=Path, required=True)
     parser.add_argument("--harness-jar", type=Path, required=True)
     parser.add_argument(
@@ -1332,10 +1440,23 @@ def main() -> int:
             layout_path,
             datapack_archive,
         )
+        require_pinned_manifest()
+        try:
+            tracked = json.loads(TRACKED_MANIFEST.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise SuiteError(f"cannot read tracked compatibility manifest: {exc}") from exc
+        override_lock_path = args.addon_override_lock
+        override_lock = (
+            load_addon_override_lock(override_lock_path, tracked)
+            if override_lock_path is not None
+            else None
+        )
         candidate_manifest_path = args.candidate_manifest.resolve()
-        candidate_manifest = load_candidate_manifest(candidate_manifest_path)
+        candidate_manifest = load_candidate_manifest(
+            candidate_manifest_path, override_lock
+        )
         candidate_reproduction = reproduce_candidate_overlays(
-            candidate_manifest_path, candidate_manifest
+            candidate_manifest_path, candidate_manifest, override_lock_path
         )
         candidate_identity = candidate_manifest["candidateBlueMap"]
         artifact_prefix = parse_json_argv(
