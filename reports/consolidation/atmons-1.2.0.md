@@ -116,6 +116,9 @@ checker and trust tooling without changing effective Gradle behavior.
 The [eleventh cohort](toolkit-gradle-convention-cohort-11.md) applies the same
 trust-only update to Chipped, Chisel, CobbleFurnies, and Glassential while
 retaining their exact public artifacts and deterministic gallery packages.
+The [twelfth cohort](toolkit-gradle-convention-cohort-12.md) moves Trophy
+Manager, Laser Bridges & Doors, More Red, and Lootr to the v0.3 trust commit
+and hash-locked wheel while preserving all release and gallery bytes.
 
 ## Deduplication result
 
