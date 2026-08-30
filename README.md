@@ -154,6 +154,9 @@ published outputs.
 The [eleventh toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-11.md)
 moves Chipped, Chisel, CobbleFurnies, and Glassential to the same v0.3 trust
 identity while preserving their publication and gallery bytes.
+The [twelfth toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-12.md)
+moves Trophy Manager, Laser Bridges & Doors, More Red, and Lootr to the v0.3
+trust and wheel identities without changing their published outputs.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
