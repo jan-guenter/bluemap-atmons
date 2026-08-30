@@ -109,6 +109,10 @@ admission, gallery behavior, and publication-versus-acceptance boundaries.
 The [ninth cohort](toolkit-gradle-convention-cohort-9.md) applies it to
 Crystalix and Powah while retaining their distinct gallery and owner-acceptance
 evidence boundaries.
+The [tenth cohort](toolkit-gradle-convention-cohort-10.md) updates the toolkit
+trust identity for Pipez, Create, Supplementaries, and Connected Glass. Both
+toolkit commits contain the same Gradle convention tree, so this cohort changes
+checker and trust tooling without changing effective Gradle behavior.
 
 ## Deduplication result
 
