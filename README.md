@@ -151,6 +151,9 @@ The [tenth toolkit trust cohort](reports/consolidation/toolkit-gradle-convention
 moves Pipez, Create, Supplementaries, and Connected Glass from the v0.2 trust
 pin to v0.3 while retaining the byte-identical Gradle convention and all
 published outputs.
+The [eleventh toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-11.md)
+moves Chipped, Chisel, CobbleFurnies, and Glassential to the same v0.3 trust
+identity while preserving their publication and gallery bytes.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
