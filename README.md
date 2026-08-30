@@ -178,6 +178,11 @@ The first production-code extraction is the source-bundled, JDK-only
 [`bluemap-addon-runtime` artifact detector](reports/consolidation/runtime-artifact-detection-module.md).
 Its report records the published module, passing combined server gate, and
 verified LaserIO, More Red, and Little Big Redstone consumer releases.
+The next two extractions remain format-specific:
+[`Athena and Fusion resource models`](reports/consolidation/athena-fusion-resource-models.md)
+records both released source modules, five verified consumer releases, and
+their shared 51-add-on cold-restart gate. No generic connected-texture runtime
+was introduced.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.

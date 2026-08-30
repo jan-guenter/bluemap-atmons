@@ -192,3 +192,20 @@ restart, all 51 activation checks, and all 51 gallery assertions. Their signed
 were merged with explicit two-parent commits, and were published as signed,
 attested public prereleases. The exact identities are recorded in the
 [runtime module report](runtime-artifact-detection-module.md).
+
+## Athena and Fusion resource-model extraction
+
+The next two production modules remain format-specific. Public
+`bluemap-athena-resource-models` and `bluemap-fusion-resource-models`
+`v0.1.0-alpha.1` releases contain only their proven neutral selection and
+orientation types. Consumers pin the exact module commits and compile their
+sources into each add-on; neither module is installed on the server.
+
+Chipped, Chisel, CobbleFurnies, Connected Glass, and Rechiseled removed 20
+consumer-local production sources while retaining every consumer-specific
+profile, resource closure, route, fallback, emitter, and gallery. Their signed
+`0.1.0-alpha.2` candidates passed exhaustive differential and archive gates,
+one combined 51-add-on cold-restart run with 51 successful gallery assertions,
+PR CI, exact-main CI, signed-tag publication, release checksum verification,
+and JAR attestation verification. The exact evidence is recorded in the
+[Athena and Fusion resource-model report](athena-fusion-resource-models.md).
