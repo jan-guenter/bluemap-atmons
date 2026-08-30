@@ -116,7 +116,12 @@ public final class BlueMap523Adapter {
 """
 
 
-def create_checkout(root: Path, artifact: Path, version: str) -> tuple[Path, str]:
+def create_checkout(
+    root: Path,
+    artifact: Path,
+    version: str,
+    candidate_status: str = "owner-accepted-release-candidate",
+) -> tuple[Path, str]:
     checkout = root / "addon"
     source_root = checkout / "src/main/java/example"
     source_root.mkdir(parents=True)
@@ -131,25 +136,28 @@ def create_checkout(root: Path, artifact: Path, version: str) -> tuple[Path, str
     )
     provenance = checkout / "provenance/release.json"
     provenance.parent.mkdir(parents=True)
+    artifact_record = {
+        "production_jar": {
+            "file_name": artifact.name,
+            "size": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+        }
+    }
+    value = {
+        "schema_version": 1,
+        "status": candidate_status,
+        "version": version,
+        "tag": f"v{version}",
+    }
+    if candidate_status == "owner-accepted-release-candidate":
+        value["final_release_artifacts"] = artifact_record
+    elif candidate_status == "unpublished-migration-candidate":
+        value["published"] = False
+        value["candidate_artifacts"] = artifact_record
+    else:
+        raise ValueError(f"unsupported fixture candidate status: {candidate_status}")
     provenance.write_text(
-        json.dumps(
-            {
-                "schema_version": 1,
-                "status": "owner-accepted-release-candidate",
-                "version": version,
-                "tag": f"v{version}",
-                "final_release_artifacts": {
-                    "production_jar": {
-                        "file_name": artifact.name,
-                        "size": artifact.stat().st_size,
-                        "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
-                    }
-                },
-            },
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
+        json.dumps(value, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     subprocess.run(["git", "init", "-q", str(checkout)], check=True)
@@ -178,6 +186,8 @@ def create_native_checkout(
     artifact: Path,
     version: str,
     provenance_shape: str = "migration",
+    candidate_status: str = "owner-accepted-release-candidate",
+    candidate_published: bool = False,
     adapter_overrides: dict | None = None,
     render_core_overrides: dict | None = None,
     include_render_core: bool = True,
@@ -197,17 +207,24 @@ def create_native_checkout(
     provenance.parent.mkdir(parents=True)
     value = {
         "schema_version": 1,
-        "status": "owner-accepted-release-candidate",
+        "status": candidate_status,
         "version": version,
         "tag": f"v{version}",
-        "final_release_artifacts": {
-            "production_jar": {
-                "file_name": artifact.name,
-                "size": artifact.stat().st_size,
-                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
-            }
-        },
     }
+    artifact_record = {
+        "production_jar": {
+            "file_name": artifact.name,
+            "size": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+        }
+    }
+    if candidate_status == "owner-accepted-release-candidate":
+        value["final_release_artifacts"] = artifact_record
+    elif candidate_status == "unpublished-migration-candidate":
+        value["published"] = candidate_published
+        value["candidate_artifacts"] = artifact_record
+    else:
+        raise ValueError(f"unsupported fixture candidate status: {candidate_status}")
     if provenance_shape == "migration":
         value["adapter_api_migration"] = {
             "module_repository": "https://github.com/jan-guenter/"
@@ -570,7 +587,12 @@ def check_native_feature_backport_override() -> None:
         root = Path(temporary)
         artifact = root / "bluemap-fixture-addon-0.2.0-alpha.2.jar"
         write_native_jar(artifact)
-        checkout, commit = create_native_checkout(root, artifact, "0.2.0-alpha.2")
+        checkout, commit = create_native_checkout(
+            root,
+            artifact,
+            "0.2.0-alpha.2",
+            candidate_status="unpublished-migration-candidate",
+        )
         component = {
             "id": "fixture",
             "kind": "addon",
@@ -616,6 +638,9 @@ def check_native_feature_backport_override() -> None:
         finally:
             MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
         record = loaded["records"]["fixture"]
+        assert record["releaseProvenance"]["status"] == (
+            "unpublished-migration-candidate"
+        )
         native = record["nativeFeatureBackport"]
         assert native["blueMapVersion"] == MODULE.FEATURE_BACKPORT_VERSION
         assert native["blueMapCommit"] == MODULE.FEATURE_BACKPORT_COMMIT
@@ -626,6 +651,32 @@ def check_native_feature_backport_override() -> None:
         assert set(native["adapterApiClassSha256"].values()) == {fixture_class_sha256}
         assert native["migrationProvenance"]["section"] == "adapter_api_migration"
         assert native["migrationProvenance"]["commit"] == MODULE.ADAPTER_API_COMMIT
+
+        invalid_checkout, invalid_commit = create_native_checkout(
+            root / "published-migration",
+            artifact,
+            "0.2.0-alpha.2",
+            candidate_status="unpublished-migration-candidate",
+            candidate_published=True,
+        )
+        artifact_record = {
+            "filename": artifact.name,
+            "sizeBytes": artifact.stat().st_size,
+            "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "version": "0.2.0-alpha.2",
+        }
+        try:
+            MODULE._validate_override_release_provenance(
+                invalid_checkout,
+                invalid_commit,
+                "fixture",
+                artifact_record,
+            )
+        except MODULE.CandidateError as exc:
+            assert "differs from exact source provenance" in str(exc)
+        else:
+            raise AssertionError("published migration candidate was accepted")
+
         selected = MODULE.select_component_inputs(component, None, record)
         assert selected["gateMode"] == "local-native-523-entrypoint-overlay"
         prepared, replacements = MODULE.prepare_component_sources(
@@ -677,6 +728,44 @@ def check_native_feature_backport_override() -> None:
             raise AssertionError("root-level bluemap522 class was accepted")
         finally:
             MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
+
+
+def check_unpublished_migration_requires_native_523() -> None:
+    with tempfile.TemporaryDirectory(
+        prefix="bluemap-atmons-legacy-migration-override-"
+    ) as temporary:
+        root = Path(temporary)
+        artifact = root / "bluemap-fixture-addon-0.2.0-alpha.2.jar"
+        write_jar(artifact, version="0.2.0-alpha.2")
+        checkout, commit = create_checkout(
+            root,
+            artifact,
+            "0.2.0-alpha.2",
+            candidate_status="unpublished-migration-candidate",
+        )
+        manifest = {
+            "components": [
+                {
+                    "id": "fixture",
+                    "kind": "addon",
+                    "submodule_path": "addons/fixture",
+                    "commit": "1" * 40,
+                }
+            ]
+        }
+        lock_path = root / "override-lock.json"
+        write_native_override_lock(
+            lock_path,
+            checkout,
+            commit,
+            artifact,
+            "0.2.0-alpha.2",
+        )
+        expect_override_error(
+            lock_path,
+            manifest,
+            "unpublished migration candidate lacks the exact native 5.23 adapter contract",
+        )
 
 
 def check_paired_native_feature_backport_provenance() -> None:
@@ -885,6 +974,7 @@ def main() -> int:
         assert "integrationCandidateInstallResult" in patched_entrypoint.read_text(encoding="utf-8")
     check_override_lock()
     check_native_feature_backport_override()
+    check_unpublished_migration_requires_native_523()
     check_paired_native_feature_backport_provenance()
     print("PASS: candidate add-on source rewriting")
     return 0

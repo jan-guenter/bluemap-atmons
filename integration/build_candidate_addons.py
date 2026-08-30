@@ -234,10 +234,22 @@ def _validate_override_release_provenance(
         ) from exc
     if not isinstance(value, dict):
         raise CandidateError(f"{component_id}: release provenance must be an object")
-    final_artifacts = value.get("final_release_artifacts")
+    status = value.get("status")
+    if status == "owner-accepted-release-candidate":
+        artifacts = value.get("final_release_artifacts")
+        status_valid = "candidate_artifacts" not in value
+    elif status == "unpublished-migration-candidate":
+        artifacts = value.get("candidate_artifacts")
+        status_valid = (
+            value.get("published") is False
+            and "final_release_artifacts" not in value
+        )
+    else:
+        artifacts = None
+        status_valid = False
     production_jar = (
-        final_artifacts.get("production_jar")
-        if isinstance(final_artifacts, dict)
+        artifacts.get("production_jar")
+        if isinstance(artifacts, dict)
         else None
     )
     expected_production_jar = {
@@ -248,7 +260,7 @@ def _validate_override_release_provenance(
     if (
         type(value.get("schema_version")) is not int
         or value.get("schema_version") != 1
-        or value.get("status") != "owner-accepted-release-candidate"
+        or not status_valid
         or value.get("version") != artifact["version"]
         or value.get("tag") != f"v{artifact['version']}"
         or production_jar != expected_production_jar
@@ -259,7 +271,7 @@ def _validate_override_release_provenance(
     return {
         "path": provenance_path,
         "sha256": hashlib.sha256(raw).hexdigest(),
-        "status": value["status"],
+        "status": status,
     }
 
 
@@ -698,6 +710,14 @@ def load_addon_override_lock(path: Path, manifest: dict) -> dict:
         native_feature_backport = _native_feature_backport_contract(
             checkout, source_commit, component_id, artifact_path
         )
+        if (
+            release_provenance["status"] == "unpublished-migration-candidate"
+            and native_feature_backport is None
+        ):
+            raise CandidateError(
+                f"{component_id}: unpublished migration candidate lacks the exact "
+                "native 5.23 adapter contract"
+            )
         artifact_paths.add(artifact_path)
         records[component_id] = {
             "checkout": checkout,

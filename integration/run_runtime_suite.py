@@ -29,7 +29,7 @@ COMPOSER_PATH = ROOT / "integration" / "galleries" / "compose.py"
 COMPOSER_VERSION = "2.4.0"
 COMPOSER_SHA256 = "708099496c437b3d3aa926f45f076f50d46b34882bdbaef27fa0ce8fb1d3a3bf"
 CANDIDATE_BUILDER_PATH = ROOT / "integration" / "build_candidate_addons.py"
-CANDIDATE_BUILDER_SHA256 = "746b63f657db9a6fc76ead262c9dbabe811d219cea58ed3d0029d1d272a107da"
+CANDIDATE_BUILDER_SHA256 = "8015fd5f7550b8320f37b6cbf150cf70ae7c522b802aca3580c794db608addb7"
 EXPECTED_COMPOSITION_OPTIONS = {
     "minimumY": 195,
     "originX": 8192,

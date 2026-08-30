@@ -65,11 +65,16 @@ python integration/build_candidate_addons.py \
 The output must contain 51 JARs and a `candidate-manifest.json` whose summary is
 `passed` with 51 components.
 
-To test explicit alternate add-on releases or sealed candidates, pass an absolute JSON lock with
-`--addon-override-lock`. Each listed checkout must be clean and at the declared
-HEAD. The exact commit's tracked `provenance/release.json` must identify the
-same version, filename, size, and SHA-256 as the artifact, and the JAR manifest
-must carry that version. Each artifact path must name that exact readable
+To test explicit alternate add-on releases or sealed candidates, pass an
+absolute JSON lock with `--addon-override-lock`. Each listed checkout must be
+clean and at the declared HEAD. The exact commit's tracked
+`provenance/release.json` must identify the same version, filename, size, and
+SHA-256 as the artifact, and the JAR manifest must carry that version. The gate
+accepts either an `owner-accepted-release-candidate` with
+`final_release_artifacts`, or an `unpublished-migration-candidate` with
+`published: false` and `candidate_artifacts`. The latter exists only so a
+sealed native migration can complete integration before owner review. It is
+not release approval. Each artifact path must name that exact readable
 production JAR:
 
 ```json
