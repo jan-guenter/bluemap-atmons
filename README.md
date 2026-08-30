@@ -147,6 +147,10 @@ multi-input, gallery, acceptance-state, PR CI, and post-merge CI boundaries.
 The [ninth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-9.md)
 records Crystalix and Powah with their exact publication, gallery,
 acceptance-evidence, PR CI, and post-merge CI boundaries.
+The [tenth toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-10.md)
+moves Pipez, Create, Supplementaries, and Connected Glass from the v0.2 trust
+pin to v0.3 while retaining the byte-identical Gradle convention and all
+published outputs.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
