@@ -207,6 +207,12 @@ and
 conditions. Keep consumer allowlists, exact artifact profiles, and generated
 resource closure local.
 
+**Implemented:** `bluemap-athena-resource-models` `v0.1.0-alpha.1` now owns
+the four neutral pure-model types. Chipped, Chisel, and CobbleFurnies pin it
+and released `0.1.0-alpha.2` after the combined 51-add-on gate. Factory Blocks
+remains an opt-in follow-up. Exact identities are in the
+[resource-model extraction report](../consolidation/athena-fusion-resource-models.md).
+
 ## Fusion resource models
 
 Connected Glass, Glassential, Rechiseled, and Rechiseled: Create contain the
@@ -240,6 +246,12 @@ and
 `fusion-resource-models`. Keep format-version profiles, namespace adapters,
 resource catalogs, and route allowlists local. Preserve the BlueMap MIT notice
 on emitter mechanics adapted from BlueMap.
+
+**Implemented:** `bluemap-fusion-resource-models` `v0.1.0-alpha.1` now owns
+the five neutral mask/layout/orientation types. Connected Glass and Rechiseled
+pin it and released `0.1.0-alpha.2` after the same combined gate. Glassential
+and Rechiseled: Create remain opt-in follow-ups. Exact identities are in the
+[resource-model extraction report](../consolidation/athena-fusion-resource-models.md).
 
 ## Installed Geo and general model compilers
 
