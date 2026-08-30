@@ -157,6 +157,9 @@ identity while preserving their publication and gallery bytes.
 The [twelfth toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-12.md)
 moves Trophy Manager, Laser Bridges & Doors, More Red, and Lootr to the v0.3
 trust and wheel identities without changing their published outputs.
+The [thirteenth toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-13.md)
+completes the v0.2-to-v0.3 migration with XNet, LaserIO, Little Big Redstone,
+and Nature's Aura while retaining exact publication and gallery parity.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
