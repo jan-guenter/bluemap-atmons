@@ -477,13 +477,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-little-big-redstone-addon",
       "submodule_path": "addons/little-big-redstone",
-      "commit": "cee9ed82e22e8041d53c3d9d54a61bee82da72a1",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "0aa75c5c9152c3a99cb3480ba5d30a1c4031fd82",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-little-big-redstone-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-little-big-redstone-addon/releases/download/v0.1.0-alpha.1/bluemap-little-big-redstone-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 54658,
-        "sha256": "d3bf3ee012b5a00e3f1d546429c1f7f72a183e27e38088deaae9654a9d4750a5"
+        "filename": "bluemap-little-big-redstone-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-little-big-redstone-addon/releases/download/v0.1.0-alpha.3/bluemap-little-big-redstone-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 60091,
+        "sha256": "0e5e4133980917d504fd5bac3c1776219ddc7d34353bb65810f2480170e57522"
       },
       "requires": [
         "bluemap"
