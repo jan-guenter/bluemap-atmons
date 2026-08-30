@@ -144,6 +144,9 @@ the same boundary, including their multi-artifact and resource-pin gates.
 The [eighth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-8.md)
 records Camol, Integrated Dynamics, Oritech, and Mekanism with their exact
 multi-input, gallery, acceptance-state, PR CI, and post-merge CI boundaries.
+The [ninth convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-9.md)
+records Crystalix and Powah with their exact publication, gallery,
+acceptance-evidence, PR CI, and post-merge CI boundaries.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
