@@ -32,7 +32,7 @@ COMMIT_RE = re.compile(r"[0-9a-f]{40}")
 GALLERY_TEST_RE = re.compile(r"^gallery/(?:.*/)?test_[^/]+\.py$")
 ADDON_ID_RE = re.compile(r"[a-z0-9][a-z0-9-]*")
 GRADLE_ARTIFACT_PROPERTY_RE = re.compile(r"[A-Za-z][A-Za-z0-9]*Jar")
-ATMONS_1_2_0_MANIFEST_SHA256 = "c181203ddaf4ad353cecf7975af21acb1f55011b5a8c8f1b25bf79a8202db138"
+ATMONS_1_2_0_MANIFEST_SHA256 = "0137acfdd15f87e673db98e71a743b6d137d02d67eb04a22d02ae684147cca10"
 ATMONS_1_2_0_VALIDATOR_SHA256 = "10ac46a5f99bfa440dae6b15ab2cad3432e0a3acadf4c2b204597b30ae8a46b7"
 
 

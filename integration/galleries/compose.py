@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "c181203ddaf4ad353cecf7975af21acb1f55011b5a8c8f1b25bf79a8202db138"
+EXPECTED_MANIFEST_SHA256 = "0137acfdd15f87e673db98e71a743b6d137d02d67eb04a22d02ae684147cca10"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
