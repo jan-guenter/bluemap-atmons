@@ -164,8 +164,8 @@ extraction order:
 3. separate `athena-resource-models` and `fusion-resource-models` modules;
 4. the narrow `bluemap-addon-render-core`, whose completed first pilot moves
    the exact face-lighting API into Chipped, LaserIO, and Pipez;
-5. provisional `installed-geo-resource-models` after a three-consumer parity
-   suite;
+5. `bluemap-installed-geo-resource-models`, whose three-consumer suite covers
+   static models and sampled poses;
 6. `bluemap-addon-adapter-api` only after BlueMap 5.23 has a stable combined
    runtime gate.
 
@@ -226,3 +226,22 @@ all 51 gallery assertions. The three candidates passed PR CI and exact-main
 CI and were published under signed, attested tags. The exact module, consumer,
 artifact, and runtime identities are recorded in the
 [render-core report](render-core-lighting-module.md).
+
+## Installed GEO resource-model extraction
+
+Public `bluemap-installed-geo-resource-models` `v0.1.0-alpha.1` contains the
+bounded Bedrock GEO 1.12.0 compiler, immutable mesh model, and optional
+per-bone pose input. It contains no installed assets, model names, resource
+paths, add-on registration, or consumer policy. Consumers pin the exact
+module commit and compile its source into their own add-on JARs.
+
+Ars Technica and Ars Nouveau removed their local compiler and model copies.
+Ars Creo exercises the sampled-pose path while retaining its animation parser
+and wheel renderer. All three published signed, attested `v0.1.0-alpha.2`
+releases after exact ordered-mesh, archive, gallery, PR CI, and exact-main
+gates. The exact module, consumer, artifact, and cumulative runtime identities
+are recorded in the [installed GEO report](installed-geo-resource-models.md).
+
+The immutable `atmons-1.2.0` tag, `versions/1.2.0/manifest.json`, installer
+metadata, and pinned add-on gitlinks remain unchanged. These compatible later
+releases are consolidation evidence for a future snapshot.

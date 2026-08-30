@@ -190,6 +190,13 @@ It records the released source module, verified Chipped, LaserIO, and Pipez
 releases, and their passing 51-add-on restart gate. The module contains only
 the proven face-light sampler. Mesh emission and renderer policy remain local.
 
+The fifth production-code extraction is the source-bundled
+[`installed GEO resource-model module`](reports/consolidation/installed-geo-resource-models.md).
+It records the released parser and model module, exact static and sampled-pose
+parity, and the Ars Technica, Ars Nouveau, and Ars Creo consumer migrations.
+Each consumer keeps resource admission, named model contracts, animation
+parsing, mesh emission, and fallback policy local.
+
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
 
