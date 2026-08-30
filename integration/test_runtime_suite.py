@@ -110,6 +110,12 @@ def check_candidate_override_contract() -> None:
         checkout = root / "candidate-source"
         checkout.mkdir()
         (checkout / "README.md").write_text("fixture\n", encoding="utf-8")
+        compatibility = checkout / "src/main/java/example/AdapterCompatibility.java"
+        compatibility.parent.mkdir(parents=True)
+        compatibility.write_text(
+            "package example;\npublic final class AdapterCompatibility {}\n",
+            encoding="utf-8",
+        )
         provenance = checkout / "provenance/release.json"
         provenance.parent.mkdir(parents=True)
         provenance.write_text(
@@ -228,6 +234,50 @@ def check_candidate_override_contract() -> None:
         serialized = manifest_path.read_text(encoding="utf-8")
         assert str(checkout) not in serialized
         assert str(artifact) not in serialized
+
+        native_lock = json.loads(json.dumps(lock, default=str))
+        native_contract = {
+            "blueMapVersion": default_value["candidateBlueMap"]["version"],
+            "blueMapCommit": default_value["candidateBlueMap"]["commit"],
+            "adapterApiCommit": "8" * 40,
+        }
+        native_lock["records"]["ae2"]["nativeFeatureBackport"] = native_contract
+        native_value = json.loads(json.dumps(override_value))
+        native_record = next(
+            component
+            for component in native_value["components"]
+            if component["id"] == "ae2"
+        )
+        native_record["gate"]["mode"] = "local-native-523-entrypoint-overlay"
+        native_record["replacements"] = [
+            replacement
+            for replacement in native_record["replacements"]
+            if replacement["kind"] == "entrypoint"
+        ]
+        native_record["localCandidateBase"][
+            "nativeFeatureBackport"
+        ] = native_contract
+        manifest_path.write_text(
+            json.dumps(native_value, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        assert MODULE.load_candidate_manifest(manifest_path, native_lock) == native_value
+
+        mismatched_identity = json.loads(json.dumps(native_value))
+        mismatched_identity["candidateBlueMap"]["commit"] = "9" * 40
+        manifest_path.write_text(
+            json.dumps(mismatched_identity, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path, native_lock),
+            "native candidate BlueMap identity mismatch",
+        )
+
+        manifest_path.write_text(
+            json.dumps(override_value, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
 
         invalid_schema = json.loads(json.dumps(override_value))
         invalid_schema["schemaVersion"] = True

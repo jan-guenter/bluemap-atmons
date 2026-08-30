@@ -79,6 +79,42 @@ public final class BlueMap522Adapter {
 }
 """
 
+NATIVE_ENTRYPOINT_SOURCE = """package example;
+
+import io.github.janguenter.bluemap.addon.adapter.api.bluemap523.BlueMapRuntimeCompatibility;
+import java.lang.reflect.Method;
+
+public final class BlueMapFixtureAddon implements Runnable {
+    public void run() {
+        try {
+            if (!BlueMapRuntimeCompatibility.matchesCurrent()) {
+                inactive("unsupported", null);
+                return;
+            }
+            Class<?> adapter = Class.forName(
+                    "example.adapter.bluemap523.BlueMap523Adapter"
+            );
+            Method install = adapter.getMethod("install");
+            install.invoke(null);
+        } catch (ReflectiveOperationException exception) {
+            inactive("adapter unavailable", exception);
+        }
+    }
+
+    private static void inactive(String reason, Throwable cause) {
+    }
+}
+"""
+
+NATIVE_ADAPTER_SOURCE = """package example.adapter.bluemap523;
+
+public final class BlueMap523Adapter {
+    public static synchronized boolean install() {
+        return true;
+    }
+}
+"""
+
 
 def create_checkout(root: Path, artifact: Path, version: str) -> tuple[Path, str]:
     checkout = root / "addon"
@@ -137,6 +173,87 @@ def create_checkout(root: Path, artifact: Path, version: str) -> tuple[Path, str
     return checkout, commit
 
 
+def create_native_checkout(
+    root: Path, artifact: Path, version: str
+) -> tuple[Path, str]:
+    checkout = root / "native-addon"
+    source_root = checkout / "src/main/java/example"
+    adapter_root = source_root / "adapter/bluemap523"
+    adapter_root.mkdir(parents=True)
+    (source_root / "BlueMapFixtureAddon.java").write_text(
+        NATIVE_ENTRYPOINT_SOURCE, encoding="utf-8"
+    )
+    (adapter_root / "BlueMap523Adapter.java").write_text(
+        NATIVE_ADAPTER_SOURCE, encoding="utf-8"
+    )
+    provenance = checkout / "provenance/release.json"
+    provenance.parent.mkdir(parents=True)
+    provenance.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "status": "owner-accepted-release-candidate",
+                "version": version,
+                "tag": f"v{version}",
+                "final_release_artifacts": {
+                    "production_jar": {
+                        "file_name": artifact.name,
+                        "size": artifact.stat().st_size,
+                        "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                    }
+                },
+                "adapter_api_migration": {
+                    "module_repository": "https://github.com/jan-guenter/"
+                    "bluemap-addon-adapter-api",
+                    "module_version": MODULE.ADAPTER_API_VERSION,
+                    "module_tag": MODULE.ADAPTER_API_TAG,
+                    "module_release_commit": MODULE.ADAPTER_API_COMMIT,
+                    "module_source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+                    "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
+                    "standalone_module_jar_bundled": False,
+                    "standalone_module_jar_installed": False,
+                },
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "init", "-q", str(checkout)], check=True)
+    subprocess.run(
+        ["git", "-C", str(checkout), "config", "user.email", "test@example.invalid"],
+        check=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "config", "user.name", "test"], check=True
+    )
+    subprocess.run(["git", "-C", str(checkout), "add", "."], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(checkout),
+            "update-index",
+            "--add",
+            "--cacheinfo",
+            f"160000,{MODULE.ADAPTER_API_COMMIT},{MODULE.ADAPTER_API_GITLINK}",
+        ],
+        check=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(checkout), "commit", "-qm", "native fixture"], check=True
+    )
+    (checkout / MODULE.ADAPTER_API_GITLINK).mkdir(parents=True)
+    commit = subprocess.run(
+        ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+    return checkout, commit
+
+
 def write_jar(path: Path, version: str = "0.2.0-alpha.1", payload: bytes = b"fixture") -> None:
     with zipfile.ZipFile(path, "w") as archive:
         archive.writestr(
@@ -145,6 +262,21 @@ def write_jar(path: Path, version: str = "0.2.0-alpha.1", payload: bytes = b"fix
             f"Implementation-Version: {version}\r\n\r\n",
         )
         archive.writestr("example/Fixture.class", payload)
+
+
+def write_native_jar(path: Path, version: str = "0.2.0-alpha.2") -> None:
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr(
+            "META-INF/MANIFEST.MF",
+            "Manifest-Version: 1.0\r\n"
+            f"Implementation-Version: {version}\r\n\r\n",
+        )
+        for class_name in sorted(MODULE.ADAPTER_API_CLASSES):
+            archive.writestr(class_name, b"fixture class")
+        archive.writestr("example/BlueMapFixtureAddon.class", b"entrypoint")
+        archive.writestr(
+            "example/adapter/bluemap523/BlueMap523Adapter.class", b"adapter"
+        )
 
 
 def expect_override_error(path: Path, manifest: dict, fragment: str) -> None:
@@ -341,6 +473,120 @@ def check_override_lock() -> None:
         assert "--addon-override-lock must be an absolute path" in cli.stdout
 
 
+def check_native_feature_backport_override() -> None:
+    with tempfile.TemporaryDirectory(prefix="bluemap-atmons-native-override-") as temporary:
+        root = Path(temporary)
+        artifact = root / "bluemap-fixture-addon-0.2.0-alpha.2.jar"
+        write_native_jar(artifact)
+        checkout, commit = create_native_checkout(root, artifact, "0.2.0-alpha.2")
+        component = {
+            "id": "fixture",
+            "kind": "addon",
+            "submodule_path": "addons/fixture",
+            "commit": "1" * 40,
+        }
+        manifest = {"components": [component]}
+        lock_path = root / "override-lock.json"
+        lock_path.write_text(
+            json.dumps(
+                {
+                    "schemaVersion": 1,
+                    "atmons": "1.2.0",
+                    "components": [
+                        {
+                            "id": "fixture",
+                            "source": {"checkout": str(checkout), "commit": commit},
+                            "artifact": {
+                                "path": str(artifact),
+                                "filename": artifact.name,
+                                "sizeBytes": artifact.stat().st_size,
+                                "sha256": hashlib.sha256(
+                                    artifact.read_bytes()
+                                ).hexdigest(),
+                                "version": "0.2.0-alpha.2",
+                            },
+                        }
+                    ],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        fixture_class_sha256 = hashlib.sha256(b"fixture class").hexdigest()
+        original_class_sha256 = MODULE.ADAPTER_API_CLASS_SHA256
+        MODULE.ADAPTER_API_CLASS_SHA256 = {
+            name: {fixture_class_sha256} for name in MODULE.ADAPTER_API_CLASSES
+        }
+        try:
+            loaded = MODULE.load_addon_override_lock(lock_path, manifest)
+        finally:
+            MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
+        record = loaded["records"]["fixture"]
+        native = record["nativeFeatureBackport"]
+        assert native["blueMapVersion"] == MODULE.FEATURE_BACKPORT_VERSION
+        assert native["blueMapCommit"] == MODULE.FEATURE_BACKPORT_COMMIT
+        assert native["blueMapApiCommit"] == MODULE.FEATURE_BACKPORT_API_COMMIT
+        assert native["adapterApiCommit"] == MODULE.ADAPTER_API_COMMIT
+        assert native["adapterApiSourceTree"] == MODULE.ADAPTER_API_SOURCE_TREE
+        assert native["adapterApiClassCount"] == 4
+        assert set(native["adapterApiClassSha256"].values()) == {fixture_class_sha256}
+        assert native["migrationProvenance"]["section"] == "adapter_api_migration"
+        assert native["migrationProvenance"]["commit"] == MODULE.ADAPTER_API_COMMIT
+        selected = MODULE.select_component_inputs(component, None, record)
+        assert selected["gateMode"] == "local-native-523-entrypoint-overlay"
+        prepared, replacements = MODULE.prepare_component_sources(
+            component,
+            root / "work",
+            MODULE.FEATURE_BACKPORT_VERSION,
+            MODULE.FEATURE_BACKPORT_COMMIT,
+            checkout,
+            commit,
+            native,
+        )
+        assert len(prepared) == 1
+        assert [replacement["kind"] for replacement in replacements] == ["entrypoint"]
+        patched = prepared[0].read_text(encoding="utf-8")
+        assert "AdapterCompatibility" not in patched
+        assert (
+            "BlueMap ATMons integration candidate activated: fixture@"
+            + MODULE.FEATURE_BACKPORT_COMMIT
+        ) in patched
+        try:
+            MODULE.prepare_component_sources(
+                component,
+                root / "wrong-target",
+                MODULE.FEATURE_BACKPORT_VERSION,
+                "0" * 40,
+                checkout,
+                commit,
+                native,
+            )
+        except MODULE.CandidateError as exc:
+            assert "can only be tested against" in str(exc)
+        else:
+            raise AssertionError("native 5.23 release accepted an unrelated runtime")
+
+        stale_artifact = root / "stale-522-package.jar"
+        write_native_jar(stale_artifact)
+        with zipfile.ZipFile(stale_artifact, "a") as archive:
+            archive.writestr("bluemap522/Stale.class", b"stale")
+        MODULE.ADAPTER_API_CLASS_SHA256 = {
+            name: {fixture_class_sha256} for name in MODULE.ADAPTER_API_CLASSES
+        }
+        try:
+            MODULE._native_feature_backport_contract(
+                checkout, commit, "fixture", stale_artifact
+            )
+        except MODULE.CandidateError as exc:
+            assert "contains 5.22-package classes" in str(exc)
+        else:
+            raise AssertionError("root-level bluemap522 class was accepted")
+        finally:
+            MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "AdapterCompatibility.java"
@@ -421,6 +667,7 @@ def main() -> int:
         assert "INTEGRATION_CANDIDATE_VERSION" in compatibility.read_text(encoding="utf-8")
         assert "integrationCandidateInstallResult" in patched_entrypoint.read_text(encoding="utf-8")
     check_override_lock()
+    check_native_feature_backport_override()
     print("PASS: candidate add-on source rewriting")
     return 0
 
