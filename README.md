@@ -166,6 +166,18 @@ Storage, Logistics Networks, and Rechiseled.
 The [fifteenth shared-convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-15.md)
 continues with Modular Routers, Rechiseled Create, Cobblemon Stone Statues,
 and Botany Pots while preserving their exact outputs and release identities.
+The [sixteenth shared-convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-16.md)
+records SecurityCraft, RFTools Utility, Immersive Engineering, and Immersive
+Energistics under the same exact artifact, gallery, PR CI, and exact-main CI
+boundary.
+The [seventeenth shared-convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-17.md)
+records Sophisticated, FramedBlocks, and AE2 and closes the convention rollout
+across all 51 add-on repositories.
+
+The first production-code extraction is the source-bundled, JDK-only
+[`bluemap-addon-runtime` artifact detector](reports/consolidation/runtime-artifact-detection-module.md).
+Its report records the published module, passing combined server gate, and
+verified LaserIO, More Red, and Little Big Redstone consumer releases.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.

@@ -63,6 +63,43 @@ python integration/build_candidate_addons.py \
 The output must contain 51 JARs and a `candidate-manifest.json` whose summary is
 `passed` with 51 components.
 
+To test unreleased add-on candidates, pass an absolute JSON lock with
+`--addon-override-lock`. Each listed checkout must be clean and at the declared
+HEAD. The exact commit's tracked `provenance/release.json` must identify the
+same version, filename, size, and SHA-256 as the artifact, and the JAR manifest
+must carry that version. Each artifact path must name that exact readable
+production JAR:
+
+```json
+{
+  "schemaVersion": 1,
+  "atmons": "1.2.0",
+  "components": [
+    {
+      "id": "laserio",
+      "source": {
+        "checkout": "/absolute/path/to/bluemap-laserio-addon",
+        "commit": "0123456789abcdef0123456789abcdef01234567"
+      },
+      "artifact": {
+        "path": "/absolute/path/to/bluemap-laserio-addon-0.2.0-alpha.1.jar",
+        "filename": "bluemap-laserio-addon-0.2.0-alpha.1.jar",
+        "sizeBytes": 12345,
+        "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        "version": "0.2.0-alpha.1"
+      }
+    }
+  ]
+}
+```
+
+The builder copies that local base JAR, overlays the two candidate classes, and
+retains the compatibility manifest's canonical output filename. Its output
+manifest records the released baseline, local base and release-provenance
+identities, and lock hash. It does not record local paths, including on a failed
+overlay build. A release-only invocation retains the existing schema and
+behavior.
+
 ## Individual add-on gates
 
 Inspect the complete deterministic command plan without running it:
@@ -115,6 +152,7 @@ python integration/run_runtime_suite.py \
   --exec-prefix-json '["kubectl","exec","...","--","rcon-cli"]' \
   --bluemap-commit '<full-candidate-commit>' \
   --candidate-manifest .tmp/integration/candidate-addons/candidate-manifest.json \
+  --addon-override-lock /absolute/path/to/addon-override-lock.json \
   --bluemap-jar /absolute/path/to/candidate-bluemap.jar \
   --harness-jar integration/harness/build/libs/bluemap-atmons-integration-harness-0.1.0-SNAPSHOT.jar \
   --artifact-exec-prefix-json '["kubectl","exec","...","--"]' \
@@ -129,6 +167,11 @@ python integration/run_runtime_suite.py \
   --expected-runtime-jar-count 377 \
   --restart-exec-json '["/absolute/path/to/controlled-restart-hook"]'
 ```
+
+Omit `--addon-override-lock` for the ordinary release-only 51-add-on run. If
+the candidate manifest contains any local add-on base, the runtime suite
+requires the same lock, validates it again, and passes it to the independent
+51-overlay reproduction.
 
 The suite completes its initial live preflight, then requires one controlled
 container restart before it prepares or builds any gallery. A restart hook must

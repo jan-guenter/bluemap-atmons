@@ -128,6 +128,23 @@ Logistics Networks, and Rechiseled while preserving their exact outputs.
 The [fifteenth cohort](toolkit-gradle-convention-cohort-15.md) continues that
 migration with Modular Routers, Rechiseled Create, Cobblemon Stone Statues,
 and Botany Pots under the same exact artifact and gallery parity boundary.
+The [sixteenth cohort](toolkit-gradle-convention-cohort-16.md) covers
+SecurityCraft, RFTools Utility, Immersive Engineering, and Immersive
+Energistics. It retains their exact input matrices, publication files,
+galleries, CI checkout identities, and release tags.
+The [seventeenth cohort](toolkit-gradle-convention-cohort-17.md) closes the
+rollout with Sophisticated, FramedBlocks, and AE2. AE2's repository policy
+required a linear GitHub rebase. The reviewed feature is owner-signed, while
+that migration's rebased main commit is unsigned but has exactly the reviewed
+tree. A later workflow-only de-duplication squash is GitHub-signed and retains
+the same release artifacts. The report keeps all of those identities
+separate.
+
+All 51 add-on repositories now use the v0.3 source-distributed Gradle
+convention. Forty-nine are covered by the pilot and numbered cohort reports;
+EnderIO and RFTools Builder completed equivalent standalone migrations. Every
+adoption retained the consumer's exact inputs and accepted outputs. The
+convention work changed no compatibility pin or released add-on.
 
 ## Deduplication result
 
@@ -156,3 +173,22 @@ The scan rejects a generic connected-texture engine. Athena, Fusion, and CTM
 have different formats and failure contracts. It also rejects an installed
 shared runtime for now because BlueMap's separate add-on classloaders do not
 provide a safe version-range or class-identity contract.
+
+## Runtime module extraction
+
+The first production-code extraction now has a published module. Public
+[`bluemap-addon-runtime` `v0.1.0-alpha.1`](runtime-artifact-detection-module.md)
+contains only the package-neutral, JDK-only artifact pin and exact detector.
+Its release commit is
+`6c062239f2669de9d20da32dc8b5372a5653b19d`. Consumers compile the pinned
+module source into their own add-on JARs; server administrators do not install
+the standalone module.
+
+LaserIO, More Red, and Little Big Redstone passed their complete isolated
+gates, archive accounting, unchanged galleries, trust probes, independent
+final audit, two 51-add-on overlay reproductions, a controlled second server
+restart, all 51 activation checks, and all 51 gallery assertions. Their signed
+`0.1.0-alpha.2` candidates then passed PR CI and independent exact-main CI,
+were merged with explicit two-parent commits, and were published as signed,
+attested public prereleases. The exact identities are recorded in the
+[runtime module report](runtime-artifact-detection-module.md).

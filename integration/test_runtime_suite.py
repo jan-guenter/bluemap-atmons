@@ -25,13 +25,278 @@ sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 
+def candidate_record(released: dict) -> dict:
+    return {
+        "id": released["id"],
+        "sourceCommit": released["commit"],
+        "sourceReleaseTag": released["release_tag"],
+        "releasedArtifactSha256": released["artifact"]["sha256"],
+        "replacements": [
+            {
+                "kind": "compatibility",
+                "source": f"sources/{released['id']}/example/AdapterCompatibility.java",
+                "sourceSha256": "1" * 64,
+                "class": "example/AdapterCompatibility.class",
+                "classSha256": "2" * 64,
+            },
+            {
+                "kind": "entrypoint",
+                "source": f"sources/{released['id']}/example/BlueMapFixtureAddon.java",
+                "sourceSha256": "3" * 64,
+                "class": "example/BlueMapFixtureAddon.class",
+                "classSha256": "4" * 64,
+            },
+        ],
+        "artifact": {
+            "filename": released["artifact"]["filename"],
+            "sizeBytes": 1,
+            "sha256": "5" * 64,
+        },
+        "gate": {
+            "mode": "two-class-surgical-overlay",
+            "javacRelease": 21,
+            "sharedCompileDurationSeconds": 0.1,
+            "zipIntegrity": "passed",
+            "status": "passed",
+        },
+    }
+
+
+def write_candidate_manifest(path: Path, tracked: dict) -> dict:
+    addons = [
+        component for component in tracked["components"] if component["kind"] == "addon"
+    ]
+    value = {
+        "schemaVersion": 1,
+        "atmons": tracked["atmons"],
+        "candidateBlueMap": {"version": "candidate", "commit": "0" * 40},
+        "components": [candidate_record(component) for component in addons],
+        "summary": {
+            "componentCount": 51,
+            "passed": 51,
+            "status": "passed",
+            "evidenceMode": "full-integration",
+        },
+    }
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return value
+
+
+def expect_suite_error(callback, fragment: str) -> None:
+    try:
+        callback()
+    except MODULE.SuiteError as exc:
+        assert fragment in str(exc), str(exc)
+    else:
+        raise AssertionError(f"invalid runtime candidate state was accepted: {fragment}")
+
+
+def check_candidate_override_contract() -> None:
+    with tempfile.TemporaryDirectory(prefix="bluemap-atmons-runtime-override-") as temporary:
+        root = Path(temporary)
+        tracked = json.loads(MODULE.TRACKED_MANIFEST.read_text(encoding="utf-8"))
+        manifest_path = root / "candidate-manifest.json"
+        default_value = write_candidate_manifest(manifest_path, tracked)
+        assert MODULE.load_candidate_manifest(manifest_path) == default_value
+
+        artifact = root / "bluemap-ae2-addon-0.2.0-alpha.1.jar"
+        with zipfile.ZipFile(artifact, "w") as archive:
+            archive.writestr(
+                "META-INF/MANIFEST.MF",
+                "Manifest-Version: 1.0\r\n"
+                "Implementation-Version: 0.2.0-alpha.1\r\n\r\n",
+            )
+            archive.writestr("example/Fixture.class", b"fixture")
+        checkout = root / "candidate-source"
+        checkout.mkdir()
+        (checkout / "README.md").write_text("fixture\n", encoding="utf-8")
+        provenance = checkout / "provenance/release.json"
+        provenance.parent.mkdir(parents=True)
+        provenance.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "status": "owner-accepted-release-candidate",
+                    "version": "0.2.0-alpha.1",
+                    "tag": "v0.2.0-alpha.1",
+                    "final_release_artifacts": {
+                        "production_jar": {
+                            "file_name": artifact.name,
+                            "size": artifact.stat().st_size,
+                            "sha256": MODULE.sha256(artifact),
+                        }
+                    },
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        subprocess.run(["git", "init", "-q", str(checkout)], check=True)
+        subprocess.run(
+            ["git", "-C", str(checkout), "config", "user.email", "test@example.invalid"],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "-C", str(checkout), "config", "user.name", "test"], check=True
+        )
+        subprocess.run(["git", "-C", str(checkout), "add", "."], check=True)
+        subprocess.run(
+            ["git", "-C", str(checkout), "commit", "-qm", "fixture"], check=True
+        )
+        commit = subprocess.run(
+            ["git", "-C", str(checkout), "rev-parse", "HEAD"],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+        lock_value = {
+            "schemaVersion": 1,
+            "atmons": "1.2.0",
+            "components": [
+                {
+                    "id": "ae2",
+                    "source": {"checkout": str(checkout), "commit": commit},
+                    "artifact": {
+                        "path": str(artifact),
+                        "filename": artifact.name,
+                        "sizeBytes": artifact.stat().st_size,
+                        "sha256": MODULE.sha256(artifact),
+                        "version": "0.2.0-alpha.1",
+                    },
+                }
+            ],
+        }
+        lock_path = root / "addon-override-lock.json"
+        lock_path.write_text(
+            json.dumps(lock_value, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        lock = MODULE.load_addon_override_lock(lock_path, tracked)
+        original_builder_sha256 = MODULE.CANDIDATE_BUILDER_SHA256
+        try:
+            MODULE.CANDIDATE_BUILDER_SHA256 = "0" * 64
+            expect_suite_error(
+                lambda: MODULE.load_addon_override_lock(lock_path, tracked),
+                "candidate builder differs",
+            )
+        finally:
+            MODULE.CANDIDATE_BUILDER_SHA256 = original_builder_sha256
+
+        override_value = json.loads(json.dumps(default_value))
+        released = next(
+            component
+            for component in tracked["components"]
+            if component["id"] == "ae2"
+        )
+        record = next(
+            component
+            for component in override_value["components"]
+            if component["id"] == "ae2"
+        )
+        record["gate"]["mode"] = "local-candidate-two-class-surgical-overlay"
+        record["releasedBaseline"] = {
+            "sourceCommit": released["commit"],
+            "releaseTag": released["release_tag"],
+            "artifact": {
+                "filename": released["artifact"]["filename"],
+                "sizeBytes": released["artifact"]["size_bytes"],
+                "sha256": released["artifact"]["sha256"],
+            },
+        }
+        record["localCandidateBase"] = {
+            "sourceCommit": commit,
+            "version": "0.2.0-alpha.1",
+            "releaseProvenance": lock["records"]["ae2"]["releaseProvenance"],
+            "artifact": {
+                "filename": artifact.name,
+                "sizeBytes": artifact.stat().st_size,
+                "sha256": MODULE.sha256(artifact),
+            },
+        }
+        override_value["localCandidateOverrides"] = {
+            "schemaVersion": 1,
+            "atmons": "1.2.0",
+            "lockSha256": lock["lockSha256"],
+            "componentIds": ["ae2"],
+        }
+        manifest_path.write_text(
+            json.dumps(override_value, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        assert MODULE.load_candidate_manifest(manifest_path, lock) == override_value
+        serialized = manifest_path.read_text(encoding="utf-8")
+        assert str(checkout) not in serialized
+        assert str(artifact) not in serialized
+
+        invalid_schema = json.loads(json.dumps(override_value))
+        invalid_schema["schemaVersion"] = True
+        manifest_path.write_text(json.dumps(invalid_schema) + "\n", encoding="utf-8")
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path, lock),
+            "not a successful 51-addon",
+        )
+        invalid_header_schema = json.loads(json.dumps(override_value))
+        invalid_header_schema["localCandidateOverrides"]["schemaVersion"] = True
+        manifest_path.write_text(
+            json.dumps(invalid_header_schema) + "\n", encoding="utf-8"
+        )
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path, lock),
+            "override schema is invalid",
+        )
+
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path),
+            "no matching --addon-override-lock",
+        )
+        mismatch = json.loads(json.dumps(override_value))
+        mismatch["components"][0]["localCandidateBase"]["artifact"]["sha256"] = "9" * 64
+        manifest_path.write_text(json.dumps(mismatch) + "\n", encoding="utf-8")
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path, lock),
+            "local base identity mismatch",
+        )
+        mismatch = json.loads(json.dumps(override_value))
+        mismatch["components"][0]["releasedBaseline"]["artifact"]["sha256"] = "8" * 64
+        manifest_path.write_text(json.dumps(mismatch) + "\n", encoding="utf-8")
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path, lock),
+            "released baseline identity mismatch",
+        )
+
+        manifest_path.write_text(
+            json.dumps(default_value, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path, lock),
+            "supplied for a release-based candidate manifest",
+        )
+        assert MODULE.load_candidate_manifest(manifest_path) == default_value
+
+        plain_command = MODULE.candidate_reproduction_command(
+            default_value["candidateBlueMap"], root / "out", root / "work"
+        )
+        assert "--addon-override-lock" not in plain_command
+        locked_command = MODULE.candidate_reproduction_command(
+            override_value["candidateBlueMap"],
+            root / "out",
+            root / "work",
+            lock_path,
+        )
+        option = locked_command.index("--addon-override-lock")
+        assert locked_command[option + 1] == str(lock_path)
+
+
 def main() -> int:
+    assert MODULE.sha256(MODULE.COMPOSER_PATH) == MODULE.COMPOSER_SHA256
     assert MODULE.scoreboard_value("#ae2 has 0 [bma_test]") == 0
     assert MODULE.scoreboard_value("Score is 17") == 17
     assert MODULE.command_failed("Unknown function demo:nope")
     assert not MODULE.command_failed("Executed 42 commands from function demo:ok")
     assert MODULE.DEFAULT_VERIFY_SETTLE_SECONDS == 0.1
     assert MODULE.DEFAULT_COMPLETION_TIMEOUT_SECONDS == 240.0
+    check_candidate_override_contract()
     check_trusted_inventory_and_composition()
     check_gallery_lifecycle_order()
     check_restart_hook_required()
