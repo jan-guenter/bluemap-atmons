@@ -613,13 +613,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-pipez-addon",
       "submodule_path": "addons/pipez",
-      "commit": "fa3e773a7d1b7e9af52277bf104e70f704b0bb2a",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "2731ce8e71a41d26d9a9991f70ccd7ca9de17517",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-pipez-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-pipez-addon/releases/download/v0.1.0-alpha.1/bluemap-pipez-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 53921,
-        "sha256": "e81dea280d08e19ea4602e5a0700f4ab7004ca74e3408bfba3a898cb745e67db"
+        "filename": "bluemap-pipez-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-pipez-addon/releases/download/v0.1.0-alpha.3/bluemap-pipez-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 57846,
+        "sha256": "6e4d71baf9f7acc199ff94fe8fc887678bcde9224fb6ae49d3d228f3481e1d2d"
       },
       "requires": [
         "bluemap"
