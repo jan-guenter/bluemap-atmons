@@ -162,8 +162,8 @@ extraction order:
 2. `bluemap-addon-runtime`, bundled as source into each consumer rather than
    installed as a shared JAR;
 3. separate `athena-resource-models` and `fusion-resource-models` modules;
-4. a narrow `bluemap-addon-render-core`, beginning with the exact seven-copy
-   face-lighting API;
+4. the narrow `bluemap-addon-render-core`, whose completed first pilot moves
+   the exact face-lighting API into Chipped, LaserIO, and Pipez;
 5. provisional `installed-geo-resource-models` after a three-consumer parity
    suite;
 6. `bluemap-addon-adapter-api` only after BlueMap 5.23 has a stable combined
@@ -209,3 +209,20 @@ one combined 51-add-on cold-restart run with 51 successful gallery assertions,
 PR CI, exact-main CI, signed-tag publication, release checksum verification,
 and JAR attestation verification. The exact evidence is recorded in the
 [Athena and Fusion resource-model report](athena-fusion-resource-models.md).
+
+## Render-core face-lighting extraction
+
+Public `bluemap-addon-render-core` `v0.1.0-alpha.1` contains the proven
+BlueMap 5.22 face-light sampler and no mesh emitter, resources, profiles, or
+installed runtime. Its release commit is
+`faf53c9586a2c876b5a91db5ae3c2650a98f19ba`. Consumers compile the exact
+pinned source into their own add-on JARs.
+
+Chipped, LaserIO, and Pipez removed their local copies while retaining their
+renderer policy and accepted galleries. Their candidates passed isolated
+build, archive, bytecode-parity, trust-probe, and independent audit gates. A
+combined two-boot ATMons 1.2.0 run then verified all 51 activation markers and
+all 51 gallery assertions. The three candidates passed PR CI and exact-main
+CI and were published under signed, attested tags. The exact module, consumer,
+artifact, and runtime identities are recorded in the
+[render-core report](render-core-lighting-module.md).
