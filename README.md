@@ -160,6 +160,9 @@ trust and wheel identities without changing their published outputs.
 The [thirteenth toolkit trust cohort](reports/consolidation/toolkit-gradle-convention-cohort-13.md)
 completes the v0.2-to-v0.3 migration with XNet, LaserIO, Little Big Redstone,
 and Nature's Aura while retaining exact publication and gallery parity.
+The [fourteenth shared-convention cohort](reports/consolidation/toolkit-gradle-convention-cohort-14.md)
+begins the remaining inline-consumer migration with Factory Blocks, Functional
+Storage, Logistics Networks, and Rechiseled.
 
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
