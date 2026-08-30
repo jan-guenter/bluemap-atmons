@@ -103,7 +103,12 @@ A native 5.23 override is admitted only when its source has no local
 classes without a nested module JAR or any `bluemap522` package classes, and
 uses one `BlueMap523Adapter` behind
 `BlueMapRuntimeCompatibility.matchesCurrent()` or its exact explicit-identity
-wrapper. That path overlays only the
+wrapper. Migration provenance may use one self-contained Adapter API migration
+section. The paired `adapter_api_source` form is accepted only with an exact
+`render_core_523_migration` companion. That companion must pin the audited
+render-core release and gitlink, the exact BlueMap runtime and API commits, the
+`bluemap523` source package, and source-only use of both shared modules. A
+missing or mixed provenance form is rejected. That path overlays only the
 entrypoint and is accepted solely for BlueMap commit
 `7e07f4e74ec1e92a6ead9aa1e66054af3e133aac`. The output manifest records the
 released baseline, local base, native-contract and release-provenance

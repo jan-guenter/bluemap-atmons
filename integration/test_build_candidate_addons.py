@@ -174,7 +174,14 @@ def create_checkout(root: Path, artifact: Path, version: str) -> tuple[Path, str
 
 
 def create_native_checkout(
-    root: Path, artifact: Path, version: str
+    root: Path,
+    artifact: Path,
+    version: str,
+    provenance_shape: str = "migration",
+    adapter_overrides: dict | None = None,
+    render_core_overrides: dict | None = None,
+    include_render_core: bool = True,
+    render_core_gitlink_commit: str | None = None,
 ) -> tuple[Path, str]:
     checkout = root / "native-addon"
     source_root = checkout / "src/main/java/example"
@@ -188,35 +195,66 @@ def create_native_checkout(
     )
     provenance = checkout / "provenance/release.json"
     provenance.parent.mkdir(parents=True)
+    value = {
+        "schema_version": 1,
+        "status": "owner-accepted-release-candidate",
+        "version": version,
+        "tag": f"v{version}",
+        "final_release_artifacts": {
+            "production_jar": {
+                "file_name": artifact.name,
+                "size": artifact.stat().st_size,
+                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            }
+        },
+    }
+    if provenance_shape == "migration":
+        value["adapter_api_migration"] = {
+            "module_repository": "https://github.com/jan-guenter/"
+            "bluemap-addon-adapter-api",
+            "module_version": MODULE.ADAPTER_API_VERSION,
+            "module_tag": MODULE.ADAPTER_API_TAG,
+            "module_release_commit": MODULE.ADAPTER_API_COMMIT,
+            "module_source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
+            "standalone_module_jar_bundled": False,
+            "standalone_module_jar_installed": False,
+        }
+    elif provenance_shape == "source-with-render-core":
+        adapter_source = {
+            "module_repository": "https://github.com/jan-guenter/"
+            "bluemap-addon-adapter-api",
+            "module_version": MODULE.ADAPTER_API_VERSION,
+            "module_tag": MODULE.ADAPTER_API_TAG,
+            "module_release_commit": MODULE.ADAPTER_API_COMMIT,
+            "module_source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "compiled_source_count": 4,
+            "standalone_module_jar_bundled": False,
+            "standalone_module_jar_installed": False,
+        }
+        adapter_source.update(adapter_overrides or {})
+        value["adapter_api_source"] = adapter_source
+        if include_render_core:
+            render_core = {
+                "module_repository": "https://github.com/jan-guenter/"
+                "bluemap-addon-render-core",
+                "module_version": MODULE.RENDER_CORE_VERSION,
+                "module_tag": MODULE.RENDER_CORE_TAG,
+                "module_release_commit": MODULE.RENDER_CORE_COMMIT,
+                "module_source_tree": MODULE.RENDER_CORE_SOURCE_TREE,
+                "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
+                "bluemap_api_commit": MODULE.FEATURE_BACKPORT_API_COMMIT,
+                "compiled_source_count": 1,
+                "source_package": MODULE.RENDER_CORE_SOURCE_PACKAGE,
+                "standalone_module_jar_bundled": False,
+                "standalone_module_jar_installed": False,
+            }
+            render_core.update(render_core_overrides or {})
+            value["render_core_523_migration"] = render_core
+    else:
+        raise AssertionError(f"unknown native provenance shape: {provenance_shape}")
     provenance.write_text(
-        json.dumps(
-            {
-                "schema_version": 1,
-                "status": "owner-accepted-release-candidate",
-                "version": version,
-                "tag": f"v{version}",
-                "final_release_artifacts": {
-                    "production_jar": {
-                        "file_name": artifact.name,
-                        "size": artifact.stat().st_size,
-                        "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
-                    }
-                },
-                "adapter_api_migration": {
-                    "module_repository": "https://github.com/jan-guenter/"
-                    "bluemap-addon-adapter-api",
-                    "module_version": MODULE.ADAPTER_API_VERSION,
-                    "module_tag": MODULE.ADAPTER_API_TAG,
-                    "module_release_commit": MODULE.ADAPTER_API_COMMIT,
-                    "module_source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
-                    "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
-                    "standalone_module_jar_bundled": False,
-                    "standalone_module_jar_installed": False,
-                },
-            },
-            indent=2,
-            sort_keys=True,
-        )
+        json.dumps(value, indent=2, sort_keys=True)
         + "\n",
         encoding="utf-8",
     )
@@ -229,6 +267,22 @@ def create_native_checkout(
         ["git", "-C", str(checkout), "config", "user.name", "test"], check=True
     )
     subprocess.run(["git", "-C", str(checkout), "add", "."], check=True)
+    if provenance_shape == "source-with-render-core":
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(checkout),
+                "update-index",
+                "--add",
+                "--cacheinfo",
+                "160000,"
+                + (render_core_gitlink_commit or MODULE.RENDER_CORE_COMMIT)
+                + ","
+                + MODULE.RENDER_CORE_GITLINK,
+            ],
+            check=True,
+        )
     subprocess.run(
         [
             "git",
@@ -245,6 +299,8 @@ def create_native_checkout(
         ["git", "-C", str(checkout), "commit", "-qm", "native fixture"], check=True
     )
     (checkout / MODULE.ADAPTER_API_GITLINK).mkdir(parents=True)
+    if provenance_shape == "source-with-render-core":
+        (checkout / MODULE.RENDER_CORE_GITLINK).mkdir(parents=True)
     commit = subprocess.run(
         ["git", "-C", str(checkout), "rev-parse", "HEAD"],
         check=True,
@@ -277,6 +333,42 @@ def write_native_jar(path: Path, version: str = "0.2.0-alpha.2") -> None:
         archive.writestr(
             "example/adapter/bluemap523/BlueMap523Adapter.class", b"adapter"
         )
+
+
+def write_native_override_lock(
+    path: Path,
+    checkout: Path,
+    commit: str,
+    artifact: Path,
+    version: str,
+) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "atmons": "1.2.0",
+                "components": [
+                    {
+                        "id": "fixture",
+                        "source": {"checkout": str(checkout), "commit": commit},
+                        "artifact": {
+                            "path": str(artifact),
+                            "filename": artifact.name,
+                            "sizeBytes": artifact.stat().st_size,
+                            "sha256": hashlib.sha256(
+                                artifact.read_bytes()
+                            ).hexdigest(),
+                            "version": version,
+                        },
+                    }
+                ],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def expect_override_error(path: Path, manifest: dict, fragment: str) -> None:
@@ -587,6 +679,131 @@ def check_native_feature_backport_override() -> None:
             MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
 
 
+def check_paired_native_feature_backport_provenance() -> None:
+    with tempfile.TemporaryDirectory(
+        prefix="bluemap-atmons-native-paired-provenance-"
+    ) as temporary:
+        root = Path(temporary)
+        artifact = root / "bluemap-fixture-addon-0.2.0-alpha.2.jar"
+        write_native_jar(artifact)
+        checkout, commit = create_native_checkout(
+            root / "valid",
+            artifact,
+            "0.2.0-alpha.2",
+            provenance_shape="source-with-render-core",
+        )
+        lock_path = root / "override-lock.json"
+        write_native_override_lock(
+            lock_path, checkout, commit, artifact, "0.2.0-alpha.2"
+        )
+        manifest = {
+            "components": [
+                {
+                    "id": "fixture",
+                    "kind": "addon",
+                    "submodule_path": "addons/fixture",
+                    "commit": "1" * 40,
+                }
+            ]
+        }
+        fixture_class_sha256 = hashlib.sha256(b"fixture class").hexdigest()
+        original_class_sha256 = MODULE.ADAPTER_API_CLASS_SHA256
+        MODULE.ADAPTER_API_CLASS_SHA256 = {
+            name: {fixture_class_sha256} for name in MODULE.ADAPTER_API_CLASSES
+        }
+        try:
+            loaded = MODULE.load_addon_override_lock(lock_path, manifest)
+            migration = loaded["records"]["fixture"]["nativeFeatureBackport"][
+                "migrationProvenance"
+            ]
+            assert migration["section"] == "adapter_api_source"
+            assert migration["identitySection"] == "render_core_523_migration"
+            assert migration["commit"] == MODULE.ADAPTER_API_COMMIT
+            assert migration["sourceTree"] == MODULE.ADAPTER_API_SOURCE_TREE
+            assert migration["blueMapCommit"] == MODULE.FEATURE_BACKPORT_COMMIT
+            assert migration["blueMapApiCommit"] == MODULE.FEATURE_BACKPORT_API_COMMIT
+            assert migration["renderCore"]["commit"] == MODULE.RENDER_CORE_COMMIT
+            assert (
+                migration["renderCore"]["sourceTree"]
+                == MODULE.RENDER_CORE_SOURCE_TREE
+            )
+
+            def expect_normalize_error(
+                fixture_root: str,
+                fragment: str,
+                **fixture_options,
+            ) -> None:
+                invalid_checkout, invalid_commit = create_native_checkout(
+                    root / fixture_root,
+                    artifact,
+                    "0.2.0-alpha.2",
+                    provenance_shape="source-with-render-core",
+                    **fixture_options,
+                )
+                try:
+                    MODULE._normalize_adapter_api_migration(
+                        invalid_checkout, invalid_commit, "fixture"
+                    )
+                except MODULE.CandidateError as exc:
+                    assert fragment in str(exc), str(exc)
+                else:
+                    raise AssertionError(
+                        f"invalid paired migration provenance was accepted: {fragment}"
+                    )
+
+            expect_normalize_error(
+                "missing-render-core",
+                "requires exact render_core_523_migration provenance",
+                include_render_core=False,
+            )
+            expect_normalize_error(
+                "wrong-runtime",
+                "render-core migration blueMapCommit differs",
+                render_core_overrides={"bluemap_commit": "0" * 40},
+            )
+            expect_normalize_error(
+                "wrong-api",
+                "render-core migration blueMapApiCommit differs",
+                render_core_overrides={"bluemap_api_commit": "0" * 40},
+            )
+            expect_normalize_error(
+                "wrong-adapter-tree",
+                "Adapter API migration sourceTree differs",
+                adapter_overrides={"module_source_tree": "0" * 40},
+            )
+            expect_normalize_error(
+                "bundled-adapter",
+                "Adapter API migration does not prove a source-only module",
+                adapter_overrides={"standalone_module_jar_bundled": True},
+            )
+            expect_normalize_error(
+                "installed-render-core",
+                "render-core migration does not prove",
+                render_core_overrides={"standalone_module_jar_installed": True},
+            )
+
+            wrong_gitlink_checkout, wrong_gitlink_commit = create_native_checkout(
+                root / "wrong-render-core-gitlink",
+                artifact,
+                "0.2.0-alpha.2",
+                provenance_shape="source-with-render-core",
+                render_core_gitlink_commit="1" * 40,
+            )
+            try:
+                MODULE._native_feature_backport_contract(
+                    wrong_gitlink_checkout,
+                    wrong_gitlink_commit,
+                    "fixture",
+                    artifact,
+                )
+            except MODULE.CandidateError as exc:
+                assert "does not pin the exact render-core commit" in str(exc), str(exc)
+            else:
+                raise AssertionError("wrong render-core gitlink was accepted")
+        finally:
+            MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "AdapterCompatibility.java"
@@ -668,6 +885,7 @@ def main() -> int:
         assert "integrationCandidateInstallResult" in patched_entrypoint.read_text(encoding="utf-8")
     check_override_lock()
     check_native_feature_backport_override()
+    check_paired_native_feature_backport_provenance()
     print("PASS: candidate add-on source rewriting")
     return 0
 

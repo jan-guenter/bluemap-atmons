@@ -62,6 +62,14 @@ ADAPTER_API_TAG = "v0.1.0-alpha.2"
 ADAPTER_API_COMMIT = "e81f08bc4bfbf02d810ec8949a019130e2e61634"
 ADAPTER_API_SOURCE_TREE = "2f974c9bb2ba13888d69682f86f30f58922d30eb"
 ADAPTER_API_GITLINK = "modules/bluemap-addon-adapter-api"
+RENDER_CORE_VERSION = "0.1.0-alpha.2"
+RENDER_CORE_TAG = "v0.1.0-alpha.2"
+RENDER_CORE_COMMIT = "24b84efdc8235f3f1323e1a8e9fd033080e3a79e"
+RENDER_CORE_SOURCE_TREE = "424040931680fb82d37693f893ca887c0ed48eae"
+RENDER_CORE_GITLINK = "modules/bluemap-addon-render-core"
+RENDER_CORE_SOURCE_PACKAGE = (
+    "io.github.janguenter.bluemap.addon.render.core.adapter.bluemap523"
+)
 ADAPTER_API_CLASS_PREFIX = (
     "io/github/janguenter/bluemap/addon/adapter/api/bluemap523/"
 )
@@ -276,7 +284,11 @@ def _normalize_adapter_api_migration(
         ) from exc
     candidates = [
         (name, value.get(name))
-        for name in ("adapter_api_migration", "adapter_api_module_migration")
+        for name in (
+            "adapter_api_migration",
+            "adapter_api_module_migration",
+            "adapter_api_source",
+        )
         if isinstance(value.get(name), dict)
     ]
     if len(candidates) != 1:
@@ -285,8 +297,8 @@ def _normalize_adapter_api_migration(
         )
     section_name, section = candidates[0]
 
-    def field(label: str, *names: str) -> str:
-        present = [section[name] for name in names if name in section]
+    def field(source: dict, label: str, *names: str) -> str:
+        present = [source[name] for name in names if name in source]
         if len(present) != 1 or not isinstance(present[0], str):
             raise CandidateError(
                 f"{component_id}: Adapter API migration {label} is ambiguous or missing"
@@ -295,19 +307,82 @@ def _normalize_adapter_api_migration(
 
     normalized = {
         "section": section_name,
-        "repository": field("repository", "repository", "module_repository"),
-        "version": field("version", "version", "module_version"),
-        "tag": field("tag", "tag", "module_tag"),
+        "repository": field(section, "repository", "repository", "module_repository"),
+        "version": field(section, "version", "version", "module_version"),
+        "tag": field(section, "tag", "tag", "module_tag"),
         "commit": field(
+            section,
             "commit", "release_target_commit", "module_release_commit", "commit"
         ),
         "sourceTree": field(
+            section,
             "source tree", "source_tree", "module_source_tree"
         ),
-        "blueMapCommit": field(
-            "BlueMap commit", "bluemap_commit", "target_bluemap_commit"
-        ),
     }
+    if section_name == "adapter_api_source":
+        companion = value.get("render_core_523_migration")
+        if not isinstance(companion, dict):
+            raise CandidateError(
+                f"{component_id}: adapter_api_source requires exact "
+                "render_core_523_migration provenance"
+            )
+        render_core = {
+            "section": "render_core_523_migration",
+            "repository": field(
+                companion, "render-core repository", "module_repository"
+            ),
+            "version": field(companion, "render-core version", "module_version"),
+            "tag": field(companion, "render-core tag", "module_tag"),
+            "commit": field(
+                companion, "render-core commit", "module_release_commit"
+            ),
+            "sourceTree": field(
+                companion, "render-core source tree", "module_source_tree"
+            ),
+            "blueMapCommit": field(
+                companion, "BlueMap commit", "bluemap_commit"
+            ),
+            "blueMapApiCommit": field(
+                companion, "BlueMap API commit", "bluemap_api_commit"
+            ),
+            "sourcePackage": field(
+                companion, "render-core source package", "source_package"
+            ),
+        }
+        expected_render_core = {
+            "repository": "https://github.com/jan-guenter/bluemap-addon-render-core",
+            "version": RENDER_CORE_VERSION,
+            "tag": RENDER_CORE_TAG,
+            "commit": RENDER_CORE_COMMIT,
+            "sourceTree": RENDER_CORE_SOURCE_TREE,
+            "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+            "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+            "sourcePackage": RENDER_CORE_SOURCE_PACKAGE,
+        }
+        for key, expected_value in expected_render_core.items():
+            if render_core[key] != expected_value:
+                raise CandidateError(
+                    f"{component_id}: render-core migration {key} differs from the exact "
+                    "5.23 contract"
+                )
+        if (
+            type(companion.get("compiled_source_count")) is not int
+            or companion["compiled_source_count"] != 1
+            or companion.get("standalone_module_jar_bundled") is not False
+            or companion.get("standalone_module_jar_installed") is not False
+        ):
+            raise CandidateError(
+                f"{component_id}: render-core migration does not prove the exact "
+                "source-only module"
+            )
+        normalized["blueMapCommit"] = render_core["blueMapCommit"]
+        normalized["blueMapApiCommit"] = render_core["blueMapApiCommit"]
+        normalized["identitySection"] = render_core["section"]
+        normalized["renderCore"] = render_core
+    else:
+        normalized["blueMapCommit"] = field(
+            section, "BlueMap commit", "bluemap_commit", "target_bluemap_commit"
+        )
     expected = {
         "repository": "https://github.com/jan-guenter/bluemap-addon-adapter-api",
         "version": ADAPTER_API_VERSION,
@@ -340,6 +415,15 @@ def _normalize_adapter_api_migration(
     ):
         raise CandidateError(
             f"{component_id}: Adapter API migration does not prove a source-only module"
+        )
+    if section_name == "adapter_api_source" and (
+        type(section.get("compiled_source_count")) is not int
+        or section["compiled_source_count"] != 4
+        or section.get("standalone_module_jar_bundled") is not False
+    ):
+        raise CandidateError(
+            f"{component_id}: Adapter API source provenance does not prove the exact "
+            "source-only module"
         )
     normalized["standaloneModuleJar"] = "not-bundled-or-installed"
     return normalized
@@ -417,6 +501,18 @@ def _native_feature_backport_contract(
             f"{component_id}: native feature-backport override does not pin the exact "
             f"Adapter API commit {ADAPTER_API_COMMIT}"
         )
+    if migration["section"] == "adapter_api_source":
+        render_core_gitlink = run(
+            ["git", "ls-tree", commit, "--", RENDER_CORE_GITLINK], checkout
+        ).stdout.strip()
+        expected_render_core_gitlink = (
+            f"160000 commit {RENDER_CORE_COMMIT}\t{RENDER_CORE_GITLINK}"
+        )
+        if render_core_gitlink != expected_render_core_gitlink:
+            raise CandidateError(
+                f"{component_id}: native feature-backport override does not pin the exact "
+                f"render-core commit {RENDER_CORE_COMMIT}"
+            )
 
     with zipfile.ZipFile(artifact_path, "r") as archive:
         names = archive.namelist()
