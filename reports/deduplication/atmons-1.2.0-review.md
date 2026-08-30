@@ -273,11 +273,17 @@ Oritech shares several vector, bone-chain, UV, and mesh-emission methods, but
 not the complete compiler contract. CobbleFurnies and Cobblemon Stone Statues
 share parser vocabulary while targeting different installed model formats.
 
-**Verdict:** provisional pass for `installed-geo-resource-models`. Before code
-moves, the three Ars consumers need one common fixture suite covering malformed
-JSON, missing bones, UV mapping, hierarchy cycles, bounded input, and exact
-fallback behavior. Do not fold Blockbench/BBS, Gecko-style, Wavefront, and OBJ
-parsers into one generic model compiler.
+**Implemented:** `bluemap-installed-geo-resource-models`
+`v0.1.0-alpha.1` now owns the bounded GEO 1.12.0 compiler, immutable mesh
+model, and sampled-pose input. Its common fixtures cover malformed JSON,
+missing bones, UV mapping, hierarchy cycles, bounded input, exact ordered-mesh
+output, identity poses, and non-identity poses. Ars Technica, Ars Nouveau, and
+Ars Creo pin the exact source module while retaining their resource admission,
+named contracts, animation parsing, emitters, and fallback policy. Exact
+publication and combined-test identities are in the
+[installed GEO extraction report](../consolidation/installed-geo-resource-models.md).
+Blockbench/BBS, Gecko-style, Wavefront, and OBJ parsers remain outside this
+module.
 
 ## Neutral render primitives
 
@@ -368,8 +374,9 @@ production module.
    - Exact Fusion resource interpretation and format-specific mesh emission.
 5. `bluemap-addon-render-core`
    - Only proven neutral lighting, records, transforms, and geometry helpers.
-6. `installed-geo-resource-models`
-   - After the three-consumer malformed-input and parity suite passes.
+6. `bluemap-installed-geo-resource-models`
+   - Implemented after the three-consumer malformed-input, static-mesh, and
+     sampled-pose parity suite passed.
 7. `bluemap-addon-adapter-api`
    - Design now, publish only after the 5.23 integration branch has a stable
      combined runtime gate.
