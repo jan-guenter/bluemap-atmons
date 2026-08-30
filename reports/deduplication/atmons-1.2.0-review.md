@@ -297,11 +297,13 @@ include direction selection, transformed positions, stock fallback reset, and
 atomic partial-geometry removal, but most are small and mix different renderer
 invariants.
 
-**Verdict:** create `bluemap-addon-render-core` only after the toolkit and
-runtime modules. Start with the exact seven-copy lighting API and independently
-tested JDK-only vectors or immutable geometry records. Keep BlueMap mesh
-emission in a version-specific adapter module. Do not create repositories for
-single helper classes.
+**Result:** the first `bluemap-addon-render-core` pilot now contains only the
+exact seven-copy lighting API. Chipped, LaserIO, and Pipez pin its released
+source and passed isolated parity plus the combined 51-add-on gate. The
+[render-core report](../consolidation/render-core-lighting-module.md) records
+the exact extraction and publication evidence. CobbleFurnies, Integrated
+Dynamics, Powah, and Sophisticated remain unmigrated. The other lighting
+cohorts and BlueMap mesh emission remain separate.
 
 ## Mod-interplay clusters that stay private
 

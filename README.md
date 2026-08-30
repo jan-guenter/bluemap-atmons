@@ -184,6 +184,12 @@ records both released source modules, five verified consumer releases, and
 their shared 51-add-on cold-restart gate. No generic connected-texture runtime
 was introduced.
 
+The fourth production-code extraction is the narrow
+[`render-core face-lighting module`](reports/consolidation/render-core-lighting-module.md).
+It records the released source module, verified Chipped, LaserIO, and Pipez
+releases, and their passing 51-add-on restart gate. The module contains only
+the proven face-light sampler. Mesh emission and renderer policy remain local.
+
 The repositories remain governed by their own licenses. This meta-repository's
 installer, validation code, and documentation are MIT-licensed.
 
