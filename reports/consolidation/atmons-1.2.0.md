@@ -122,6 +122,9 @@ and hash-locked wheel while preserving all release and gallery bytes.
 The [thirteenth cohort](toolkit-gradle-convention-cohort-13.md) completes the
 v0.3 trust migration for XNet, LaserIO, Little Big Redstone, and Nature's Aura;
 XNet and Nature's Aura also adopt the corrected repository checker.
+The [fourteenth cohort](toolkit-gradle-convention-cohort-14.md) begins the
+remaining inline-consumer migration with Factory Blocks, Functional Storage,
+Logistics Networks, and Rechiseled while preserving their exact outputs.
 
 ## Deduplication result
 
