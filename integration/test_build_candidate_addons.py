@@ -458,6 +458,17 @@ def check_override_lock() -> None:
             "baseJar": released_jar,
             "gateMode": "two-class-surgical-overlay",
         }
+        released_native = {"blueMapCommit": MODULE.FEATURE_BACKPORT_COMMIT}
+        native_selected = MODULE.select_component_inputs(
+            manifest["components"][0], released_jar, None, released_native
+        )
+        assert native_selected == {
+            "sourceRoot": MODULE.ROOT / "addons/fixture",
+            "sourceCommit": "1" * 40,
+            "baseJar": released_jar,
+            "gateMode": "released-native-523-entrypoint-overlay",
+            "nativeFeatureBackport": released_native,
+        }
         candidate = MODULE.select_component_inputs(
             manifest["components"][0],
             released_jar,

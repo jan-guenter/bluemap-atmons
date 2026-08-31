@@ -993,19 +993,29 @@ def prepare_component_sources(
 
 
 def select_component_inputs(
-    component: dict, released_jar: Path | None, override: dict | None
+    component: dict,
+    released_jar: Path | None,
+    override: dict | None,
+    released_native_feature_backport: dict | None = None,
 ) -> dict:
     if override is None:
         if released_jar is None:
             raise CandidateError(
                 f"{component['id']}: verified released base JAR is missing"
             )
-        return {
+        selected = {
             "sourceRoot": ROOT / component["submodule_path"],
             "sourceCommit": component["commit"],
             "baseJar": released_jar,
-            "gateMode": "two-class-surgical-overlay",
+            "gateMode": (
+                "released-native-523-entrypoint-overlay"
+                if released_native_feature_backport is not None
+                else "two-class-surgical-overlay"
+            ),
         }
+        if released_native_feature_backport is not None:
+            selected["nativeFeatureBackport"] = released_native_feature_backport
+        return selected
     return {
         "sourceRoot": override["checkout"],
         "sourceCommit": override["sourceCommit"],
@@ -1110,7 +1120,22 @@ def build_surgical_components(
     for component in components:
         released_jar = released_jars.get(component["id"])
         override = addon_overrides.get(component["id"])
-        selected = select_component_inputs(component, released_jar, override)
+        released_native_feature_backport = (
+            _native_feature_backport_contract(
+                ROOT / component["submodule_path"],
+                component["commit"],
+                component["id"],
+                released_jar,
+            )
+            if override is None and released_jar is not None
+            else None
+        )
+        selected = select_component_inputs(
+            component,
+            released_jar,
+            override,
+            released_native_feature_backport,
+        )
         sources, replacements = prepare_component_sources(
             component,
             work_root,
@@ -1213,6 +1238,10 @@ def build_surgical_components(
                 record["localCandidateBase"]["nativeFeatureBackport"] = override[
                     "nativeFeatureBackport"
                 ]
+        elif selected.get("nativeFeatureBackport") is not None:
+            record["releasedNativeFeatureBackport"] = selected[
+                "nativeFeatureBackport"
+            ]
         records.append(record)
     return records
 
