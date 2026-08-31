@@ -118,8 +118,28 @@ entrypoint and is accepted solely for BlueMap commit
 `7e07f4e74ec1e92a6ead9aa1e66054af3e133aac`. The output manifest records the
 released baseline, local base, native-contract and release-provenance
 identities, plus the lock hash. It never records local paths, including on a
-failed build. A release-only invocation retains the existing schema and
-behavior.
+failed build. A native 5.23 release already pinned by the tracked manifest is
+admitted through the same exact native contract and uses a released-base
+entrypoint overlay; legacy manifest releases retain the two-class overlay.
+
+For the next full-stack 5.23 run, the reviewed public release identities are
+tracked in
+`candidate-releases/atmons-1.2.0-bluemap-5.23.json`. Materialize those releases
+into the existing path-bound lock contract instead of reusing old local build
+candidates:
+
+```bash
+python integration/materialize_candidate_release_overrides.py \
+  --work-root /tmp/bluemap-atmons-1.2.0-5.23-releases \
+  --output /tmp/bluemap-atmons-1.2.0-5.23-overrides.json
+```
+
+The materializer fetches each exact annotated tag, verifies its tag object and
+peeled commit, downloads and hashes the published production JAR, then applies
+the same release-provenance and native-adapter checks as the candidate builder.
+The resulting checkout, JARs, and absolute-path lock are disposable and remain
+untracked. The profile does not alter the immutable `atmons-1.2.0` manifest or
+its BlueMap 5.22 compatibility snapshot.
 
 ## Individual add-on gates
 

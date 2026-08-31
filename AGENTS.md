@@ -34,6 +34,7 @@ python tools/validate.py
 bash -n bin/bluemap-atmons install.sh tests/test-installer.sh
 bash tests/test-installer.sh
 python integration/test_build_candidate_addons.py
+python integration/test_materialize_candidate_release_overrides.py
 python integration/galleries/test_compose.py
 python integration/test_child_gates.py
 python integration/test_runtime_suite.py

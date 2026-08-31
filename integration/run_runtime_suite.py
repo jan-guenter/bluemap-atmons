@@ -29,7 +29,7 @@ COMPOSER_PATH = ROOT / "integration" / "galleries" / "compose.py"
 COMPOSER_VERSION = "2.4.0"
 COMPOSER_SHA256 = "2c11d7d2711fdc44ee102dc721fcf470d9e7fad4778870742e6814655b1b8e95"
 CANDIDATE_BUILDER_PATH = ROOT / "integration" / "build_candidate_addons.py"
-CANDIDATE_BUILDER_SHA256 = "f02022d7dc806b94886b2ab60028ba6bcb3857dbb746c534b0834ec3a9924d98"
+CANDIDATE_BUILDER_SHA256 = "11b9921043c518509f2b661b9c1fce95b4ea6e474f76be8d71174ec39a6d8b56"
 EXPECTED_COMPOSITION_OPTIONS = {
     "minimumY": 195,
     "originX": 8192,
@@ -412,8 +412,23 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
         artifact = candidate.get("artifact")
         gate = candidate.get("gate")
         replacements = candidate.get("replacements")
+        released_native_present = "releasedNativeFeatureBackport" in candidate
+        released_native_feature_backport = (
+            candidate.get("releasedNativeFeatureBackport")
+            if override is None and released_native_present
+            else None
+        )
+        if released_native_present and (
+            override is not None
+            or not isinstance(released_native_feature_backport, dict)
+        ):
+            raise SuiteError(
+                f"unexpected released native candidate state: {released['id']}"
+            )
         native_feature_backport = (
-            override.get("nativeFeatureBackport") if override is not None else None
+            override.get("nativeFeatureBackport")
+            if override is not None
+            else released_native_feature_backport
         )
         if native_feature_backport is not None and (
             native_feature_backport.get("blueMapVersion")
@@ -426,11 +441,15 @@ def load_candidate_manifest(path: Path, override_lock: dict | None = None) -> di
             )
         expected_gate_mode = (
             "local-native-523-entrypoint-overlay"
-            if native_feature_backport is not None
+            if override is not None and native_feature_backport is not None
             else (
-                "local-candidate-two-class-surgical-overlay"
-                if override is not None
-                else "two-class-surgical-overlay"
+                "released-native-523-entrypoint-overlay"
+                if released_native_feature_backport is not None
+                else (
+                    "local-candidate-two-class-surgical-overlay"
+                    if override is not None
+                    else "two-class-surgical-overlay"
+                )
             )
         )
         expected_replacement_count = 1 if native_feature_backport is not None else 2

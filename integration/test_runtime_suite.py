@@ -99,6 +99,45 @@ def check_candidate_override_contract() -> None:
         default_value = write_candidate_manifest(manifest_path, tracked)
         assert MODULE.load_candidate_manifest(manifest_path) == default_value
 
+        released_native_value = json.loads(json.dumps(default_value))
+        released_native_record = released_native_value["components"][0]
+        released_native_contract = {
+            "blueMapVersion": released_native_value["candidateBlueMap"]["version"],
+            "blueMapCommit": released_native_value["candidateBlueMap"]["commit"],
+            "adapterApiCommit": "8" * 40,
+        }
+        released_native_record["releasedNativeFeatureBackport"] = (
+            released_native_contract
+        )
+        released_native_record["gate"]["mode"] = (
+            "released-native-523-entrypoint-overlay"
+        )
+        released_native_record["replacements"] = [
+            replacement
+            for replacement in released_native_record["replacements"]
+            if replacement["kind"] == "entrypoint"
+        ]
+        manifest_path.write_text(
+            json.dumps(released_native_value, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        assert MODULE.load_candidate_manifest(manifest_path) == released_native_value
+
+        released_native_mismatch = json.loads(json.dumps(released_native_value))
+        released_native_mismatch["candidateBlueMap"]["commit"] = "9" * 40
+        manifest_path.write_text(
+            json.dumps(released_native_mismatch, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        expect_suite_error(
+            lambda: MODULE.load_candidate_manifest(manifest_path),
+            "native candidate BlueMap identity mismatch",
+        )
+        manifest_path.write_text(
+            json.dumps(default_value, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
         artifact = root / "bluemap-ae2-addon-0.2.0-alpha.1.jar"
         with zipfile.ZipFile(artifact, "w") as archive:
             archive.writestr(
