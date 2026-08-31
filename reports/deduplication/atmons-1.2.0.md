@@ -4,15 +4,15 @@ This is a deterministic source audit of the exact 51 add-on commits pinned by th
 
 ## Scope and result
 
-- Add-ons: **51** gitlinks; eligible tracked files: **2865** (29,155,145 bytes).
-- Version manifest: `versions/1.2.0/manifest.json` (`e6d870e663979de8a6f429c1d02173a8e13d7f5fda02fc65acfba30cbf79643c`); all **51** add-on commits exactly match the index gitlinks.
-- Inventory fingerprint: `af0119a1416313826de86a4aabf360065767dc967dda378d079fc687cb7450f3`.
-- Exact file groups: **8** (95 occurrences).
-- Whole-Java-file token groups: **45 exact**, **48 renamed**.
-- Java method groups (minimum 36 tokens): **374 exact**, **195 renamed**.
-- Parsed Python/Gradle/GitHub Actions/Bash groups (minimum 12 units): **318 exact**, **12 conservative local-renamed**.
-- Structured inventory fingerprint: `da81fedf6d7b8ed488286b80e56de01f46d0fb64cbb3f471ce7bb404ddba3ed0` (9673 parsed units; 8673 eligible).
-- Exact method layers: behavioral 239, mixed 2, scaffolding 75, test_scaffolding 16, test_support 42; renamed method layers: behavioral 73, mixed 5, scaffolding 71, test_scaffolding 15, test_support 31.
+- Add-ons: **51** gitlinks; eligible tracked files: **2869** (29,260,503 bytes).
+- Version manifest: `versions/1.2.0/manifest.json` (`82d8a6adca660d785c950f48f86ed13f9687c03d12054b52fbd394923d26908a`); all **51** add-on commits exactly match the index gitlinks.
+- Inventory fingerprint: `8d99714f7e4c5ad7ebb6c53cf7bbdcc330f4dff7a9ed37c55a0a39fc620ebc2f`.
+- Exact file groups: **8** (99 occurrences).
+- Whole-Java-file token groups: **45 exact**, **49 renamed**.
+- Java method groups (minimum 36 tokens): **372 exact**, **198 renamed**.
+- Parsed Python/Gradle/GitHub Actions/Bash groups (minimum 12 units): **336 exact**, **12 conservative local-renamed**.
+- Structured inventory fingerprint: `83e428de43ebc3b12377701a8b796ec9c7cd53445445f181e248cf8ed64d7ebb` (10054 parsed units; 8996 eligible).
+- Exact method layers: behavioral 239, mixed 2, scaffolding 73, test_scaffolding 16, test_support 42; renamed method layers: behavioral 73, mixed 5, scaffolding 73, test_scaffolding 15, test_support 32.
 
 The full JSON report records every qualifying occurrence with its add-on commit, path, line range where applicable, token count, and content fingerprint.
 
@@ -20,10 +20,10 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 
 | Language | Parsed units | Exact groups | Local-renamed groups |
 | --- | ---: | ---: | ---: |
-| github_actions | 1328 | 40 | 0 |
-| gradle | 5507 | 175 | 5 |
+| github_actions | 1354 | 40 | 0 |
+| gradle | 5844 | 193 | 5 |
 | python | 2164 | 89 | 7 |
-| shell | 674 | 14 | 0 |
+| shell | 692 | 14 | 0 |
 
 ## Strong exact-copy evidence
 
@@ -32,8 +32,8 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 | checkstyle.xml | 24 | scaffolding | `file-77fe7b6d9a70f527` |
 | verify_staged_equivalence.py | 20 | scaffolding | `file-cc8fa6cb1e79b855` |
 | verify_pinned_artifacts.py | 20 | scaffolding | `file-dc7c6d80796f9d57` |
-| checkstyle.xml | 15 | scaffolding | `file-43737c81b15d2ae7` |
-| checkstyle.xml | 7 | scaffolding | `file-e04503e9acfe6b44` |
+| checkstyle.xml | 14 | scaffolding | `file-43737c81b15d2ae7` |
+| checkstyle.xml | 12 | scaffolding | `file-e04503e9acfe6b44` |
 | verify_staged_equivalence.py | 5 | scaffolding | `file-ecdecd142245f4d1` |
 | clear.mcfunction | 2 | test_support | `file-78b6dd8bf0896769` |
 | pose_south.mcfunction | 2 | test_support | `file-827d564197268833` |
@@ -44,8 +44,8 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Runtime activation and diagnostics | 51 | 161 | 0 | 8 / 18 | 0 / 0 |
 | Artifact identity and profiles | 50 | 183 | 0 | 28 / 12 | 0 / 0 |
-| BlueMap adapter bootstrap | 51 | 201 | 0 | 40 / 41 | 0 / 0 |
-| Build, release, and quality configuration | 51 | 304 | 3 | 0 / 0 | 229 / 5 |
+| BlueMap adapter bootstrap | 51 | 191 | 0 | 38 / 43 | 0 / 0 |
+| Build, release, and quality configuration | 51 | 308 | 3 | 0 / 0 | 247 / 5 |
 | Artifact verification tooling | 40 | 109 | 3 | 0 / 0 | 42 / 3 |
 | Gallery generation and lifecycle harness | 51 | 431 | 1 | 0 / 0 | 47 / 5 |
 | Rendering and geometry primitives | 27 | 42 | 0 | 32 / 4 | 0 / 0 |
@@ -58,7 +58,7 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 
 ### 1. `bluemap-addon-toolkit` — Development and release toolkit
 
-Evidence: 844 family-matched files across 51 add-ons and 337 content clone groups.
+Evidence: 848 family-matched files across 51 add-ons and 355 content clone groups.
 
 Recommendation: Extract first as versioned CLI/Gradle conventions. Keep generated gallery data in each add-on.
 
@@ -154,7 +154,7 @@ Coupling/ABI risks:
 
 ### 7. `bluemap-addon-adapter-api` — BlueMap adapter bootstrap API
 
-Evidence: 201 family-matched files across 51 add-ons and 81 content clone groups.
+Evidence: 191 family-matched files across 51 add-ons and 81 content clone groups.
 
 Recommendation: Design now, but publish only after the 5.23 integration branch has a stable combined runtime gate.
 

@@ -239,13 +239,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-create-addon",
       "submodule_path": "addons/create",
-      "commit": "987b1a2d4e579878d605ec9c003ee8eef69f8686",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "d715645acac1a770c252c80362f33a9f7cecb4d7",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-create-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-create-addon/releases/download/v0.1.0-alpha.1/bluemap-create-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 312744,
-        "sha256": "e9e860ff0a3cc3398090d03f36441a9df863ec96c0c5e6da408815a1f9c1cd05"
+        "filename": "bluemap-create-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-create-addon/releases/download/v0.1.0-alpha.2/bluemap-create-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 320656,
+        "sha256": "0b401d72783f0285ce68fbc2dcd2a90f34a64c0079080807b8db3c7c09666d73"
       },
       "requires": [
         "bluemap"
@@ -256,13 +256,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-crystalix-addon",
       "submodule_path": "addons/crystalix",
-      "commit": "b60a3fecb809fbaefb3347500d75b5d453cfe14a",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "5a34bbdb04715922bed19eaec8bf593f852371b0",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-crystalix-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-crystalix-addon/releases/download/v0.1.0-alpha.1/bluemap-crystalix-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 47389,
-        "sha256": "512e02fda272a1c6809fb6c30ee3958cdf13fb87e531b23355069f177458721b"
+        "filename": "bluemap-crystalix-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-crystalix-addon/releases/download/v0.1.0-alpha.3/bluemap-crystalix-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 50656,
+        "sha256": "d410d05d09f3f037b6972c87f774da8d2eec19762aad491354c51cd8af979116"
       },
       "requires": [
         "bluemap"
@@ -528,13 +528,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-mekanism-addon",
       "submodule_path": "addons/mekanism",
-      "commit": "fd38ee958fa24795112fdd2ab91b9f3dfc36b29c",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "d37467646f80b3e8b2bddcac32748a7af8bc16d1",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-mekanism-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-mekanism-addon/releases/download/v0.1.0-alpha.1/bluemap-mekanism-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 78688,
-        "sha256": "fc0b0144dcd3dd5ec24747961bd57960f5f00d699c7bb5dc67975739fb0d61c7"
+        "filename": "bluemap-mekanism-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-mekanism-addon/releases/download/v0.1.0-alpha.2/bluemap-mekanism-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 171503,
+        "sha256": "a0d7247be01fbfec51f2f5e39017b8f2d81796593636b710d0471ed64816f013"
       },
       "requires": [
         "bluemap"
@@ -596,13 +596,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-oritech-addon",
       "submodule_path": "addons/oritech",
-      "commit": "a4ffa5632459193d10be181005a03e6cae5b4743",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "f4f8df6d7d00a28abd9494442f723753ffdd9367",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-oritech-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-oritech-addon/releases/download/v0.1.0-alpha.1/bluemap-oritech-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 64472,
-        "sha256": "958ae6fa2ae5a17893cccc348d3a6ce90498ff16ded21a97b0575774b7698a8e"
+        "filename": "bluemap-oritech-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-oritech-addon/releases/download/v0.1.0-alpha.3/bluemap-oritech-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 140381,
+        "sha256": "c174fde6e21915039e547e5058f035993529b3cf3b6bd627ee6110be72c03751"
       },
       "requires": [
         "bluemap"
@@ -647,13 +647,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-powah-addon",
       "submodule_path": "addons/powah",
-      "commit": "7ad05e80ed70152fcf48c92c6c32de3f6d815667",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "f5653f8a564b6f3d324f463e2a615e21b5bdd7f8",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-powah-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-powah-addon/releases/download/v0.1.0-alpha.1/bluemap-powah-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 36572,
-        "sha256": "0b370dfcd5d8c0a5844dd920d60a2cdb74ed441d87ff038382d8292c374686c8"
+        "filename": "bluemap-powah-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-powah-addon/releases/download/v0.1.0-alpha.2/bluemap-powah-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 41594,
+        "sha256": "ee886a58ad695c0932a4d0c0f6c7c66af699c9d29edbddcee1a15bdd237a1e93"
       },
       "requires": [
         "bluemap"
