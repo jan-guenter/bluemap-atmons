@@ -137,13 +137,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-camol-addon",
       "submodule_path": "addons/camol",
-      "commit": "3a3f3b37943fc506893a1548a28953ef1a5f0da9",
-      "release_tag": "v0.1.0-alpha.2",
+      "commit": "7110b0e522259cd4eb1fdccbc6df74fd0d03b23d",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-camol-addon-0.1.0-alpha.2.jar",
-        "url": "https://github.com/jan-guenter/bluemap-camol-addon/releases/download/v0.1.0-alpha.2/bluemap-camol-addon-0.1.0-alpha.2.jar",
-        "size_bytes": 32587,
-        "sha256": "2c707f0cb1e8ebbef735f3afeae818e9154029a4d3892c58a737ae75891d197b"
+        "filename": "bluemap-camol-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-camol-addon/releases/download/v0.1.0-alpha.3/bluemap-camol-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 72737,
+        "sha256": "afd10b6b7f072fb4194782f4274dfad78732cb4230772f64620c1bb4a46bceba"
       },
       "requires": [
         "bluemap"
@@ -273,13 +273,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-draconic-evolution-addon",
       "submodule_path": "addons/draconic-evolution",
-      "commit": "c9c37d3a07fdcbf971a1e1c28b2845c494260a7b",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "435faa7c3aeca958f9dccd3fdfbea749d6e24a2b",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-draconic-evolution-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-draconic-evolution-addon/releases/download/v0.1.0-alpha.1/bluemap-draconic-evolution-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 149301,
-        "sha256": "78281d7a3a8f2badfd0c7fb01312d3a15f0adcf261889e9b662b3f5ab33403ef"
+        "filename": "bluemap-draconic-evolution-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-draconic-evolution-addon/releases/download/v0.1.0-alpha.2/bluemap-draconic-evolution-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 153347,
+        "sha256": "6daec68810d57dc06c39503ffeb6bd4963e26f4bc9c6718ab7776c22db77b4cd"
       },
       "requires": [
         "bluemap"
@@ -307,13 +307,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-extreme-reactors-addon",
       "submodule_path": "addons/extreme-reactors",
-      "commit": "c6a70f0ec38e984c4c349742b921a87cd4d21e18",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "b18b7d3105c81c7a5a1c3cd8c0c148c5ee80b122",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-extreme-reactors-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-extreme-reactors-addon/releases/download/v0.1.0-alpha.1/bluemap-extreme-reactors-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 92010,
-        "sha256": "60eaf0b401742fbc40a8500948234e72010b4a8224395893af8b521b2aed0d24"
+        "filename": "bluemap-extreme-reactors-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-extreme-reactors-addon/releases/download/v0.1.0-alpha.2/bluemap-extreme-reactors-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 96998,
+        "sha256": "860f6254f9e716bad418a18c1fc0d9b28d3b2d94d51f605667e628532cf9e43f"
       },
       "requires": [
         "bluemap"
@@ -426,13 +426,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-integrated-dynamics-addon",
       "submodule_path": "addons/integrated-dynamics",
-      "commit": "f6f0d7c89563aa63f27970c898fda4cc720cc32f",
-      "release_tag": "v0.1.0-alpha.2",
+      "commit": "ce881ea468f5038e8e05b81c01f84df48ce747b6",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-integrated-dynamics-addon-0.1.0-alpha.2.jar",
-        "url": "https://github.com/jan-guenter/bluemap-integrated-dynamics-addon/releases/download/v0.1.0-alpha.2/bluemap-integrated-dynamics-addon-0.1.0-alpha.2.jar",
-        "size_bytes": 54979,
-        "sha256": "11fdae6eb18513d7d06bbca1973e2eded36ae12f30a69bd9e09af148f8e70f18"
+        "filename": "bluemap-integrated-dynamics-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-integrated-dynamics-addon/releases/download/v0.1.0-alpha.3/bluemap-integrated-dynamics-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 57598,
+        "sha256": "a82e8224360da54fab12d94a53408fb53e1f334c6e2b885e594cd50ed23ba828"
       },
       "requires": [
         "bluemap"
@@ -630,13 +630,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-pneumaticcraft-addon",
       "submodule_path": "addons/pneumaticcraft",
-      "commit": "91a4f84bce2d76e0204daeb05ad7d720b3fd548f",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "3efe836cc5a362bb546a02c4ab9684de5ffb3add",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-pneumaticcraft-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-pneumaticcraft-addon/releases/download/v0.1.0-alpha.1/bluemap-pneumaticcraft-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 74221,
-        "sha256": "683a151fa8156136e3ce30df3cc887ed7ccfc695b3457cd27bc281c29d836f6c"
+        "filename": "bluemap-pneumaticcraft-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-pneumaticcraft-addon/releases/download/v0.1.0-alpha.2/bluemap-pneumaticcraft-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 79270,
+        "sha256": "1c02613dccff7aeace84d68290ac88ad9b0f3842881c246c9bf7d8a60fd3cc1e"
       },
       "requires": [
         "bluemap"

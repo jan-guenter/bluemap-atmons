@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "2a30f0dfe2c71816b7ce52fcfa37f192ceeb65f2efc077e026cccfec823b056a"
+EXPECTED_MANIFEST_SHA256 = "e6d870e663979de8a6f429c1d02173a8e13d7f5fda02fc65acfba30cbf79643c"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -165,7 +165,7 @@ class CumulativeScoreResetRule:
 SETTLED_VERIFIER_NORMALIZATIONS = (
     SettledVerifierNormalization(
         "pneumaticcraft",
-        "91a4f84bce2d76e0204daeb05ad7d720b3fd548f",
+        "3efe836cc5a362bb546a02c4ab9684de5ffb3add",
         "data/pneumaticcraft_gallery/function/verify.mcfunction",
         "execute unless block 194 100 200 "
         "pneumaticcraft:heat_pipe[east=true,west=true] run tellraw @a "
