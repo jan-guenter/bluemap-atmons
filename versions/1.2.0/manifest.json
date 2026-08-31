@@ -188,13 +188,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-cobblefurnies-addon",
       "submodule_path": "addons/cobblefurnies",
-      "commit": "eea5407dbbd162cbe4dd8fc5bc247f6617cf5d98",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "a9c0c430f79f4288198047fefbcf9756e007a8c4",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-cobblefurnies-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-cobblefurnies-addon/releases/download/v0.1.0-alpha.1/bluemap-cobblefurnies-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 108237,
-        "sha256": "2c9df027e4cd1b4f56856dcb05a65499b6ed1df3f8592e9d662ad59e477564a3"
+        "filename": "bluemap-cobblefurnies-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-cobblefurnies-addon/releases/download/v0.1.0-alpha.3/bluemap-cobblefurnies-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 112216,
+        "sha256": "93ebd74db8ee2ac8b552958e6ae49c39625a504d7501463f5ec08a3efef28228"
       },
       "requires": [
         "bluemap"
@@ -324,13 +324,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-factory-blocks-addon",
       "submodule_path": "addons/factory-blocks",
-      "commit": "ad9ee2bcf0e2886ee88931f1eaf50ccb4b8a03bd",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "ad403575652e11d9b676d4af690d00bc676bf9ac",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-factory-blocks-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-factory-blocks-addon/releases/download/v0.1.0-alpha.1/bluemap-factory-blocks-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 86501,
-        "sha256": "69f4f53022aac455a4bcc362dc09cbaf5b3f73cf108ccc154dffa8e238869302"
+        "filename": "bluemap-factory-blocks-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-factory-blocks-addon/releases/download/v0.1.0-alpha.2/bluemap-factory-blocks-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 90486,
+        "sha256": "bfa0c9aa6a96425fa62a5acf3a4a4e5c212e6537378da5bc8e1f59c19d09b0a0"
       },
       "requires": [
         "bluemap"
@@ -375,13 +375,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-glassential-addon",
       "submodule_path": "addons/glassential",
-      "commit": "13fd12412573c62847700d1cfc8e4aa9d2bb5ea1",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "7d75cd0288849bc577471f566008b834ad36f37b",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-glassential-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-glassential-addon/releases/download/v0.1.0-alpha.1/bluemap-glassential-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 162440,
-        "sha256": "a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780"
+        "filename": "bluemap-glassential-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-glassential-addon/releases/download/v0.1.0-alpha.2/bluemap-glassential-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 166871,
+        "sha256": "9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60"
       },
       "requires": [
         "bluemap"
@@ -732,13 +732,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-rechiseled-create-addon",
       "submodule_path": "addons/rechiseled-create",
-      "commit": "e1fd8afc1816154a95e224815ca4015528fd0e2e",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "964fac47ac3e7cef1e823507fd57083b0c6b6a81",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-rechiseled-create-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-rechiseled-create-addon/releases/download/v0.1.0-alpha.1/bluemap-rechiseled-create-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 209444,
-        "sha256": "651b8be8a41d459f04f3ec1cbc64ba7441cceb3c2bb3c07d518556a11c83596b"
+        "filename": "bluemap-rechiseled-create-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rechiseled-create-addon/releases/download/v0.1.0-alpha.2/bluemap-rechiseled-create-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 213503,
+        "sha256": "8e1c5709698e1a2a8313935a4ac138eefc5465c2ec885526b714c706705c99f8"
       },
       "requires": [
         "bluemap"
@@ -800,13 +800,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-sophisticated-addon",
       "submodule_path": "addons/sophisticated",
-      "commit": "a75b1d82c3987fa9360a1e8a5910eedf90aca7cb",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "aeadd12f711c875c10261be5fcce57dad3d0c35b",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-sophisticated-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-sophisticated-addon/releases/download/v0.1.0-alpha.1/bluemap-sophisticated-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 114309,
-        "sha256": "d466d6b40fc1f51a8e045ba34631354fd181681aa8363b4f0649ec1c83227036"
+        "filename": "bluemap-sophisticated-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-sophisticated-addon/releases/download/v0.1.0-alpha.2/bluemap-sophisticated-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 116914,
+        "sha256": "8d434eff624a831ac1327e9b17347fa6b4325c02a001be418fe6593b6c300dab"
       },
       "requires": [
         "bluemap"

@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "82d8a6adca660d785c950f48f86ed13f9687c03d12054b52fbd394923d26908a"
+EXPECTED_MANIFEST_SHA256 = "69d6188596d73891af8e6dc8f959f12a77726275f5892421cedf02ca3ac5eb14"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -224,7 +224,7 @@ CUMULATIVE_SCORE_RESET_RULES = (
     ),
     CumulativeScoreResetRule(
         "factory-blocks",
-        "ad9ee2bcf0e2886ee88931f1eaf50ccb4b8a03bd",
+        "ad403575652e11d9b676d4af690d00bc676bf9ac",
         "data/factory_blocks_gallery/function/build.mcfunction",
         (("#builds", "fb_gallery"),),
     ),
