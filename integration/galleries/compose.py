@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "ef1aebac5a1fbf2d4a1d91b3962a4078416239fba2e47fbcea941b8a2b1d34ca"
+EXPECTED_MANIFEST_SHA256 = "e10113aecef66973bd1a7b4b3b5b0570d001082946901e961f6e1d7f31d5514b"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -234,7 +234,7 @@ CUMULATIVE_SCORE_RESET_RULES = (
     ),
     CumulativeScoreResetRule(
         "laserio",
-        "2148a344b1ae78e77b95aa2baa51efe46c1357e8",
+        "28e45556464f803ca730de4358704a1654d4ebb0",
         "data/laserio_gallery/function/build.mcfunction",
         (("#builds", "laserio_glr"),),
     ),

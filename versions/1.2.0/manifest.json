@@ -154,13 +154,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-chipped-addon",
       "submodule_path": "addons/chipped",
-      "commit": "c474a82b6bfd1b4173d119cb1e053a5458167e4b",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "f1390e4ce462a005eafbdd6ce518339b9a8ee7ae",
+      "release_tag": "v0.1.0-alpha.6",
       "artifact": {
-        "filename": "bluemap-chipped-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-chipped-addon/releases/download/v0.1.0-alpha.1/bluemap-chipped-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 598326,
-        "sha256": "b43c238b764e068db4009ab16fc2af140b54d84feaf37bd6577602e1dc97fd21"
+        "filename": "bluemap-chipped-addon-0.1.0-alpha.6.jar",
+        "url": "https://github.com/jan-guenter/bluemap-chipped-addon/releases/download/v0.1.0-alpha.6/bluemap-chipped-addon-0.1.0-alpha.6.jar",
+        "size_bytes": 603586,
+        "sha256": "4d3e0b0a0f6663c23595dd7a5565e4f05e5552d04a13f887aa0ab7364cc701a8"
       },
       "requires": [
         "bluemap"
@@ -460,13 +460,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-laserio-addon",
       "submodule_path": "addons/laserio",
-      "commit": "2148a344b1ae78e77b95aa2baa51efe46c1357e8",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "28e45556464f803ca730de4358704a1654d4ebb0",
+      "release_tag": "v0.1.0-alpha.5",
       "artifact": {
-        "filename": "bluemap-laserio-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-laserio-addon/releases/download/v0.1.0-alpha.1/bluemap-laserio-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 110887,
-        "sha256": "006900dd9000c6614c60b38df46b6cd1940dab53f059a381c282e9d79e89dbf1"
+        "filename": "bluemap-laserio-addon-0.1.0-alpha.5.jar",
+        "url": "https://github.com/jan-guenter/bluemap-laserio-addon/releases/download/v0.1.0-alpha.5/bluemap-laserio-addon-0.1.0-alpha.5.jar",
+        "size_bytes": 116932,
+        "sha256": "1ede33b9a8c4818e5f9f582912d4685c529efeebf53e92c227c943d3633038c3"
       },
       "requires": [
         "bluemap"
@@ -579,13 +579,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-natures-aura-addon",
       "submodule_path": "addons/natures-aura",
-      "commit": "8c2cef5d5782061aa4effa3d1a550ee7d262639c",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "3e141e16f1ef9fc403d3a5d405143dcdf9f990e9",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-natures-aura-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-natures-aura-addon/releases/download/v0.1.0-alpha.1/bluemap-natures-aura-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 115630,
-        "sha256": "ba98a71dce55a343cfdf3c2f22421beebf26ac631f8a42841643da6f03d5f5e6"
+        "filename": "bluemap-natures-aura-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-natures-aura-addon/releases/download/v0.1.0-alpha.2/bluemap-natures-aura-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 120921,
+        "sha256": "4852efc9331ca3d41f8290c22b32c5af54cb417da987180dc8e342e0bd86c979"
       },
       "requires": [
         "bluemap"
@@ -681,13 +681,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-productive-metalworks-addon",
       "submodule_path": "addons/productive-metalworks",
-      "commit": "f7706461f5500067d610c0c2e5ed97371f16af81",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "d18fe302206bcef5c4d2ae246a78aa07c0f69f79",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-productive-metalworks-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-productive-metalworks-addon/releases/download/v0.1.0-alpha.1/bluemap-productive-metalworks-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 118243,
-        "sha256": "7b7890329de51230a8a455a45acac83e860932fda12b3e685d42522b138df0cd"
+        "filename": "bluemap-productive-metalworks-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-productive-metalworks-addon/releases/download/v0.1.0-alpha.2/bluemap-productive-metalworks-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 122988,
+        "sha256": "712bd40aa0918d091988cf4472c3b7c6111419d577ea7282a11648f19b1610c4"
       },
       "requires": [
         "bluemap"
@@ -834,13 +834,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-tempad-addon",
       "submodule_path": "addons/tempad",
-      "commit": "9bd217d642be3b0abdac77a2f93098eba8c15fe9",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "c7e316d0b07382a6c6c3efa9cdcf72c47fe9b727",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-tempad-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-tempad-addon/releases/download/v0.1.0-alpha.1/bluemap-tempad-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 99536,
-        "sha256": "0026de4bd3de80f52f11f6ae223351c7ecae51cbd59c0adc85ab755fddbae95d"
+        "filename": "bluemap-tempad-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-tempad-addon/releases/download/v0.1.0-alpha.2/bluemap-tempad-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 104907,
+        "sha256": "d28c566a5b4f9e81ad3530b2d9210ba0187acccbcae0ce5b69e6d47df211e4ee"
       },
       "requires": [
         "bluemap"
