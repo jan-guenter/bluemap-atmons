@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "04345f7966745ec5f659e0780d682aa72dc2f3ad61d967f8a20f3afa910c3065"
+EXPECTED_MANIFEST_SHA256 = "ef1aebac5a1fbf2d4a1d91b3962a4078416239fba2e47fbcea941b8a2b1d34ca"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -240,7 +240,7 @@ CUMULATIVE_SCORE_RESET_RULES = (
     ),
     CumulativeScoreResetRule(
         "rftools-builder",
-        "64471638ed4f61c102bd5f54986fba1cd467d6dd",
+        "ed979af9b295ca3411903e98df95af9f5bb6ea16",
         "data/rftools_builder_gallery/function/build.mcfunction",
         (("#builds", "rftb_gallery"),),
     ),
@@ -252,19 +252,19 @@ CUMULATIVE_SCORE_RESET_RULES = (
     ),
     CumulativeScoreResetRule(
         "modular-routers",
-        "7fd7a4d0c40bd2dae13bb87e48445eb905322993",
+        "da5686a6b7f79a4c5468793ae48baa2907855ab7",
         "data/modularrouters_gallery/function/build.mcfunction",
         (("#builds", "mr_gallery"),),
     ),
     CumulativeScoreResetRule(
         "securitycraft",
-        "a99e816581b62c71dae3975e1e677a1ff93aec64",
+        "1ebddc5fa3db68630604983eeeae9a0a076be20d",
         "data/securitycraft_gallery/function/build.mcfunction",
         (("#builds", "sc_gallery"),),
     ),
     CumulativeScoreResetRule(
         "functional-storage",
-        "d085e3a4450dd2e8b1dc6d54541054ee36b4646c",
+        "737c13e823c883229f0bc45e8ba512ba77b803e7",
         "data/functionalstorage_gallery/function/build_once.mcfunction",
         (("#builds", "fs_gallery"),),
     ),

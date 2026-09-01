@@ -358,13 +358,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-functional-storage-addon",
       "submodule_path": "addons/functional-storage",
-      "commit": "d085e3a4450dd2e8b1dc6d54541054ee36b4646c",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "737c13e823c883229f0bc45e8ba512ba77b803e7",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-functional-storage-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-functional-storage-addon/releases/download/v0.1.0-alpha.1/bluemap-functional-storage-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 82274,
-        "sha256": "ffe80812802c2c8f68d50ee74f17dd492561f3b44a9e650545064f66e285b048"
+        "filename": "bluemap-functional-storage-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-functional-storage-addon/releases/download/v0.1.0-alpha.2/bluemap-functional-storage-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 89631,
+        "sha256": "a8f0fd42f34d5902993ecd4b69c3bd464c077de3100cd1c6380add81d43e181b"
       },
       "requires": [
         "bluemap"
@@ -545,13 +545,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-modular-routers-addon",
       "submodule_path": "addons/modular-routers",
-      "commit": "7fd7a4d0c40bd2dae13bb87e48445eb905322993",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "da5686a6b7f79a4c5468793ae48baa2907855ab7",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-modular-routers-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-modular-routers-addon/releases/download/v0.1.0-alpha.1/bluemap-modular-routers-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 46780,
-        "sha256": "c8e0c591169e12334abc85c3a917caffb5c82e4dd000acf92d0ff101b8f97a31"
+        "filename": "bluemap-modular-routers-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-modular-routers-addon/releases/download/v0.1.0-alpha.2/bluemap-modular-routers-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 53593,
+        "sha256": "160a3fc276057e634b5c1c2dad7641028c7be811a5a7262d6da53c3936b8dfc2"
       },
       "requires": [
         "bluemap"
@@ -715,13 +715,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-rechiseled-addon",
       "submodule_path": "addons/rechiseled",
-      "commit": "8588d99388c213b938d79931dd6d9e9ef8e4099c",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "61f66ad8e1bffe26ac954e10294b5a88b7cd0a23",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-rechiseled-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-rechiseled-addon/releases/download/v0.1.0-alpha.1/bluemap-rechiseled-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 645622,
-        "sha256": "39793187b97b504e085664a23eb5e54961dfdeac1e9ccf57e1bd701bd90c0242"
+        "filename": "bluemap-rechiseled-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rechiseled-addon/releases/download/v0.1.0-alpha.3/bluemap-rechiseled-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 650048,
+        "sha256": "95c9e026b4b2826be67b594390c69b1c4d2d5c1036152fa5a36271a82a66ff33"
       },
       "requires": [
         "bluemap"
@@ -749,13 +749,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-rftools-builder-addon",
       "submodule_path": "addons/rftools-builder",
-      "commit": "64471638ed4f61c102bd5f54986fba1cd467d6dd",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "ed979af9b295ca3411903e98df95af9f5bb6ea16",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-rftools-builder-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-rftools-builder-addon/releases/download/v0.1.0-alpha.1/bluemap-rftools-builder-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 65006,
-        "sha256": "776d4242bf6826a8aafe081aca5b32f242bc0af5677efccbdd3469b65ba7cfe6"
+        "filename": "bluemap-rftools-builder-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rftools-builder-addon/releases/download/v0.1.0-alpha.2/bluemap-rftools-builder-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 70037,
+        "sha256": "3302fbf77a92cc0643e04dfe7981816a3699b0da00f3993360b6b76ca389c09b"
       },
       "requires": [
         "bluemap"
@@ -783,13 +783,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-securitycraft-addon",
       "submodule_path": "addons/securitycraft",
-      "commit": "a99e816581b62c71dae3975e1e677a1ff93aec64",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "1ebddc5fa3db68630604983eeeae9a0a076be20d",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-securitycraft-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-securitycraft-addon/releases/download/v0.1.0-alpha.1/bluemap-securitycraft-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 33345,
-        "sha256": "4caccbbfaf9d413ae7d60e926069812e09da182adeb907ec2475083904d096e4"
+        "filename": "bluemap-securitycraft-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-securitycraft-addon/releases/download/v0.1.0-alpha.2/bluemap-securitycraft-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 36586,
+        "sha256": "02d3e95321fd9dfec5886c34bd6fed0f4df67ad01dc6cc6afa8a1cae9ea46071"
       },
       "requires": [
         "bluemap"
