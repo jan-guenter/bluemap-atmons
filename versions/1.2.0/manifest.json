@@ -120,13 +120,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-botanypots-addon",
       "submodule_path": "addons/botanypots",
-      "commit": "f40eed6c1f7f30356bcdfabbc3e2a6455fec7884",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "e098bea735cd2b019e2d88a01d08bdcdcdfa2f74",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-botanypots-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-botanypots-addon/releases/download/v0.1.0-alpha.1/bluemap-botanypots-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 147258,
-        "sha256": "ab32bdad893e95847e191b86fee1da727757e1ee006449128acb897fe5eb05b0"
+        "filename": "bluemap-botanypots-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-botanypots-addon/releases/download/v0.1.0-alpha.2/bluemap-botanypots-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 150791,
+        "sha256": "1dfa631f22eb65aa953d3f554d2b4c02e0fab000c1461903cad56b419d12d3c4"
       },
       "requires": [
         "bluemap"
@@ -171,13 +171,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-chisel-addon",
       "submodule_path": "addons/chisel",
-      "commit": "f9131a5143062e2045cf26823aabb8628bb5d94d",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "9f162cc1d9323ea20175e3a47e99e3ff5ac59609",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-chisel-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-chisel-addon/releases/download/v0.1.0-alpha.1/bluemap-chisel-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 249972,
-        "sha256": "053e048f9332094571b25b2edc5ddb9a172e1f89c0a65c2f7ceb05e4a946510e"
+        "filename": "bluemap-chisel-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-chisel-addon/releases/download/v0.1.0-alpha.3/bluemap-chisel-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 254642,
+        "sha256": "6043a34368dd6fd4d345762121dc99df4cdb23626e367f3f3b1e9b59c12261ef"
       },
       "requires": [
         "bluemap"
@@ -205,13 +205,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-cobblemonstonestatues-addon",
       "submodule_path": "addons/cobblemonstonestatues",
-      "commit": "576c3030a60b5b9af266c2af4b3f8556a69aaa0f",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "1101f4e79ac00011ceb00398074d80aa5ff1606e",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-cobblemonstonestatues-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-cobblemonstonestatues-addon/releases/download/v0.1.0-alpha.1/bluemap-cobblemonstonestatues-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 286752,
-        "sha256": "9800484109aa7e571f393aa96b069e6248186c35103b6e26fd9dad920e4efcd4"
+        "filename": "bluemap-cobblemonstonestatues-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-cobblemonstonestatues-addon/releases/download/v0.1.0-alpha.2/bluemap-cobblemonstonestatues-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 291240,
+        "sha256": "20108b9de728a92a91da458d4ba9aa91d0c83ea5fe65549a8b308c97a0c67617"
       },
       "requires": [
         "bluemap"
@@ -222,13 +222,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-connectedglass-addon",
       "submodule_path": "addons/connectedglass",
-      "commit": "4a4eb5030d18f1e54cd5a8ad1c2dc093a187ac06",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "994ff76a2889800529de189b2d04e777cfd00da8",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-connectedglass-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-connectedglass-addon/releases/download/v0.1.0-alpha.1/bluemap-connectedglass-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 155396,
-        "sha256": "eb1dc07a6f9906f83a710e175cb8c119f0464bda73f651fa13a6e24900ffb70e"
+        "filename": "bluemap-connectedglass-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-connectedglass-addon/releases/download/v0.1.0-alpha.3/bluemap-connectedglass-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 162427,
+        "sha256": "a4ee3f4e398f2bdec3739724027d785e2697417dad92d73dcdb06bbd2a7df240"
       },
       "requires": [
         "bluemap"
@@ -341,13 +341,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-framedblocks-addon",
       "submodule_path": "addons/framedblocks",
-      "commit": "0c20019d570356044526faea964caf10a13a82f3",
-      "release_tag": "v0.1.0-alpha.2",
+      "commit": "b4a3f3641b47aaf9b56a89db6215df121575ca08",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.2.jar",
-        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.2/bluemap-framedblocks-addon-0.1.0-alpha.2.jar",
-        "size_bytes": 1327387,
-        "sha256": "a7c4922777e6912d726da14d246c92c75b7fc1d1db8ec2f862a07b25bc9e9ebb"
+        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.3/bluemap-framedblocks-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 1337598,
+        "sha256": "1b4befc9b475e11e99d4af776ee776c724605b78b4879ab8a93ebfb217ce618a"
       },
       "requires": [
         "bluemap"

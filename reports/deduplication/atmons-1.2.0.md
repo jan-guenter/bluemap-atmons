@@ -4,15 +4,15 @@ This is a deterministic source audit of the exact 51 add-on commits pinned by th
 
 ## Scope and result
 
-- Add-ons: **51** gitlinks; eligible tracked files: **2849** (29,294,829 bytes).
-- Version manifest: `versions/1.2.0/manifest.json` (`69d6188596d73891af8e6dc8f959f12a77726275f5892421cedf02ca3ac5eb14`); all **51** add-on commits exactly match the index gitlinks.
-- Inventory fingerprint: `06c9ed29c5cb843cb654fc19e51d7c3e87ffaa18f60a8e995c11294f24631ea5`.
+- Add-ons: **51** gitlinks; eligible tracked files: **2840** (29,363,038 bytes).
+- Version manifest: `versions/1.2.0/manifest.json` (`04345f7966745ec5f659e0780d682aa72dc2f3ad61d967f8a20f3afa910c3065`); all **51** add-on commits exactly match the index gitlinks.
+- Inventory fingerprint: `ab3ed986c076fa9dd21006b820d508d7933bf7934a06bda1f6ee5d0e086043ff`.
 - Exact file groups: **8** (99 occurrences).
-- Whole-Java-file token groups: **43 exact**, **47 renamed**.
-- Java method groups (minimum 36 tokens): **370 exact**, **203 renamed**.
-- Parsed Python/Gradle/GitHub Actions/Bash groups (minimum 12 units): **366 exact**, **15 conservative local-renamed**.
-- Structured inventory fingerprint: `057e065dc081a51fe400c37fadc5896f55ec73cb2824c1c27af4935430f8a806` (10185 parsed units; 9119 eligible).
-- Exact method layers: behavioral 235, mixed 2, scaffolding 75, test_scaffolding 16, test_support 42; renamed method layers: behavioral 73, mixed 5, scaffolding 74, test_scaffolding 15, test_support 36.
+- Whole-Java-file token groups: **37 exact**, **45 renamed**.
+- Java method groups (minimum 36 tokens): **352 exact**, **201 renamed**.
+- Parsed Python/Gradle/GitHub Actions/Bash groups (minimum 12 units): **371 exact**, **19 conservative local-renamed**.
+- Structured inventory fingerprint: `3fa190438fe66d8c0e42a4b5e98af8e312ffe32a48db75483c4fbfff53285490` (10282 parsed units; 9200 eligible).
+- Exact method layers: behavioral 219, mixed 2, scaffolding 75, test_scaffolding 14, test_support 42; renamed method layers: behavioral 73, mixed 5, scaffolding 73, test_scaffolding 15, test_support 35.
 
 The full JSON report records every qualifying occurrence with its add-on commit, path, line range where applicable, token count, and content fingerprint.
 
@@ -21,8 +21,8 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 | Language | Parsed units | Exact groups | Local-renamed groups |
 | --- | ---: | ---: | ---: |
 | github_actions | 1356 | 41 | 0 |
-| gradle | 5970 | 222 | 8 |
-| python | 2165 | 89 | 7 |
+| gradle | 6062 | 227 | 12 |
+| python | 2170 | 89 | 7 |
 | shell | 694 | 14 | 0 |
 
 ## Strong exact-copy evidence
@@ -30,11 +30,11 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 | Files | Add-ons | Layer | Evidence |
 | --- | ---: | --- | --- |
 | checkstyle.xml | 24 | scaffolding | `file-77fe7b6d9a70f527` |
+| checkstyle.xml | 22 | scaffolding | `file-e04503e9acfe6b44` |
 | verify_staged_equivalence.py | 20 | scaffolding | `file-cc8fa6cb1e79b855` |
 | verify_pinned_artifacts.py | 20 | scaffolding | `file-dc7c6d80796f9d57` |
-| checkstyle.xml | 17 | scaffolding | `file-e04503e9acfe6b44` |
-| checkstyle.xml | 9 | scaffolding | `file-43737c81b15d2ae7` |
 | verify_staged_equivalence.py | 5 | scaffolding | `file-ecdecd142245f4d1` |
+| checkstyle.xml | 4 | scaffolding | `file-43737c81b15d2ae7` |
 | clear.mcfunction | 2 | test_support | `file-78b6dd8bf0896769` |
 | pose_south.mcfunction | 2 | test_support | `file-827d564197268833` |
 
@@ -44,21 +44,21 @@ The full JSON report records every qualifying occurrence with its add-on commit,
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Runtime activation and diagnostics | 51 | 161 | 0 | 8 / 18 | 0 / 0 |
 | Artifact identity and profiles | 50 | 183 | 0 | 28 / 12 | 0 / 0 |
-| BlueMap adapter bootstrap | 51 | 181 | 0 | 40 / 44 | 0 / 0 |
-| Build, release, and quality configuration | 51 | 308 | 3 | 0 / 0 | 277 / 8 |
-| Artifact verification tooling | 40 | 109 | 3 | 0 / 0 | 42 / 3 |
+| BlueMap adapter bootstrap | 51 | 173 | 0 | 40 / 43 | 0 / 0 |
+| Build, release, and quality configuration | 51 | 308 | 3 | 0 / 0 | 282 / 12 |
+| Artifact verification tooling | 40 | 111 | 3 | 0 / 0 | 42 / 3 |
 | Gallery generation and lifecycle harness | 51 | 431 | 1 | 0 / 0 | 47 / 5 |
-| Rendering and geometry primitives | 26 | 36 | 0 | 32 / 4 | 0 / 0 |
+| Rendering and geometry primitives | 25 | 33 | 0 | 25 / 4 | 0 / 0 |
 | Installed model compilers | 13 | 28 | 0 | 46 / 14 | 0 / 0 |
-| Connected-texture engine | 11 | 68 | 0 | 99 / 23 | 0 / 0 |
-| Athena resource models | 4 | 10 | 0 | 16 / 1 | 0 / 0 |
-| Fusion resource models | 5 | 18 | 0 | 56 / 5 | 0 / 0 |
+| Connected-texture engine | 11 | 63 | 0 | 89 / 22 | 0 / 0 |
+| Athena resource models | 4 | 7 | 0 | 9 / 1 | 0 / 0 |
+| Fusion resource models | 5 | 14 | 0 | 47 / 5 | 0 / 0 |
 
 ## Recommended extraction order
 
 ### 1. `bluemap-addon-toolkit` — Development and release toolkit
 
-Evidence: 848 family-matched files across 51 add-ons and 388 content clone groups.
+Evidence: 850 family-matched files across 51 add-ons and 397 content clone groups.
 
 Recommendation: Extract first as versioned CLI/Gradle conventions. Keep generated gallery data in each add-on.
 
@@ -90,7 +90,7 @@ Coupling/ABI risks:
 
 ### 3. `athena-resource-models` — Athena resource-model source module
 
-Evidence: 10 family-matched files across 4 add-ons and 17 content clone groups.
+Evidence: 7 family-matched files across 4 add-ons and 10 content clone groups.
 
 Recommendation: Extract after freezing the Chipped, Chisel, CobbleFurnies, and Factory Blocks fixtures.
 
@@ -106,7 +106,7 @@ Coupling/ABI risks:
 
 ### 4. `fusion-resource-models` — Fusion resource-model source module
 
-Evidence: 18 family-matched files across 5 add-ons and 61 content clone groups.
+Evidence: 14 family-matched files across 5 add-ons and 52 content clone groups.
 
 Recommendation: Extract the exact common contract; keep format versions, catalogs, and route allowlists local.
 
@@ -122,7 +122,7 @@ Coupling/ABI risks:
 
 ### 5. `bluemap-addon-render-core` — Neutral rendering primitives
 
-Evidence: 36 family-matched files across 26 add-ons and 36 content clone groups.
+Evidence: 33 family-matched files across 25 add-ons and 29 content clone groups.
 
 Recommendation: Start only with exact multi-consumer APIs such as the seven-copy FaceLighting contract.
 
@@ -154,7 +154,7 @@ Coupling/ABI risks:
 
 ### 7. `bluemap-addon-adapter-api` — BlueMap adapter bootstrap API
 
-Evidence: 181 family-matched files across 51 add-ons and 84 content clone groups.
+Evidence: 173 family-matched files across 51 add-ons and 83 content clone groups.
 
 Recommendation: Design now, but publish only after the 5.23 integration branch has a stable combined runtime gate.
 
