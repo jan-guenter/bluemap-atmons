@@ -134,7 +134,7 @@ public final class GalleryLayout {
         Set<String> ids = new HashSet<>();
         if (!galleries.isEmpty()) {
             if (compositionId == null || !compositionId.matches("[0-9a-f]{64}")
-                    || !"2.4.0".equals(composerVersion)) {
+                    || !"2.4.1".equals(composerVersion)) {
                 throw new IllegalArgumentException(
                         "Composer gallery composition identity is invalid"
                 );

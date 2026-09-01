@@ -168,7 +168,7 @@ class GalleryRenderVerifierTest {
         GalleryLayout layout = new GalleryLayout();
         layout.schemaVersion = 1;
         layout.compositionId = "a".repeat(64);
-        layout.composerVersion = "2.4.0";
+        layout.composerVersion = "2.4.1";
         layout.dimension = GalleryRenderVerifier.DIMENSION;
         layout.mapId = GalleryRenderVerifier.MAP_ID;
         layout.bounds = bounds;

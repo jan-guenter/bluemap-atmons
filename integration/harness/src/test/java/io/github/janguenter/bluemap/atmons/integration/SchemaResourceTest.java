@@ -54,6 +54,13 @@ class SchemaResourceTest {
     void gallerySchemaAcceptsComposerFunctionsAddedByTheAggregator() throws IOException {
         JsonObject schema = resource("/bluemap-atmons/gallery-layout.schema.json");
 
+        assertEquals(
+                "2.4.1",
+                schema.getAsJsonObject("properties")
+                        .getAsJsonObject("composerVersion")
+                        .get("const")
+                        .getAsString()
+        );
         JsonObject functions = schema.getAsJsonObject("$defs")
                 .getAsJsonObject("functions");
         String required = functions.getAsJsonArray("required").toString();
