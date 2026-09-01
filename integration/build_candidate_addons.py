@@ -62,6 +62,12 @@ ADAPTER_API_TAG = "v0.1.0-alpha.2"
 ADAPTER_API_COMMIT = "e81f08bc4bfbf02d810ec8949a019130e2e61634"
 ADAPTER_API_SOURCE_TREE = "2f974c9bb2ba13888d69682f86f30f58922d30eb"
 ADAPTER_API_GITLINK = "modules/bluemap-addon-adapter-api"
+ADAPTER_API_REPOSITORY = (
+    "https://github.com/jan-guenter/bluemap-addon-adapter-api"
+)
+ADAPTER_API_COORDINATE = (
+    "io.github.jan-guenter:bluemap-addon-adapter-api:" + ADAPTER_API_VERSION
+)
 RENDER_CORE_VERSION = "0.1.0-alpha.2"
 RENDER_CORE_TAG = "v0.1.0-alpha.2"
 RENDER_CORE_COMMIT = "24b84efdc8235f3f1323e1a8e9fd033080e3a79e"
@@ -282,6 +288,14 @@ def _main_java_paths(checkout: Path, commit: str) -> list[str]:
     ).stdout.splitlines()
 
 
+def _native_adapter_paths(paths: list[str]) -> list[str]:
+    return sorted(
+        path
+        for path in paths
+        if path.endswith("/adapter/bluemap523/BlueMap523Adapter.java")
+    )
+
+
 def _normalize_adapter_api_migration(
     checkout: Path, commit: str, component_id: str
 ) -> dict:
@@ -294,18 +308,22 @@ def _normalize_adapter_api_migration(
         raise CandidateError(
             f"{component_id}: native feature-backport migration provenance is unreadable"
         ) from exc
-    candidates = [
-        (name, value.get(name))
-        for name in (
-            "adapter_api_migration",
-            "adapter_api_module_migration",
-            "adapter_api_source",
-        )
-        if isinstance(value.get(name), dict)
-    ]
-    if len(candidates) != 1:
+    if not isinstance(value, dict):
         raise CandidateError(
-            f"{component_id}: expected one Adapter API migration provenance section"
+            f"{component_id}: native feature-backport migration provenance must be "
+            "an object"
+        )
+    section_names = (
+        "adapter_api_migration",
+        "adapter_api_module_migration",
+        "adapter_api_source",
+        "adapter_api",
+    )
+    candidates = [(name, value[name]) for name in section_names if name in value]
+    if len(candidates) != 1 or not isinstance(candidates[0][1], dict):
+        raise CandidateError(
+            f"{component_id}: expected exactly one Adapter API migration provenance "
+            "object"
         )
     section_name, section = candidates[0]
 
@@ -317,20 +335,239 @@ def _normalize_adapter_api_migration(
             )
         return present[0]
 
-    normalized = {
-        "section": section_name,
-        "repository": field(section, "repository", "repository", "module_repository"),
-        "version": field(section, "version", "version", "module_version"),
-        "tag": field(section, "tag", "tag", "module_tag"),
-        "commit": field(
-            section,
-            "commit", "release_target_commit", "module_release_commit", "commit"
-        ),
-        "sourceTree": field(
-            section,
-            "source tree", "source_tree", "module_source_tree"
-        ),
+    def require_exact_mapping(source: object, expected: dict, label: str) -> None:
+        if not isinstance(source, dict) or set(source) != set(expected):
+            raise CandidateError(
+                f"{component_id}: {label} differs from the exact 5.23 contract"
+            )
+        for key, expected_value in expected.items():
+            actual = source[key]
+            if type(actual) is not type(expected_value) or actual != expected_value:
+                raise CandidateError(
+                    f"{component_id}: {label} differs from the exact 5.23 contract"
+                )
+
+    def require_absent(names: tuple[str, ...], label: str) -> None:
+        present = [name for name in names if name in value]
+        if present:
+            raise CandidateError(
+                f"{component_id}: {label} conflicts with the exact 5.23 contract"
+            )
+
+    host_identity = {
+        "bluemap_version": FEATURE_BACKPORT_VERSION,
+        "bluemap_commit": FEATURE_BACKPORT_COMMIT,
+        "bluemap_api_commit": FEATURE_BACKPORT_API_COMMIT,
     }
+    published_source_only = False
+    section_keys = set(section)
+
+    if section_name == "adapter_api_migration" and "module_commit" in section_keys:
+        require_exact_mapping(
+            section,
+            {
+                "module_repository": ADAPTER_API_REPOSITORY,
+                "module_version": ADAPTER_API_VERSION,
+                "module_tag": ADAPTER_API_TAG,
+                "module_commit": ADAPTER_API_COMMIT,
+                "module_source_tree": ADAPTER_API_SOURCE_TREE,
+                "compiled_source_count": 4,
+                "standalone_module_jar_bundled": False,
+            },
+            "published Botany-style Adapter API provenance",
+        )
+        require_exact_mapping(value.get("host"), host_identity, "BlueMap host identity")
+        require_absent(("bluemap",), "alternate BlueMap host provenance")
+        normalized = {
+            "section": section_name,
+            "repository": ADAPTER_API_REPOSITORY,
+            "version": ADAPTER_API_VERSION,
+            "tag": ADAPTER_API_TAG,
+            "commit": ADAPTER_API_COMMIT,
+            "sourceTree": ADAPTER_API_SOURCE_TREE,
+            "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+            "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+        }
+        published_source_only = True
+    elif (
+        section_name == "adapter_api_migration"
+        and "standalone_module_jar" in section_keys
+    ):
+        require_exact_mapping(
+            section,
+            {
+                "repository": ADAPTER_API_REPOSITORY,
+                "version": ADAPTER_API_VERSION,
+                "tag": ADAPTER_API_TAG,
+                "commit": ADAPTER_API_COMMIT,
+                "source_tree": ADAPTER_API_SOURCE_TREE,
+                "gitlink": ADAPTER_API_GITLINK,
+                "standalone_module_jar": "not-bundled-or-installed",
+            },
+            "published Chisel-style Adapter API provenance",
+        )
+        require_exact_mapping(value.get("host"), host_identity, "BlueMap host identity")
+        require_absent(("bluemap",), "alternate BlueMap host provenance")
+        normalized = {
+            "section": section_name,
+            "repository": ADAPTER_API_REPOSITORY,
+            "version": ADAPTER_API_VERSION,
+            "tag": ADAPTER_API_TAG,
+            "commit": ADAPTER_API_COMMIT,
+            "sourceTree": ADAPTER_API_SOURCE_TREE,
+            "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+            "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+        }
+        published_source_only = True
+    elif section_name == "adapter_api" and "source_files_bundled" in section_keys:
+        require_exact_mapping(
+            section,
+            {
+                "version": ADAPTER_API_VERSION,
+                "commit": ADAPTER_API_COMMIT,
+                "source_tree": ADAPTER_API_SOURCE_TREE,
+                "source_files_bundled": 4,
+                "module_jar_bundled": False,
+            },
+            "published compact Adapter API provenance",
+        )
+        require_exact_mapping(
+            value.get("bluemap"),
+            {
+                "commit": FEATURE_BACKPORT_COMMIT,
+                "api_commit": FEATURE_BACKPORT_API_COMMIT,
+                "version": FEATURE_BACKPORT_VERSION,
+            },
+            "BlueMap host identity",
+        )
+        require_absent(("host",), "alternate BlueMap host provenance")
+        normalized = {
+            "section": section_name,
+            "repository": ADAPTER_API_REPOSITORY,
+            "version": ADAPTER_API_VERSION,
+            "tag": ADAPTER_API_TAG,
+            "commit": ADAPTER_API_COMMIT,
+            "sourceTree": ADAPTER_API_SOURCE_TREE,
+            "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+            "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+        }
+        published_source_only = True
+    elif section_name == "adapter_api" and "source_files_compiled" in section_keys:
+        adapter_package = section.get("local_adapter_package")
+        expected_section = {
+            "version": ADAPTER_API_VERSION,
+            "commit": ADAPTER_API_COMMIT,
+            "source_tree": ADAPTER_API_SOURCE_TREE,
+            "source_files_compiled": 4,
+            "module_jar_installed": False,
+            "module_jar_bundled": False,
+            "module_jar_nested": False,
+            "local_adapter_package": adapter_package,
+        }
+        if not isinstance(adapter_package, str) or re.fullmatch(
+            r"[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*",
+            adapter_package,
+        ) is None:
+            raise CandidateError(
+                f"{component_id}: candidate compact Adapter API local_adapter_package "
+                "is not a valid dotted Java package"
+            )
+        require_exact_mapping(
+            section,
+            expected_section,
+            "candidate compact Adapter API provenance",
+        )
+        expected_adapter_path = (
+            "src/main/java/"
+            + adapter_package.replace(".", "/")
+            + "/BlueMap523Adapter.java"
+        )
+        native_adapter_paths = _native_adapter_paths(
+            _main_java_paths(checkout, commit)
+        )
+        if native_adapter_paths != [expected_adapter_path]:
+            raise CandidateError(
+                f"{component_id}: candidate compact Adapter API local_adapter_package "
+                "does not identify the sole native adapter"
+            )
+        require_exact_mapping(
+            value.get("bluemap"),
+            {
+                "version": FEATURE_BACKPORT_VERSION,
+                "commit": FEATURE_BACKPORT_COMMIT,
+                "api_commit": FEATURE_BACKPORT_API_COMMIT,
+            },
+            "BlueMap host identity",
+        )
+        require_absent(("host",), "alternate BlueMap host provenance")
+        normalized = {
+            "section": section_name,
+            "repository": ADAPTER_API_REPOSITORY,
+            "version": ADAPTER_API_VERSION,
+            "tag": ADAPTER_API_TAG,
+            "commit": ADAPTER_API_COMMIT,
+            "sourceTree": ADAPTER_API_SOURCE_TREE,
+            "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+            "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+            "localAdapterPackage": adapter_package,
+        }
+        published_source_only = True
+    elif section_name == "adapter_api":
+        raise CandidateError(
+            f"{component_id}: compact Adapter API provenance differs from the exact "
+            "5.23 contract"
+        )
+    elif (
+        section_name == "adapter_api_migration" and "module" in section_keys
+    ):
+        require_exact_mapping(
+            section,
+            {
+                "module": ADAPTER_API_COORDINATE,
+                "repository": ADAPTER_API_REPOSITORY,
+                "commit": ADAPTER_API_COMMIT,
+                "source_tree": ADAPTER_API_SOURCE_TREE,
+                "source_files_bundled": 4,
+                "local_helpers_removed": 3,
+                "bluemap_commit": FEATURE_BACKPORT_COMMIT,
+                "bluemap_api_commit": FEATURE_BACKPORT_API_COMMIT,
+            },
+            "published Connected Glass-style Adapter API provenance",
+        )
+        require_absent(
+            ("host", "bluemap"), "alternate BlueMap host provenance"
+        )
+        normalized = {
+            "section": section_name,
+            "repository": ADAPTER_API_REPOSITORY,
+            "version": ADAPTER_API_VERSION,
+            "tag": ADAPTER_API_TAG,
+            "commit": ADAPTER_API_COMMIT,
+            "sourceTree": ADAPTER_API_SOURCE_TREE,
+            "blueMapCommit": FEATURE_BACKPORT_COMMIT,
+            "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
+        }
+        published_source_only = True
+    else:
+        normalized = {
+            "section": section_name,
+            "repository": field(
+                section, "repository", "repository", "module_repository"
+            ),
+            "version": field(section, "version", "version", "module_version"),
+            "tag": field(section, "tag", "tag", "module_tag"),
+            "commit": field(
+                section,
+                "commit",
+                "release_target_commit",
+                "module_release_commit",
+                "commit",
+            ),
+            "sourceTree": field(
+                section, "source tree", "source_tree", "module_source_tree"
+            ),
+        }
+
     if section_name == "adapter_api_source":
         companion = value.get("render_core_523_migration")
         if not isinstance(companion, dict):
@@ -391,12 +628,12 @@ def _normalize_adapter_api_migration(
         normalized["blueMapApiCommit"] = render_core["blueMapApiCommit"]
         normalized["identitySection"] = render_core["section"]
         normalized["renderCore"] = render_core
-    else:
+    elif not published_source_only:
         normalized["blueMapCommit"] = field(
             section, "BlueMap commit", "bluemap_commit", "target_bluemap_commit"
         )
     expected = {
-        "repository": "https://github.com/jan-guenter/bluemap-addon-adapter-api",
+        "repository": ADAPTER_API_REPOSITORY,
         "version": ADAPTER_API_VERSION,
         "tag": ADAPTER_API_TAG,
         "commit": ADAPTER_API_COMMIT,
@@ -414,20 +651,21 @@ def _normalize_adapter_api_migration(
         raise CandidateError(
             f"{component_id}: Adapter API migration BlueMap version is not exact"
         )
-    optional_standalone_fields = {
-        key: section[key]
-        for key in (
-            "standalone_module_jar_bundled",
-            "standalone_module_jar_nested",
-        )
-        if key in section
-    }
-    if section.get("standalone_module_jar_installed") is not False or any(
-        value is not False for value in optional_standalone_fields.values()
-    ):
-        raise CandidateError(
-            f"{component_id}: Adapter API migration does not prove a source-only module"
-        )
+    if not published_source_only:
+        optional_standalone_fields = {
+            key: section[key]
+            for key in (
+                "standalone_module_jar_bundled",
+                "standalone_module_jar_nested",
+            )
+            if key in section
+        }
+        if section.get("standalone_module_jar_installed") is not False or any(
+            value is not False for value in optional_standalone_fields.values()
+        ):
+            raise CandidateError(
+                f"{component_id}: Adapter API migration does not prove a source-only module"
+            )
     if section_name == "adapter_api_source" and (
         type(section.get("compiled_source_count")) is not int
         or section["compiled_source_count"] != 4
@@ -458,9 +696,7 @@ def _native_feature_backport_contract(
             )
         return None
 
-    adapter_paths = sorted(
-        path for path in paths if path.endswith("/adapter/bluemap523/BlueMap523Adapter.java")
-    )
+    adapter_paths = _native_adapter_paths(paths)
     if len(adapter_paths) != 1:
         raise CandidateError(
             f"{component_id}: native feature-backport override must contain exactly one "
