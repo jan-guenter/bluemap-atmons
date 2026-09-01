@@ -288,6 +288,14 @@ def _main_java_paths(checkout: Path, commit: str) -> list[str]:
     ).stdout.splitlines()
 
 
+def _native_adapter_paths(paths: list[str]) -> list[str]:
+    return sorted(
+        path
+        for path in paths
+        if path.endswith("/adapter/bluemap523/BlueMap523Adapter.java")
+    )
+
+
 def _normalize_adapter_api_migration(
     checkout: Path, commit: str, component_id: str
 ) -> dict:
@@ -300,19 +308,22 @@ def _normalize_adapter_api_migration(
         raise CandidateError(
             f"{component_id}: native feature-backport migration provenance is unreadable"
         ) from exc
-    candidates = [
-        (name, value.get(name))
-        for name in (
-            "adapter_api_migration",
-            "adapter_api_module_migration",
-            "adapter_api_source",
-            "adapter_api",
-        )
-        if isinstance(value.get(name), dict)
-    ]
-    if len(candidates) != 1:
+    if not isinstance(value, dict):
         raise CandidateError(
-            f"{component_id}: expected one Adapter API migration provenance section"
+            f"{component_id}: native feature-backport migration provenance must be "
+            "an object"
+        )
+    section_names = (
+        "adapter_api_migration",
+        "adapter_api_module_migration",
+        "adapter_api_source",
+        "adapter_api",
+    )
+    candidates = [(name, value[name]) for name in section_names if name in value]
+    if len(candidates) != 1 or not isinstance(candidates[0][1], dict):
+        raise CandidateError(
+            f"{component_id}: expected exactly one Adapter API migration provenance "
+            "object"
         )
     section_name, section = candidates[0]
 
@@ -335,6 +346,13 @@ def _normalize_adapter_api_migration(
                 raise CandidateError(
                     f"{component_id}: {label} differs from the exact 5.23 contract"
                 )
+
+    def require_absent(names: tuple[str, ...], label: str) -> None:
+        present = [name for name in names if name in value]
+        if present:
+            raise CandidateError(
+                f"{component_id}: {label} conflicts with the exact 5.23 contract"
+            )
 
     host_identity = {
         "bluemap_version": FEATURE_BACKPORT_VERSION,
@@ -359,6 +377,7 @@ def _normalize_adapter_api_migration(
             "published Botany-style Adapter API provenance",
         )
         require_exact_mapping(value.get("host"), host_identity, "BlueMap host identity")
+        require_absent(("bluemap",), "alternate BlueMap host provenance")
         normalized = {
             "section": section_name,
             "repository": ADAPTER_API_REPOSITORY,
@@ -388,6 +407,7 @@ def _normalize_adapter_api_migration(
             "published Chisel-style Adapter API provenance",
         )
         require_exact_mapping(value.get("host"), host_identity, "BlueMap host identity")
+        require_absent(("bluemap",), "alternate BlueMap host provenance")
         normalized = {
             "section": section_name,
             "repository": ADAPTER_API_REPOSITORY,
@@ -420,6 +440,7 @@ def _normalize_adapter_api_migration(
             },
             "BlueMap host identity",
         )
+        require_absent(("host",), "alternate BlueMap host provenance")
         normalized = {
             "section": section_name,
             "repository": ADAPTER_API_REPOSITORY,
@@ -443,10 +464,13 @@ def _normalize_adapter_api_migration(
             "module_jar_nested": False,
             "local_adapter_package": adapter_package,
         }
-        if not isinstance(adapter_package, str) or not adapter_package:
+        if not isinstance(adapter_package, str) or re.fullmatch(
+            r"[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*",
+            adapter_package,
+        ) is None:
             raise CandidateError(
-                f"{component_id}: candidate compact Adapter API provenance differs "
-                "from the exact 5.23 contract"
+                f"{component_id}: candidate compact Adapter API local_adapter_package "
+                "is not a valid dotted Java package"
             )
         require_exact_mapping(
             section,
@@ -458,10 +482,13 @@ def _normalize_adapter_api_migration(
             + adapter_package.replace(".", "/")
             + "/BlueMap523Adapter.java"
         )
-        if _main_java_paths(checkout, commit).count(expected_adapter_path) != 1:
+        native_adapter_paths = _native_adapter_paths(
+            _main_java_paths(checkout, commit)
+        )
+        if native_adapter_paths != [expected_adapter_path]:
             raise CandidateError(
-                f"{component_id}: candidate compact Adapter API provenance differs "
-                "from the exact 5.23 contract"
+                f"{component_id}: candidate compact Adapter API local_adapter_package "
+                "does not identify the sole native adapter"
             )
         require_exact_mapping(
             value.get("bluemap"),
@@ -472,6 +499,7 @@ def _normalize_adapter_api_migration(
             },
             "BlueMap host identity",
         )
+        require_absent(("host",), "alternate BlueMap host provenance")
         normalized = {
             "section": section_name,
             "repository": ADAPTER_API_REPOSITORY,
@@ -505,6 +533,9 @@ def _normalize_adapter_api_migration(
                 "bluemap_api_commit": FEATURE_BACKPORT_API_COMMIT,
             },
             "published Connected Glass-style Adapter API provenance",
+        )
+        require_absent(
+            ("host", "bluemap"), "alternate BlueMap host provenance"
         )
         normalized = {
             "section": section_name,
@@ -665,9 +696,7 @@ def _native_feature_backport_contract(
             )
         return None
 
-    adapter_paths = sorted(
-        path for path in paths if path.endswith("/adapter/bluemap523/BlueMap523Adapter.java")
-    )
+    adapter_paths = _native_adapter_paths(paths)
     if len(adapter_paths) != 1:
         raise CandidateError(
             f"{component_id}: native feature-backport override must contain exactly one "

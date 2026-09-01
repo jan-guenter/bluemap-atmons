@@ -192,6 +192,8 @@ def create_native_checkout(
     render_core_overrides: dict | None = None,
     host_overrides: dict | None = None,
     bluemap_overrides: dict | None = None,
+    provenance_overrides: dict | None = None,
+    decoy_adapter_package: str | None = None,
     include_render_core: bool = True,
     render_core_gitlink_commit: str | None = None,
 ) -> tuple[Path, str]:
@@ -205,6 +207,18 @@ def create_native_checkout(
     (adapter_root / "BlueMap523Adapter.java").write_text(
         NATIVE_ADAPTER_SOURCE, encoding="utf-8"
     )
+    if decoy_adapter_package is not None:
+        decoy_root = (
+            checkout
+            / "src/main/java"
+            / decoy_adapter_package.replace(".", "/")
+        )
+        decoy_root.mkdir(parents=True)
+        (decoy_root / "BlueMap523Adapter.java").write_text(
+            f"package {decoy_adapter_package};\n\n"
+            "public final class BlueMap523Adapter {}\n",
+            encoding="utf-8",
+        )
     provenance = checkout / "provenance/release.json"
     provenance.parent.mkdir(parents=True)
     value = {
@@ -358,6 +372,7 @@ def create_native_checkout(
         value["adapter_api_migration"] = section
     else:
         raise AssertionError(f"unknown native provenance shape: {provenance_shape}")
+    value.update(provenance_overrides or {})
     provenance.write_text(
         json.dumps(value, indent=2, sort_keys=True)
         + "\n",
@@ -904,6 +919,7 @@ def check_published_native_provenance_shapes() -> None:
         def expect_error(
             fixture_name: str,
             shape: str,
+            fragment: str = "differs from the exact 5.23 contract",
             **fixture_options,
         ) -> None:
             checkout, commit = create_native_checkout(
@@ -918,7 +934,7 @@ def check_published_native_provenance_shapes() -> None:
                     checkout, commit, "fixture"
                 )
             except MODULE.CandidateError as exc:
-                assert "differs from the exact 5.23 contract" in str(exc), str(exc)
+                assert fragment in str(exc), str(exc)
             else:
                 raise AssertionError(
                     f"invalid published Adapter API provenance was accepted: {shape}"
@@ -952,7 +968,21 @@ def check_published_native_provenance_shapes() -> None:
         expect_error(
             "invalid-candidate-compact-package",
             "candidate-compact",
+            fragment="does not identify the sole native adapter",
             adapter_overrides={"local_adapter_package": "invalid.package"},
+        )
+        expect_error(
+            "invalid-candidate-compact-package-syntax",
+            "candidate-compact",
+            fragment="is not a valid dotted Java package",
+            adapter_overrides={"local_adapter_package": "invalid/package"},
+        )
+        expect_error(
+            "invalid-candidate-compact-decoy-package",
+            "candidate-compact",
+            fragment="does not identify the sole native adapter",
+            adapter_overrides={"local_adapter_package": "fake"},
+            decoy_adapter_package="fake",
         )
         expect_error(
             "invalid-connected-glass-coordinate",
@@ -963,6 +993,54 @@ def check_published_native_provenance_shapes() -> None:
             "invalid-connected-glass-extra-field",
             "published-connected-glass",
             adapter_overrides={"unexpected": False},
+        )
+        expect_error(
+            "invalid-selected-section-type",
+            "published-botany",
+            fragment="expected exactly one Adapter API migration provenance object",
+            provenance_overrides={"adapter_api_migration": "malformed"},
+        )
+        expect_error(
+            "invalid-second-section-type",
+            "published-botany",
+            fragment="expected exactly one Adapter API migration provenance object",
+            provenance_overrides={"adapter_api": "malformed"},
+        )
+        expect_error(
+            "invalid-botany-alternate-host",
+            "published-botany",
+            fragment="alternate BlueMap host provenance conflicts",
+            provenance_overrides={
+                "bluemap": {
+                    "version": "5.22",
+                    "commit": "0" * 40,
+                    "api_commit": "0" * 40,
+                }
+            },
+        )
+        expect_error(
+            "invalid-compact-alternate-host",
+            "published-compact",
+            fragment="alternate BlueMap host provenance conflicts",
+            provenance_overrides={
+                "host": {
+                    "bluemap_version": "5.22",
+                    "bluemap_commit": "0" * 40,
+                    "bluemap_api_commit": "0" * 40,
+                }
+            },
+        )
+        expect_error(
+            "invalid-connected-glass-alternate-host",
+            "published-connected-glass",
+            fragment="alternate BlueMap host provenance conflicts",
+            provenance_overrides={
+                "bluemap": {
+                    "version": "5.22",
+                    "commit": "0" * 40,
+                    "api_commit": "0" * 40,
+                }
+            },
         )
 
 
