@@ -38,6 +38,10 @@ DOUBLE_TRIPLE = re.compile(
 )
 DISPLAY_TRIPLE = re.compile(r"\[(-?\d+)\s+(-?\d+)\s+(-?\d+)\]")
 XYZ_OBJECT = re.compile(r"\bX:(-?\d+),Y:(-?\d+),Z:(-?\d+)")
+SCALAR_SOURCE_POS = re.compile(
+    r"(?P<x_prefix>\bsx:)(?P<x>-?\d+)(?P<y_prefix>,\s*sy:)"
+    r"(?P<y>-?\d+)(?P<z_prefix>,\s*sz:)(?P<z>-?\d+)"
+)
 PACKED_POS = re.compile(r"(?P<prefix>\bAttachedPos:)(?P<value>-?\d+)L")
 SELECTOR_AXIS = {
     axis: re.compile(rf"(?P<prefix>[\[,]{axis}=)(?P<value>{NUMBER})(?=[,\]])")
@@ -65,7 +69,7 @@ PALETTE = (
 )
 OUTPUT_MARKER = ".bluemap-atmons-gallery-output"
 OUTPUT_MARKER_CONTENT = "owned by integration/galleries/compose.py\n"
-COMPOSER_VERSION = "2.4.0"
+COMPOSER_VERSION = "2.4.1"
 FUNCTION_REFERENCE = re.compile(
     r"(?:^|\brun\s+)(?P<scheduled>schedule\s+)?function\s+"
     r"(?P<identifier>[a-z0-9_.-]+:[a-z0-9_./-]+)"
@@ -642,6 +646,19 @@ def translate_line(line: str, bounds: Bounds, dx: int, dy: int, dz: int) -> str:
         return f"X:{point[0] + dx},Y:{point[1] + dy},Z:{point[2] + dz}"
 
     line = XYZ_OBJECT.sub(xyz_object, line)
+
+    def scalar_source_position(match: re.Match[str]) -> str:
+        point = tuple(int(match.group(axis)) for axis in "xyz")
+        if not bounds.contains(*point, margin=128):
+            return match.group(0)
+        shifted = tuple(value + delta for value, delta in zip(point, offsets))
+        return (
+            f"{match.group('x_prefix')}{shifted[0]}"
+            f"{match.group('y_prefix')}{shifted[1]}"
+            f"{match.group('z_prefix')}{shifted[2]}"
+        )
+
+    line = SCALAR_SOURCE_POS.sub(scalar_source_position, line)
 
     def display_position(match: re.Match[str]) -> str:
         point = tuple(int(value) for value in match.groups())

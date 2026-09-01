@@ -58,6 +58,26 @@ def main() -> int:
     )
     check(
         MODULE.translate_line(
+            "setblock 164 100 171 demo:shield{sx:164,sy:100,sz:164}",
+            bounds,
+            1000,
+            96,
+            2000,
+        ),
+        "setblock 1164 196 2171 demo:shield{sx:1164,sy:196,sz:2164}",
+    )
+    check(
+        MODULE.translate_line(
+            "setblock 164 100 171 demo:shield{sx:4096,sy:100,sz:4096}",
+            bounds,
+            1000,
+            96,
+            2000,
+        ),
+        "setblock 1164 196 2171 demo:shield{sx:4096,sy:100,sz:4096}",
+    )
+    check(
+        MODULE.translate_line(
             "execute unless entity @e[x=160,y=99,z=160,dx=31,dy=9,dz=31] run say fail",
             bounds,
             1000,
@@ -187,6 +207,30 @@ def main() -> int:
             galleries_by_id["logistics-networks"]["completion"]["delayTicks"],
             121,
         )
+        rftools = galleries_by_id["rftools-builder"]
+        rftools_projector = (
+            164 + rftools["offset"]["x"],
+            100 + rftools["offset"]["y"],
+            164 + rftools["offset"]["z"],
+        )
+        shifted_projector = (
+            f"sx:{rftools_projector[0]},sy:{rftools_projector[1]},"
+            f"sz:{rftools_projector[2]}"
+        )
+        for function_name in ("build", "verify"):
+            rftools_function = (
+                output
+                / "data/rftools_builder_gallery/function"
+                / f"{function_name}.mcfunction"
+            ).read_text(encoding="utf-8")
+            if shifted_projector not in rftools_function:
+                raise AssertionError(
+                    f"RFTools {function_name} omitted translated projector coordinates"
+                )
+            if "sx:164,sy:100,sz:164" in rftools_function:
+                raise AssertionError(
+                    f"RFTools {function_name} retained stale projector coordinates"
+                )
         ae2_settle = (
             output
             / "data/ae2_m3/function/settle_check.mcfunction"
