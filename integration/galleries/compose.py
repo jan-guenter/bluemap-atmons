@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "e10113aecef66973bd1a7b4b3b5b0570d001082946901e961f6e1d7f31d5514b"
+EXPECTED_MANIFEST_SHA256 = "8443eecd2e97df0bb26f92e6887ed3a4a772c64b94117857ef69999adc9978d1"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -246,7 +246,7 @@ CUMULATIVE_SCORE_RESET_RULES = (
     ),
     CumulativeScoreResetRule(
         "enderio",
-        "0dfb4901193f67090a5ff5b1929ca24f60fbf2c0",
+        "97141a036a8374ce2de3ba6a9f5ac0f937d0bbc7",
         "data/enderio_gallery/function/build.mcfunction",
         (("#builds", "enderio_gallery"),),
     ),
