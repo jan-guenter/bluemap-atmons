@@ -106,6 +106,19 @@ public final class BlueMapFixtureAddon implements Runnable {
 }
 """
 
+NATIVE_PREOVERLAID_ENTRYPOINT_SOURCE = NATIVE_ENTRYPOINT_SOURCE.replace(
+    "            install.invoke(null);",
+    "            Object integrationCandidateInstallResult = install.invoke(null);\n"
+    "            if (!Boolean.TRUE.equals(integrationCandidateInstallResult)) {\n"
+    '                inactive("candidate adapter installation rejected", null);\n'
+    "                return;\n"
+    "            }\n"
+    '            System.out.println("BlueMap ATMons integration candidate activated: '
+    "fixture@"
+    + MODULE.FEATURE_BACKPORT_COMMIT
+    + '");',
+)
+
 NATIVE_ADAPTER_SOURCE = """package example.adapter.bluemap523;
 
 public final class BlueMap523Adapter {
@@ -196,13 +209,19 @@ def create_native_checkout(
     decoy_adapter_package: str | None = None,
     include_render_core: bool = True,
     render_core_gitlink_commit: str | None = None,
+    preoverlaid_entrypoint: bool = False,
 ) -> tuple[Path, str]:
     checkout = root / "native-addon"
     source_root = checkout / "src/main/java/example"
     adapter_root = source_root / "adapter/bluemap523"
     adapter_root.mkdir(parents=True)
     (source_root / "BlueMapFixtureAddon.java").write_text(
-        NATIVE_ENTRYPOINT_SOURCE, encoding="utf-8"
+        (
+            NATIVE_PREOVERLAID_ENTRYPOINT_SOURCE
+            if preoverlaid_entrypoint
+            else NATIVE_ENTRYPOINT_SOURCE
+        ),
+        encoding="utf-8",
     )
     (adapter_root / "BlueMap523Adapter.java").write_text(
         NATIVE_ADAPTER_SOURCE, encoding="utf-8"
@@ -810,6 +829,39 @@ def check_native_feature_backport_override() -> None:
             "BlueMap ATMons integration candidate activated: fixture@"
             + MODULE.FEATURE_BACKPORT_COMMIT
         ) in patched
+
+        preoverlaid_checkout, preoverlaid_commit = create_native_checkout(
+            root / "preoverlaid",
+            artifact,
+            "0.2.0-alpha.2",
+            candidate_status="owner-accepted-release-candidate",
+            preoverlaid_entrypoint=True,
+        )
+        MODULE.ADAPTER_API_CLASS_SHA256 = {
+            name: {fixture_class_sha256} for name in MODULE.ADAPTER_API_CLASSES
+        }
+        try:
+            preoverlaid_native = MODULE._native_feature_backport_contract(
+                preoverlaid_checkout,
+                preoverlaid_commit,
+                "fixture",
+                artifact,
+            )
+        finally:
+            MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
+        prepared, replacements = MODULE.prepare_component_sources(
+            component,
+            root / "preoverlaid-work",
+            MODULE.FEATURE_BACKPORT_VERSION,
+            MODULE.FEATURE_BACKPORT_COMMIT,
+            preoverlaid_checkout,
+            preoverlaid_commit,
+            preoverlaid_native,
+        )
+        assert [replacement["kind"] for replacement in replacements] == ["entrypoint"]
+        assert prepared[0].read_text(encoding="utf-8") == (
+            NATIVE_PREOVERLAID_ENTRYPOINT_SOURCE
+        )
         try:
             MODULE.prepare_component_sources(
                 component,

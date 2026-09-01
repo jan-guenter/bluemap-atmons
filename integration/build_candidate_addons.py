@@ -33,7 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "04345f7966745ec5f659e0780d682aa72dc2f3ad61d967f8a20f3afa910c3065"
+EXPECTED_MANIFEST_SHA256 = "ef1aebac5a1fbf2d4a1d91b3962a4078416239fba2e47fbcea941b8a2b1d34ca"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 CLASS_DECLARATION = re.compile(r"(public\s+final\s+class\s+AdapterCompatibility\s*\{\s*\n)")
 SUPPORTED_RETURN = re.compile(
@@ -48,6 +48,18 @@ CURRENT_RUNTIME_RETURN = re.compile(
     re.MULTILINE,
 )
 INSTALL_INVOKE = re.compile(r"^(?P<indent>\s*)install\.invoke\(null\);\s*$", re.MULTILINE)
+NATIVE_ACTIVATION_BLOCK = re.compile(
+    r"^(?P<indent>\s*)Object integrationCandidateInstallResult = "
+    r"install\.invoke\(null\);\s*\n"
+    r"(?P=indent)if \(!Boolean\.TRUE\.equals\(integrationCandidateInstallResult\)\) "
+    r"\{\s*\n"
+    r'(?P=indent)    inactive\("candidate adapter installation rejected", null\);\s*\n'
+    r"(?P=indent)    return;\s*\n"
+    r"(?P=indent)\}\s*\n"
+    r'(?P=indent)System\.out\.println\("BlueMap ATMons integration candidate '
+    r'activated: (?P<component>[a-z0-9-]+)@(?P<commit>[0-9a-f]{40})"\);\s*$',
+    re.MULTILINE,
+)
 INSTALL_SIGNATURE = re.compile(
     r"public\s+static\s+synchronized\s+boolean\s+install\s*\(\s*\)"
 )
@@ -716,6 +728,8 @@ def _native_feature_backport_contract(
         == 1
         and entrypoint_source.count("BlueMapRuntimeCompatibility.matches(") == 1
     )
+    plain_install_calls = list(INSTALL_INVOKE.finditer(entrypoint_source))
+    activated_install_calls = list(NATIVE_ACTIVATION_BLOCK.finditer(entrypoint_source))
     requirements = {
         "public synchronized Boolean adapter install": len(
             INSTALL_SIGNATURE.findall(adapter_source)
@@ -729,7 +743,9 @@ def _native_feature_backport_contract(
         ),
         "5.23 runtime compatibility gate": direct_runtime_gate + forwarded_runtime_gate,
         "reflective install lookup": entrypoint_source.count('getMethod("install")'),
-        "reflective install invocation": len(INSTALL_INVOKE.findall(entrypoint_source)),
+        "reflective install invocation": (
+            len(plain_install_calls) + len(activated_install_calls)
+        ),
     }
     invalid = [label for label, count in requirements.items() if count != 1]
     if invalid:
@@ -737,6 +753,15 @@ def _native_feature_backport_contract(
             f"{component_id}: native feature-backport install contract changed: "
             + ", ".join(invalid)
         )
+    if activated_install_calls:
+        activated = activated_install_calls[0]
+        if (
+            activated.group("component") != component_id
+            or activated.group("commit") != FEATURE_BACKPORT_COMMIT
+        ):
+            raise CandidateError(
+                f"{component_id}: existing native integration activation identity differs"
+            )
 
     gitlink = run(
         ["git", "ls-tree", commit, "--", ADAPTER_API_GITLINK], checkout
@@ -1060,7 +1085,18 @@ def patch_entrypoint(path: Path) -> str:
 def patch_native_entrypoint(path: Path, component_id: str, commit: str) -> str:
     source = path.read_text(encoding="utf-8")
     matches = list(INSTALL_INVOKE.finditer(source))
-    if len(matches) != 1:
+    activated_matches = list(NATIVE_ACTIVATION_BLOCK.finditer(source))
+    if not matches and len(activated_matches) == 1:
+        activated = activated_matches[0]
+        if (
+            activated.group("component") != component_id
+            or activated.group("commit") != commit
+        ):
+            raise CandidateError(
+                f"{path}: existing native integration activation identity differs"
+            )
+        return hashlib.sha256(source.encode("utf-8")).hexdigest()
+    if len(matches) != 1 or activated_matches:
         raise CandidateError(f"{path}: expected one reflective adapter install call")
     match = matches[0]
     indent = match.group("indent")
