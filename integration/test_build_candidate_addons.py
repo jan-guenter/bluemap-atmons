@@ -190,6 +190,8 @@ def create_native_checkout(
     candidate_published: bool = False,
     adapter_overrides: dict | None = None,
     render_core_overrides: dict | None = None,
+    host_overrides: dict | None = None,
+    bluemap_overrides: dict | None = None,
     include_render_core: bool = True,
     render_core_gitlink_commit: str | None = None,
 ) -> tuple[Path, str]:
@@ -227,8 +229,7 @@ def create_native_checkout(
         raise ValueError(f"unsupported fixture candidate status: {candidate_status}")
     if provenance_shape == "migration":
         value["adapter_api_migration"] = {
-            "module_repository": "https://github.com/jan-guenter/"
-            "bluemap-addon-adapter-api",
+            "module_repository": MODULE.ADAPTER_API_REPOSITORY,
             "module_version": MODULE.ADAPTER_API_VERSION,
             "module_tag": MODULE.ADAPTER_API_TAG,
             "module_release_commit": MODULE.ADAPTER_API_COMMIT,
@@ -239,8 +240,7 @@ def create_native_checkout(
         }
     elif provenance_shape == "source-with-render-core":
         adapter_source = {
-            "module_repository": "https://github.com/jan-guenter/"
-            "bluemap-addon-adapter-api",
+            "module_repository": MODULE.ADAPTER_API_REPOSITORY,
             "module_version": MODULE.ADAPTER_API_VERSION,
             "module_tag": MODULE.ADAPTER_API_TAG,
             "module_release_commit": MODULE.ADAPTER_API_COMMIT,
@@ -268,6 +268,94 @@ def create_native_checkout(
             }
             render_core.update(render_core_overrides or {})
             value["render_core_523_migration"] = render_core
+    elif provenance_shape == "published-botany":
+        section = {
+            "module_repository": MODULE.ADAPTER_API_REPOSITORY,
+            "module_version": MODULE.ADAPTER_API_VERSION,
+            "module_tag": MODULE.ADAPTER_API_TAG,
+            "module_commit": MODULE.ADAPTER_API_COMMIT,
+            "module_source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "compiled_source_count": 4,
+            "standalone_module_jar_bundled": False,
+        }
+        section.update(adapter_overrides or {})
+        value["adapter_api_migration"] = section
+        host = {
+            "bluemap_version": MODULE.FEATURE_BACKPORT_VERSION,
+            "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
+            "bluemap_api_commit": MODULE.FEATURE_BACKPORT_API_COMMIT,
+        }
+        host.update(host_overrides or {})
+        value["host"] = host
+    elif provenance_shape == "published-chisel":
+        section = {
+            "repository": MODULE.ADAPTER_API_REPOSITORY,
+            "version": MODULE.ADAPTER_API_VERSION,
+            "tag": MODULE.ADAPTER_API_TAG,
+            "commit": MODULE.ADAPTER_API_COMMIT,
+            "source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "gitlink": MODULE.ADAPTER_API_GITLINK,
+            "standalone_module_jar": "not-bundled-or-installed",
+        }
+        section.update(adapter_overrides or {})
+        value["adapter_api_migration"] = section
+        host = {
+            "bluemap_version": MODULE.FEATURE_BACKPORT_VERSION,
+            "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
+            "bluemap_api_commit": MODULE.FEATURE_BACKPORT_API_COMMIT,
+        }
+        host.update(host_overrides or {})
+        value["host"] = host
+    elif provenance_shape == "published-compact":
+        section = {
+            "version": MODULE.ADAPTER_API_VERSION,
+            "commit": MODULE.ADAPTER_API_COMMIT,
+            "source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "source_files_bundled": 4,
+            "module_jar_bundled": False,
+        }
+        section.update(adapter_overrides or {})
+        value["adapter_api"] = section
+        bluemap = {
+            "commit": MODULE.FEATURE_BACKPORT_COMMIT,
+            "api_commit": MODULE.FEATURE_BACKPORT_API_COMMIT,
+            "version": MODULE.FEATURE_BACKPORT_VERSION,
+        }
+        bluemap.update(bluemap_overrides or {})
+        value["bluemap"] = bluemap
+    elif provenance_shape == "candidate-compact":
+        section = {
+            "version": MODULE.ADAPTER_API_VERSION,
+            "commit": MODULE.ADAPTER_API_COMMIT,
+            "source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "source_files_compiled": 4,
+            "module_jar_installed": False,
+            "module_jar_bundled": False,
+            "module_jar_nested": False,
+            "local_adapter_package": "example.adapter.bluemap523",
+        }
+        section.update(adapter_overrides or {})
+        value["adapter_api"] = section
+        bluemap = {
+            "version": MODULE.FEATURE_BACKPORT_VERSION,
+            "commit": MODULE.FEATURE_BACKPORT_COMMIT,
+            "api_commit": MODULE.FEATURE_BACKPORT_API_COMMIT,
+        }
+        bluemap.update(bluemap_overrides or {})
+        value["bluemap"] = bluemap
+    elif provenance_shape == "published-connected-glass":
+        section = {
+            "module": MODULE.ADAPTER_API_COORDINATE,
+            "repository": MODULE.ADAPTER_API_REPOSITORY,
+            "commit": MODULE.ADAPTER_API_COMMIT,
+            "source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
+            "source_files_bundled": 4,
+            "local_helpers_removed": 3,
+            "bluemap_commit": MODULE.FEATURE_BACKPORT_COMMIT,
+            "bluemap_api_commit": MODULE.FEATURE_BACKPORT_API_COMMIT,
+        }
+        section.update(adapter_overrides or {})
+        value["adapter_api_migration"] = section
     else:
         raise AssertionError(f"unknown native provenance shape: {provenance_shape}")
     provenance.write_text(
@@ -779,6 +867,105 @@ def check_unpublished_migration_requires_native_523() -> None:
         )
 
 
+def check_published_native_provenance_shapes() -> None:
+    with tempfile.TemporaryDirectory(
+        prefix="bluemap-atmons-native-published-provenance-"
+    ) as temporary:
+        root = Path(temporary)
+        artifact = root / "bluemap-fixture-addon-0.2.0-alpha.2.jar"
+        write_native_jar(artifact)
+        shapes = {
+            "published-botany": "adapter_api_migration",
+            "published-chisel": "adapter_api_migration",
+            "published-compact": "adapter_api",
+            "candidate-compact": "adapter_api",
+            "published-connected-glass": "adapter_api_migration",
+        }
+        for index, (shape, expected_section) in enumerate(shapes.items()):
+            checkout, commit = create_native_checkout(
+                root / f"valid-{index}",
+                artifact,
+                "0.2.0-alpha.2",
+                provenance_shape=shape,
+            )
+            migration = MODULE._normalize_adapter_api_migration(
+                checkout, commit, "fixture"
+            )
+            assert migration["section"] == expected_section
+            assert migration["repository"] == MODULE.ADAPTER_API_REPOSITORY
+            assert migration["version"] == MODULE.ADAPTER_API_VERSION
+            assert migration["tag"] == MODULE.ADAPTER_API_TAG
+            assert migration["commit"] == MODULE.ADAPTER_API_COMMIT
+            assert migration["sourceTree"] == MODULE.ADAPTER_API_SOURCE_TREE
+            assert migration["blueMapCommit"] == MODULE.FEATURE_BACKPORT_COMMIT
+            assert migration["blueMapApiCommit"] == MODULE.FEATURE_BACKPORT_API_COMMIT
+            assert migration["standaloneModuleJar"] == "not-bundled-or-installed"
+
+        def expect_error(
+            fixture_name: str,
+            shape: str,
+            **fixture_options,
+        ) -> None:
+            checkout, commit = create_native_checkout(
+                root / fixture_name,
+                artifact,
+                "0.2.0-alpha.2",
+                provenance_shape=shape,
+                **fixture_options,
+            )
+            try:
+                MODULE._normalize_adapter_api_migration(
+                    checkout, commit, "fixture"
+                )
+            except MODULE.CandidateError as exc:
+                assert "differs from the exact 5.23 contract" in str(exc), str(exc)
+            else:
+                raise AssertionError(
+                    f"invalid published Adapter API provenance was accepted: {shape}"
+                )
+
+        expect_error(
+            "invalid-botany-count",
+            "published-botany",
+            adapter_overrides={"compiled_source_count": True},
+        )
+        expect_error(
+            "invalid-botany-host",
+            "published-botany",
+            host_overrides={"bluemap_api_commit": "0" * 40},
+        )
+        expect_error(
+            "invalid-chisel-bundle-proof",
+            "published-chisel",
+            adapter_overrides={"standalone_module_jar": "bundled"},
+        )
+        expect_error(
+            "invalid-compact-runtime",
+            "published-compact",
+            bluemap_overrides={"version": "5.22"},
+        )
+        expect_error(
+            "invalid-candidate-compact-bundle-proof",
+            "candidate-compact",
+            adapter_overrides={"module_jar_nested": True},
+        )
+        expect_error(
+            "invalid-candidate-compact-package",
+            "candidate-compact",
+            adapter_overrides={"local_adapter_package": "invalid.package"},
+        )
+        expect_error(
+            "invalid-connected-glass-coordinate",
+            "published-connected-glass",
+            adapter_overrides={"module": "invalid:adapter:0"},
+        )
+        expect_error(
+            "invalid-connected-glass-extra-field",
+            "published-connected-glass",
+            adapter_overrides={"unexpected": False},
+        )
+
+
 def check_paired_native_feature_backport_provenance() -> None:
     with tempfile.TemporaryDirectory(
         prefix="bluemap-atmons-native-paired-provenance-"
@@ -986,6 +1173,7 @@ def main() -> int:
     check_override_lock()
     check_native_feature_backport_override()
     check_unpublished_migration_requires_native_523()
+    check_published_native_provenance_shapes()
     check_paired_native_feature_backport_provenance()
     print("PASS: candidate add-on source rewriting")
     return 0
