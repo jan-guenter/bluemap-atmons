@@ -290,13 +290,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-enderio-addon",
       "submodule_path": "addons/enderio",
-      "commit": "0dfb4901193f67090a5ff5b1929ca24f60fbf2c0",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "97141a036a8374ce2de3ba6a9f5ac0f937d0bbc7",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-enderio-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-enderio-addon/releases/download/v0.1.0-alpha.1/bluemap-enderio-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 53872,
-        "sha256": "4434f9f7da28b157ca83e17ef5a6eaf56fee830c0044cd987e4a78b4f9f2b41a"
+        "filename": "bluemap-enderio-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-enderio-addon/releases/download/v0.1.0-alpha.3/bluemap-enderio-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 67131,
+        "sha256": "2f7b61a7bdd53bc5cce8181e2575e31b681d26ea734c9e6563c1af7c0fee7d1c"
       },
       "requires": [
         "bluemap"
@@ -664,13 +664,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-productive-bees-addon",
       "submodule_path": "addons/productive-bees",
-      "commit": "c2fb4e93bd765bbe2e4ffb151764ae7431db9695",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "32b33200aeeb44fb5d29c0f72951f703fe4d77b0",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-productive-bees-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-productive-bees-addon/releases/download/v0.1.0-alpha.1/bluemap-productive-bees-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 66286,
-        "sha256": "17643a965eaf55d5746ec74bd39df153762ac03aaddcd4f47005d9b9f683b1dc"
+        "filename": "bluemap-productive-bees-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-productive-bees-addon/releases/download/v0.1.0-alpha.2/bluemap-productive-bees-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 71436,
+        "sha256": "44b87a5ccfee0766022a9a4c700d13103264ead4f412a759841cb9c40f270385"
       },
       "requires": [
         "bluemap"
@@ -698,13 +698,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-railcraft-reborn-addon",
       "submodule_path": "addons/railcraft-reborn",
-      "commit": "3ef611818c1fd6b8f2f1671776cbb390aad56024",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "e541ceb87ebabc57d7a2f4802a4540dbea8d7fbd",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-railcraft-reborn-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-railcraft-reborn-addon/releases/download/v0.1.0-alpha.1/bluemap-railcraft-reborn-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 86864,
-        "sha256": "e4822c8756cada38958646a3b0c0e022d961b4549aa26254ebfc289a52190996"
+        "filename": "bluemap-railcraft-reborn-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-railcraft-reborn-addon/releases/download/v0.1.0-alpha.2/bluemap-railcraft-reborn-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 90896,
+        "sha256": "3741ddb3bf61c7c3512a7b52c3757aeaa2dfd1a1ffabd5cf605c3e73ddc85db5"
       },
       "requires": [
         "bluemap"
@@ -766,13 +766,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-rftools-utility-addon",
       "submodule_path": "addons/rftools-utility",
-      "commit": "cf3f4c714aafd49be097d391d077158f0cc1fb60",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "f45d91f3455422a1a5d34514e9441c14acc4699b",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-rftools-utility-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-rftools-utility-addon/releases/download/v0.1.0-alpha.1/bluemap-rftools-utility-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 71184,
-        "sha256": "a9adfd5d2773b9b7ed2a7757b520ea513b5dedeaa0e57eb8349afdb9ebd6dd25"
+        "filename": "bluemap-rftools-utility-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-rftools-utility-addon/releases/download/v0.1.0-alpha.2/bluemap-rftools-utility-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 75381,
+        "sha256": "661008bf35eb2512b39213aee934861a281eae3c2f54e9386a4f7df2be2be42b"
       },
       "requires": [
         "bluemap"
@@ -817,13 +817,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-supplementaries-addon",
       "submodule_path": "addons/supplementaries",
-      "commit": "f9e1035ce356e749489e67e65f5f83c42415bd2b",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "34784edf077d97a1a216f35b925eefe284b287c3",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-supplementaries-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-supplementaries-addon/releases/download/v0.1.0-alpha.1/bluemap-supplementaries-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 64385,
-        "sha256": "7559ec3eff162a279a1a3ba1ce4b061d0ed2ff6726e016614ed0973cc407e5da"
+        "filename": "bluemap-supplementaries-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-supplementaries-addon/releases/download/v0.1.0-alpha.2/bluemap-supplementaries-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 70369,
+        "sha256": "0da87473c5ca912d2a3970d640b3176dc26470d293ed78e7ed137c643ff5fb66"
       },
       "requires": [
         "bluemap"
