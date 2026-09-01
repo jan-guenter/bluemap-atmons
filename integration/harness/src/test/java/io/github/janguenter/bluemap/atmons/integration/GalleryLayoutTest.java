@@ -12,7 +12,7 @@ class GalleryLayoutTest {
                 {
                   "schemaVersion": 1,
                   "compositionId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                  "composerVersion": "2.4.0",
+                  "composerVersion": "2.4.1",
                   "dimension": "minecraft:overworld",
                   "mapId": "atmons_integration",
                   "bounds": {
@@ -59,6 +59,9 @@ class GalleryLayoutTest {
 
         layout.validate();
         assertEquals("atmons_integration", layout.preferredMapId("minecraft:overworld"));
+
+        layout.composerVersion = "2.4.0";
+        assertThrows(IllegalArgumentException.class, layout::validate);
     }
 
     @Test

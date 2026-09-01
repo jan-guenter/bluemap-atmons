@@ -470,7 +470,7 @@ def check_trusted_inventory_and_composition() -> None:
                 {
                     "schemaVersion": 1,
                     "compositionId": composition_id,
-                    "composerVersion": "2.4.0",
+                    "composerVersion": "2.4.1",
                     "sourceManifestSha256": MODULE.sha256(MODULE.TRACKED_MANIFEST),
                     "options": {
                         "minimumY": 195,

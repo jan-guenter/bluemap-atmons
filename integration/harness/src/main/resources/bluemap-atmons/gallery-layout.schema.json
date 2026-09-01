@@ -8,7 +8,7 @@
   "properties": {
     "schemaVersion": {"const": 1},
     "compositionId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "composerVersion": {"const": "2.4.0"},
+    "composerVersion": {"const": "2.4.1"},
     "runtime": {"$ref": "#/$defs/runtime"},
     "dimension": {"$ref": "#/$defs/resourceLocation"},
     "mapId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]{0,127}$"},
