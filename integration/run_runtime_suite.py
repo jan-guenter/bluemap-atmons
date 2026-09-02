@@ -24,12 +24,12 @@ from typing import Protocol
 
 ROOT = Path(__file__).resolve().parents[1]
 TRACKED_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
-TRACKED_MANIFEST_SHA256 = "f80fb84ef34caf68452e0def57e734da5abd3b7129be7bbb05e5bb31c9b89917"
+TRACKED_MANIFEST_SHA256 = "cbc304b94475aaa82f502cc29fddcb35863f4490ce94ee450319f9d0a4faaa3f"
 COMPOSER_PATH = ROOT / "integration" / "galleries" / "compose.py"
 COMPOSER_VERSION = "2.4.1"
-COMPOSER_SHA256 = "a48ced3ab1677628d833fe7fc1e8599489ca085699e32f880611eab1d57536a3"
+COMPOSER_SHA256 = "b1090499d459c5ea546b102831af9f6cea8fd6c8ee0b23d38828e54f4b469985"
 CANDIDATE_BUILDER_PATH = ROOT / "integration" / "build_candidate_addons.py"
-CANDIDATE_BUILDER_SHA256 = "d32819d05e4dc68bcc71a6df5cc42f39c12c98a9cce2d9e62bffe33048a3b24b"
+CANDIDATE_BUILDER_SHA256 = "7aa6b7195f444b3a4a83199df4e6099f8ab31a9d248d69120f43e344c50e53c0"
 EXPECTED_COMPOSITION_OPTIONS = {
     "minimumY": 195,
     "originX": 8192,

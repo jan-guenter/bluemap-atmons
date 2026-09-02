@@ -188,13 +188,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-cobblefurnies-addon",
       "submodule_path": "addons/cobblefurnies",
-      "commit": "a9c0c430f79f4288198047fefbcf9756e007a8c4",
-      "release_tag": "v0.1.0-alpha.3",
+      "commit": "113f1a152d0cfa16c3fb3ff65ded9fcc9b6b649f",
+      "release_tag": "v0.1.0-alpha.4",
       "artifact": {
-        "filename": "bluemap-cobblefurnies-addon-0.1.0-alpha.3.jar",
-        "url": "https://github.com/jan-guenter/bluemap-cobblefurnies-addon/releases/download/v0.1.0-alpha.3/bluemap-cobblefurnies-addon-0.1.0-alpha.3.jar",
-        "size_bytes": 112216,
-        "sha256": "93ebd74db8ee2ac8b552958e6ae49c39625a504d7501463f5ec08a3efef28228"
+        "filename": "bluemap-cobblefurnies-addon-0.1.0-alpha.4.jar",
+        "url": "https://github.com/jan-guenter/bluemap-cobblefurnies-addon/releases/download/v0.1.0-alpha.4/bluemap-cobblefurnies-addon-0.1.0-alpha.4.jar",
+        "size_bytes": 113361,
+        "sha256": "f6dc70d6306e4977f270e74527982115746938ca7d4a9152253f4d444f21afb7"
       },
       "requires": [
         "bluemap"
@@ -426,13 +426,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-integrated-dynamics-addon",
       "submodule_path": "addons/integrated-dynamics",
-      "commit": "ce881ea468f5038e8e05b81c01f84df48ce747b6",
-      "release_tag": "v0.1.0-alpha.3",
+      "commit": "254fe780838495bf38c11aa61270ac0f08b1302a",
+      "release_tag": "v0.1.0-alpha.4",
       "artifact": {
-        "filename": "bluemap-integrated-dynamics-addon-0.1.0-alpha.3.jar",
-        "url": "https://github.com/jan-guenter/bluemap-integrated-dynamics-addon/releases/download/v0.1.0-alpha.3/bluemap-integrated-dynamics-addon-0.1.0-alpha.3.jar",
-        "size_bytes": 57598,
-        "sha256": "a82e8224360da54fab12d94a53408fb53e1f334c6e2b885e594cd50ed23ba828"
+        "filename": "bluemap-integrated-dynamics-addon-0.1.0-alpha.4.jar",
+        "url": "https://github.com/jan-guenter/bluemap-integrated-dynamics-addon/releases/download/v0.1.0-alpha.4/bluemap-integrated-dynamics-addon-0.1.0-alpha.4.jar",
+        "size_bytes": 58352,
+        "sha256": "d6dcf7682244189d653708310b0a86d89d236f5be9f38d6f99f06371aa6e88f0"
       },
       "requires": [
         "bluemap"
@@ -647,13 +647,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-powah-addon",
       "submodule_path": "addons/powah",
-      "commit": "f5653f8a564b6f3d324f463e2a615e21b5bdd7f8",
-      "release_tag": "v0.1.0-alpha.2",
+      "commit": "11b7d3c8ce22d3f0b0a354c77aeb179c0df6b3f9",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-powah-addon-0.1.0-alpha.2.jar",
-        "url": "https://github.com/jan-guenter/bluemap-powah-addon/releases/download/v0.1.0-alpha.2/bluemap-powah-addon-0.1.0-alpha.2.jar",
-        "size_bytes": 41594,
-        "sha256": "ee886a58ad695c0932a4d0c0f6c7c66af699c9d29edbddcee1a15bdd237a1e93"
+        "filename": "bluemap-powah-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-powah-addon/releases/download/v0.1.0-alpha.3/bluemap-powah-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 42936,
+        "sha256": "73e159e6bb096ac0540fb46f23f231ddada492c34b5c4a6e235739b1decf1171"
       },
       "requires": [
         "bluemap"
@@ -800,13 +800,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-sophisticated-addon",
       "submodule_path": "addons/sophisticated",
-      "commit": "aeadd12f711c875c10261be5fcce57dad3d0c35b",
-      "release_tag": "v0.1.0-alpha.2",
+      "commit": "1c87816e72bd6020c2bbdc25df2228c909c46071",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-sophisticated-addon-0.1.0-alpha.2.jar",
-        "url": "https://github.com/jan-guenter/bluemap-sophisticated-addon/releases/download/v0.1.0-alpha.2/bluemap-sophisticated-addon-0.1.0-alpha.2.jar",
-        "size_bytes": 116914,
-        "sha256": "8d434eff624a831ac1327e9b17347fa6b4325c02a001be418fe6593b6c300dab"
+        "filename": "bluemap-sophisticated-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-sophisticated-addon/releases/download/v0.1.0-alpha.3/bluemap-sophisticated-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 118181,
+        "sha256": "c91ae67275be1bb2e343170b4f800420721c128bed8292b24c4432d65ebdb1ca"
       },
       "requires": [
         "bluemap"
