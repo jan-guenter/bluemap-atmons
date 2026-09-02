@@ -210,7 +210,9 @@ def create_native_checkout(
     include_render_core: bool = True,
     render_core_gitlink_commit: str | None = None,
     preoverlaid_entrypoint: bool = False,
+    adapter_api_version: str = MODULE.ADAPTER_API_VERSION,
 ) -> tuple[Path, str]:
+    adapter_profile = MODULE.ADAPTER_API_PROFILES[adapter_api_version]
     checkout = root / "native-addon"
     source_root = checkout / "src/main/java/example"
     adapter_root = source_root / "adapter/bluemap523"
@@ -358,15 +360,24 @@ def create_native_checkout(
         value["bluemap"] = bluemap
     elif provenance_shape == "candidate-compact":
         section = {
-            "version": MODULE.ADAPTER_API_VERSION,
-            "commit": MODULE.ADAPTER_API_COMMIT,
-            "source_tree": MODULE.ADAPTER_API_SOURCE_TREE,
-            "source_files_compiled": 4,
+            "version": adapter_profile["version"],
+            "commit": adapter_profile["commit"],
+            "source_tree": adapter_profile["sourceTree"],
+            "source_files_compiled": adapter_profile["sourceFileCount"],
             "module_jar_installed": False,
             "module_jar_bundled": False,
             "module_jar_nested": False,
             "local_adapter_package": "example.adapter.bluemap523",
         }
+        if adapter_api_version == "0.1.0-alpha.3":
+            section.update(
+                {
+                    "tag": adapter_profile["tag"],
+                    "published": True,
+                    "production_jar_size": adapter_profile["publishedJarSize"],
+                    "production_jar_sha256": adapter_profile["publishedJarSha256"],
+                }
+            )
         section.update(adapter_overrides or {})
         value["adapter_api"] = section
         bluemap = {
@@ -430,7 +441,7 @@ def create_native_checkout(
             "update-index",
             "--add",
             "--cacheinfo",
-            f"160000,{MODULE.ADAPTER_API_COMMIT},{MODULE.ADAPTER_API_GITLINK}",
+            f"160000,{adapter_profile['commit']},{MODULE.ADAPTER_API_GITLINK}",
         ],
         check=True,
     )
@@ -459,14 +470,20 @@ def write_jar(path: Path, version: str = "0.2.0-alpha.1", payload: bytes = b"fix
         archive.writestr("example/Fixture.class", payload)
 
 
-def write_native_jar(path: Path, version: str = "0.2.0-alpha.2") -> None:
+def write_native_jar(
+    path: Path,
+    version: str = "0.2.0-alpha.2",
+    adapter_api_version: str = MODULE.ADAPTER_API_VERSION,
+) -> None:
     with zipfile.ZipFile(path, "w") as archive:
         archive.writestr(
             "META-INF/MANIFEST.MF",
             "Manifest-Version: 1.0\r\n"
             f"Implementation-Version: {version}\r\n\r\n",
         )
-        for class_name in sorted(MODULE.ADAPTER_API_CLASSES):
+        for class_name in sorted(
+            MODULE.ADAPTER_API_PROFILES[adapter_api_version]["classes"]
+        ):
             archive.writestr(class_name, b"fixture class")
         archive.writestr("example/BlueMapFixtureAddon.class", b"entrypoint")
         archive.writestr(
@@ -1221,6 +1238,45 @@ def check_paired_native_feature_backport_provenance() -> None:
             MODULE.ADAPTER_API_CLASS_SHA256 = original_class_sha256
 
 
+def check_mixed_adapter_api_profiles() -> None:
+    with tempfile.TemporaryDirectory(prefix="bluemap-atmons-mixed-adapter-") as temporary:
+        root = Path(temporary)
+        version = "0.2.0-alpha.3"
+        adapter_version = "0.1.0-alpha.3"
+        artifact = root / f"bluemap-fixture-addon-{version}.jar"
+        write_native_jar(artifact, version, adapter_version)
+        checkout, commit = create_native_checkout(
+            root,
+            artifact,
+            version,
+            provenance_shape="candidate-compact",
+            candidate_status="unpublished-migration-candidate",
+            adapter_api_version=adapter_version,
+        )
+        lock_path = root / "override-lock.json"
+        write_native_override_lock(lock_path, checkout, commit, artifact, version)
+        fixture_digest = hashlib.sha256(b"fixture class").hexdigest()
+        profile = MODULE.ADAPTER_API_PROFILES[adapter_version]
+        original_hashes = profile["classSha256"]
+        profile["classSha256"] = {
+            name: {fixture_digest} for name in profile["classes"]
+        }
+        try:
+            loaded = MODULE.load_addon_override_lock(
+                lock_path,
+                {"components": [{"id": "fixture", "kind": "addon"}]},
+            )
+        finally:
+            profile["classSha256"] = original_hashes
+        native = loaded["records"]["fixture"]["nativeFeatureBackport"]
+        assert native["adapterApiVersion"] == adapter_version
+        assert native["adapterApiTag"] == "v0.1.0-alpha.3"
+        assert native["adapterApiCommit"] == profile["commit"]
+        assert native["adapterApiSourceTree"] == profile["sourceTree"]
+        assert native["adapterApiClassCount"] == 7
+        assert native["migrationProvenance"]["version"] == adapter_version
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "AdapterCompatibility.java"
@@ -1305,6 +1361,7 @@ def main() -> int:
     check_unpublished_migration_requires_native_523()
     check_published_native_provenance_shapes()
     check_paired_native_feature_backport_provenance()
+    check_mixed_adapter_api_profiles()
     print("PASS: candidate add-on source rewriting")
     return 0
 

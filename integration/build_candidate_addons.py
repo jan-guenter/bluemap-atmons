@@ -121,6 +121,61 @@ ADAPTER_API_CLASS_SHA256 = {
         "270bcd0add7db596cd9fba2bf78454421ff19503d62f762634227faac6d6d988",
     },
 }
+ADAPTER_API_PROFILES = {
+    ADAPTER_API_VERSION: {
+        "version": ADAPTER_API_VERSION,
+        "tag": ADAPTER_API_TAG,
+        "commit": ADAPTER_API_COMMIT,
+        "sourceTree": ADAPTER_API_SOURCE_TREE,
+        "sourceFileCount": 4,
+        "classes": ADAPTER_API_CLASSES,
+        "classSha256": ADAPTER_API_CLASS_SHA256,
+    },
+    "0.1.0-alpha.3": {
+        "version": "0.1.0-alpha.3",
+        "tag": "v0.1.0-alpha.3",
+        "commit": "2f8bb7aa3d907f837ebda45c019e0498ed7e89af",
+        "sourceTree": "c0b5db049f6a7630ea589c7f2e658133ed8e2983",
+        "sourceFileCount": 5,
+        "publishedJarSize": 13548,
+        "publishedJarSha256": "56c9f3fd9a21b8240e4bf7f38add36554bcf179b4df192c864a5e806b794386a",
+        "classes": {
+            ADAPTER_API_CLASS_PREFIX + name + ".class"
+            for name in (
+                "BlueMapRuntimeCompatibility",
+                "RegistrationPlan$Registration",
+                "RegistrationPlan$TypedRegistration",
+                "RegistrationPlan",
+                "RegistryGuard",
+                "ResourceExtensionType",
+                "SyntheticDispatch",
+            )
+        },
+        "classSha256": {
+            ADAPTER_API_CLASS_PREFIX + "BlueMapRuntimeCompatibility.class": {
+                "eb7fe1bfecb61700007b9029e2cb2870fa363a8e4ec9435e803ace6e42bb11e6"
+            },
+            ADAPTER_API_CLASS_PREFIX + "RegistrationPlan$Registration.class": {
+                "7fda5f497833b2edf5aaa97e3615a1ab7c94c3c2b3c67b0c8246a4e6fcd692b0"
+            },
+            ADAPTER_API_CLASS_PREFIX + "RegistrationPlan$TypedRegistration.class": {
+                "01b0f1df09a3bb188ac7f0659aab66807bb2cd7994a48cf49b3dae680c122e49"
+            },
+            ADAPTER_API_CLASS_PREFIX + "RegistrationPlan.class": {
+                "e141fd6a37240d190549471d508c147716c51223d19029f01e800f608ad0875d"
+            },
+            ADAPTER_API_CLASS_PREFIX + "RegistryGuard.class": {
+                "58c107277da1df273c6329253f76abf46b47fe2c1fcf006fe51700e2c45bef91"
+            },
+            ADAPTER_API_CLASS_PREFIX + "ResourceExtensionType.class": {
+                "e3e01aa1bafec529f50005a1c76125a686f967a9db1dab694217bb7915c0b5a2"
+            },
+            ADAPTER_API_CLASS_PREFIX + "SyntheticDispatch.class": {
+                "270bcd0add7db596cd9fba2bf78454421ff19503d62f762634227faac6d6d988"
+            },
+        },
+    },
+}
 
 
 class CandidateError(RuntimeError):
@@ -366,6 +421,42 @@ def _normalize_adapter_api_migration(
                 f"{component_id}: {label} conflicts with the exact 5.23 contract"
             )
 
+    declared_versions = [
+        section[name] for name in ("version", "module_version") if name in section
+    ]
+    if not declared_versions and isinstance(section.get("module"), str):
+        declared_versions = [section["module"].rsplit(":", 1)[-1]]
+    if not declared_versions:
+        declared_commits = [
+            section[name]
+            for name in ("commit", "module_commit", "module_release_commit", "release_target_commit")
+            if name in section
+        ]
+        declared_versions = [
+            candidate["version"]
+            for candidate in ADAPTER_API_PROFILES.values()
+            if candidate["commit"] in declared_commits
+        ]
+    if len(declared_versions) != 1 or not isinstance(declared_versions[0], str):
+        raise CandidateError(
+            f"{component_id}: Adapter API migration version is ambiguous or missing"
+        )
+    declared_version = declared_versions[0]
+    profile = ADAPTER_API_PROFILES.get(declared_version)
+    if profile is None:
+        raise CandidateError(
+            f"{component_id}: Adapter API migration version differs from the exact "
+            f"5.23 contract: {declared_version!r}"
+        )
+    ADAPTER_API_VERSION = profile["version"]
+    ADAPTER_API_TAG = profile["tag"]
+    ADAPTER_API_COMMIT = profile["commit"]
+    ADAPTER_API_SOURCE_TREE = profile["sourceTree"]
+    ADAPTER_API_COORDINATE = (
+        "io.github.jan-guenter:bluemap-addon-adapter-api:" + ADAPTER_API_VERSION
+    )
+    source_file_count = profile["sourceFileCount"]
+
     host_identity = {
         "bluemap_version": FEATURE_BACKPORT_VERSION,
         "bluemap_commit": FEATURE_BACKPORT_COMMIT,
@@ -383,7 +474,7 @@ def _normalize_adapter_api_migration(
                 "module_tag": ADAPTER_API_TAG,
                 "module_commit": ADAPTER_API_COMMIT,
                 "module_source_tree": ADAPTER_API_SOURCE_TREE,
-                "compiled_source_count": 4,
+                "compiled_source_count": source_file_count,
                 "standalone_module_jar_bundled": False,
             },
             "published Botany-style Adapter API provenance",
@@ -438,7 +529,7 @@ def _normalize_adapter_api_migration(
                 "version": ADAPTER_API_VERSION,
                 "commit": ADAPTER_API_COMMIT,
                 "source_tree": ADAPTER_API_SOURCE_TREE,
-                "source_files_bundled": 4,
+                "source_files_bundled": source_file_count,
                 "module_jar_bundled": False,
             },
             "published compact Adapter API provenance",
@@ -470,12 +561,21 @@ def _normalize_adapter_api_migration(
             "version": ADAPTER_API_VERSION,
             "commit": ADAPTER_API_COMMIT,
             "source_tree": ADAPTER_API_SOURCE_TREE,
-            "source_files_compiled": 4,
+            "source_files_compiled": source_file_count,
             "module_jar_installed": False,
             "module_jar_bundled": False,
             "module_jar_nested": False,
             "local_adapter_package": adapter_package,
         }
+        if ADAPTER_API_VERSION == "0.1.0-alpha.3":
+            expected_section.update(
+                {
+                    "tag": ADAPTER_API_TAG,
+                    "published": True,
+                    "production_jar_size": profile["publishedJarSize"],
+                    "production_jar_sha256": profile["publishedJarSha256"],
+                }
+            )
         if not isinstance(adapter_package, str) or re.fullmatch(
             r"[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*",
             adapter_package,
@@ -539,7 +639,7 @@ def _normalize_adapter_api_migration(
                 "repository": ADAPTER_API_REPOSITORY,
                 "commit": ADAPTER_API_COMMIT,
                 "source_tree": ADAPTER_API_SOURCE_TREE,
-                "source_files_bundled": 4,
+                "source_files_bundled": source_file_count,
                 "local_helpers_removed": 3,
                 "bluemap_commit": FEATURE_BACKPORT_COMMIT,
                 "bluemap_api_commit": FEATURE_BACKPORT_API_COMMIT,
@@ -680,7 +780,7 @@ def _normalize_adapter_api_migration(
             )
     if section_name == "adapter_api_source" and (
         type(section.get("compiled_source_count")) is not int
-        or section["compiled_source_count"] != 4
+        or section["compiled_source_count"] != source_file_count
         or section.get("standalone_module_jar_bundled") is not False
     ):
         raise CandidateError(
@@ -720,6 +820,13 @@ def _native_feature_backport_contract(
         ["git", "show", f"{commit}:{adapter_paths[0]}"], checkout
     ).stdout
     migration = _normalize_adapter_api_migration(checkout, commit, component_id)
+    adapter_profile = ADAPTER_API_PROFILES[migration["version"]]
+    adapter_classes = adapter_profile["classes"]
+    adapter_class_sha256 = (
+        ADAPTER_API_CLASS_SHA256
+        if migration["version"] == ADAPTER_API_VERSION
+        else adapter_profile["classSha256"]
+    )
     direct_runtime_gate = entrypoint_source.count(
         "BlueMapRuntimeCompatibility.matchesCurrent()"
     )
@@ -767,12 +874,12 @@ def _native_feature_backport_contract(
         ["git", "ls-tree", commit, "--", ADAPTER_API_GITLINK], checkout
     ).stdout.strip()
     expected_gitlink = (
-        f"160000 commit {ADAPTER_API_COMMIT}\t{ADAPTER_API_GITLINK}"
+        f"160000 commit {adapter_profile['commit']}\t{ADAPTER_API_GITLINK}"
     )
     if gitlink != expected_gitlink:
         raise CandidateError(
             f"{component_id}: native feature-backport override does not pin the exact "
-            f"Adapter API commit {ADAPTER_API_COMMIT}"
+            f"Adapter API commit {adapter_profile['commit']}"
         )
     if migration["section"] == "adapter_api_source":
         render_core_gitlink = run(
@@ -791,7 +898,7 @@ def _native_feature_backport_contract(
         names = archive.namelist()
         class_sha256 = {
             name: hashlib.sha256(archive.read(name)).hexdigest()
-            for name in ADAPTER_API_CLASSES
+            for name in adapter_classes
             if name in names
         }
     shared_classes = {
@@ -805,15 +912,15 @@ def _native_feature_backport_contract(
         for name in names
         if re.search(r"(?:^|/)bluemap522/", name) and name.endswith(".class")
     ]
-    if shared_classes != ADAPTER_API_CLASSES:
+    if shared_classes != adapter_classes:
         raise CandidateError(
             f"{component_id}: native feature-backport artifact does not contain the exact "
-            "four-class Adapter API roster"
+            f"{len(adapter_classes)}-class Adapter API roster"
         )
     invalid_class_bytes = sorted(
         name
         for name, digest in class_sha256.items()
-        if digest not in ADAPTER_API_CLASS_SHA256[name]
+        if digest not in adapter_class_sha256[name]
     )
     if invalid_class_bytes:
         raise CandidateError(
@@ -833,12 +940,12 @@ def _native_feature_backport_contract(
         "blueMapVersion": FEATURE_BACKPORT_VERSION,
         "blueMapCommit": FEATURE_BACKPORT_COMMIT,
         "blueMapApiCommit": FEATURE_BACKPORT_API_COMMIT,
-        "adapterApiVersion": ADAPTER_API_VERSION,
-        "adapterApiTag": ADAPTER_API_TAG,
-        "adapterApiCommit": ADAPTER_API_COMMIT,
-        "adapterApiSourceTree": ADAPTER_API_SOURCE_TREE,
+        "adapterApiVersion": adapter_profile["version"],
+        "adapterApiTag": adapter_profile["tag"],
+        "adapterApiCommit": adapter_profile["commit"],
+        "adapterApiSourceTree": adapter_profile["sourceTree"],
         "adapterApiGitlink": ADAPTER_API_GITLINK,
-        "adapterApiClassCount": len(ADAPTER_API_CLASSES),
+        "adapterApiClassCount": len(adapter_classes),
         "adapterApiClassSha256": class_sha256,
         "migrationProvenance": migration,
         "standaloneModuleJarBundled": False,

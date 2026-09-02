@@ -65,6 +65,32 @@ python integration/build_candidate_addons.py \
 The output must contain 51 JARs and a `candidate-manifest.json` whose summary is
 `passed` with 51 components.
 
+An integration batch may replace selected released add-ons with exact local
+candidate artifacts by passing an absolute override lock:
+
+```bash
+python integration/build_candidate_addons.py \
+  --bluemap-version '<exact-runtime-version>' \
+  --bluemap-commit '<full-commit>' \
+  --addon-override-lock /absolute/path/to/addon-override-lock.json \
+  --output .tmp/integration/candidate-addons
+```
+
+The schema-1 lock contains `atmons: "1.2.0"` and a non-empty `components`
+array. Each component supplies its manifest ID, an absolute clean source
+checkout plus exact commit, and an absolute candidate JAR path, filename,
+version, size, and SHA-256. The builder binds those values to the candidate's
+tracked release provenance before reading any source or artifact bytes.
+
+Adapter API provenance is evaluated per overridden consumer. This permits a
+bounded mixed batch in which selected candidates source-bundle the released
+Adapter API `0.1.0-alpha.3` while every other native consumer remains pinned
+to `0.1.0-alpha.2`. Each override must pin the matching module gitlink, source
+tree, source count, exact embedded class roster, and recognized class bytes;
+one component's profile never changes another component's admission rules.
+The standalone Adapter API JAR remains absent from the server and nested JARs
+remain forbidden.
+
 To test explicit alternate add-on releases or sealed candidates, pass an
 absolute JSON lock with `--addon-override-lock`. Each listed checkout must be
 clean and at the declared HEAD. The exact commit's tracked
