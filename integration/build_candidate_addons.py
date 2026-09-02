@@ -33,7 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "8443eecd2e97df0bb26f92e6887ed3a4a772c64b94117857ef69999adc9978d1"
+EXPECTED_MANIFEST_SHA256 = "f118552f76a334d7f00ac85fcb2e30a0394f438c20492fe5c5a149e2f3093df3"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 CLASS_DECLARATION = re.compile(r"(public\s+final\s+class\s+AdapterCompatibility\s*\{\s*\n)")
 SUPPORTED_RETURN = re.compile(
