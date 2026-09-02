@@ -24,7 +24,7 @@ from typing import Protocol
 
 ROOT = Path(__file__).resolve().parents[1]
 TRACKED_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
-TRACKED_MANIFEST_SHA256 = "cbc304b94475aaa82f502cc29fddcb35863f4490ce94ee450319f9d0a4faaa3f"
+TRACKED_MANIFEST_SHA256 = "1c0ac9ca5c387f3d50e34d2982b3fd18267fda467d44330c31cf1305385e6a70"
 COMPOSER_PATH = ROOT / "integration" / "galleries" / "compose.py"
 COMPOSER_VERSION = "2.4.1"
 COMPOSER_SHA256 = "b1090499d459c5ea546b102831af9f6cea8fd6c8ee0b23d38828e54f4b469985"

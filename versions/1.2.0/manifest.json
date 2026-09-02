@@ -37,13 +37,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-ars-creo-addon",
       "submodule_path": "addons/ars-creo",
-      "commit": "f27921f918928a813d8bf9d0aa607184de41d9e2",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "cd26792d8154f54c42dfbd63ddc614ef40a191fe",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-ars-creo-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-ars-creo-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-creo-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 163265,
-        "sha256": "bcf9ac905e3d9b7702da666c3be131a6b24ab6b8dfd472b8ffa5d5e014cb1938"
+        "filename": "bluemap-ars-creo-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-creo-addon/releases/download/v0.1.0-alpha.3/bluemap-ars-creo-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 178803,
+        "sha256": "b4855259c2c449c4c3fe972f3a8fddf3fcf13714305524e600604908ec75ad59"
       },
       "requires": [
         "bluemap"
@@ -54,13 +54,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-ars-energistique-addon",
       "submodule_path": "addons/ars-energistique",
-      "commit": "33a8cc848d51384dcc11d817c09957601a9c7234",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "5b2c8aeea13a80d568c3c27a058d845a66413c08",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-ars-energistique-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-ars-energistique-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-energistique-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 52396,
-        "sha256": "5f679b5af007401e0456e0de7168527d401c77cf79c500b5f18a102184659a7f"
+        "filename": "bluemap-ars-energistique-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-energistique-addon/releases/download/v0.1.0-alpha.2/bluemap-ars-energistique-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 58318,
+        "sha256": "e6f9d86629009880e87762c062fa109070793e91de4cf6494820b0d75b584f8c"
       },
       "requires": [
         "bluemap"
@@ -71,13 +71,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-ars-nouveau-addon",
       "submodule_path": "addons/ars-nouveau",
-      "commit": "32cb3e041bc7bc5bb4e6325cfb8b57a9604f4c28",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "dca10c4003fe9983492a9ab2d34d4d4207cda1cd",
+      "release_tag": "v0.1.0-alpha.4",
       "artifact": {
-        "filename": "bluemap-ars-nouveau-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-ars-nouveau-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-nouveau-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 153309,
-        "sha256": "d048145174754f9a134fcac449fd200ee6b423aedeca74fff3eef21f60e20c2d"
+        "filename": "bluemap-ars-nouveau-addon-0.1.0-alpha.4.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-nouveau-addon/releases/download/v0.1.0-alpha.4/bluemap-ars-nouveau-addon-0.1.0-alpha.4.jar",
+        "size_bytes": 169426,
+        "sha256": "52ddc7760b5710f9af285311fe446fc525adb0f02a98549ca4aa5248a38d2966"
       },
       "requires": [
         "bluemap"
@@ -88,13 +88,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-ars-technica-addon",
       "submodule_path": "addons/ars-technica",
-      "commit": "76c8a262fc42f309f3ad8ba039c79d8fe0a42ae1",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "61d33f096d15824d27c95e584dfc18a6468413cd",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-ars-technica-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-ars-technica-addon/releases/download/v0.1.0-alpha.1/bluemap-ars-technica-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 139865,
-        "sha256": "4b36968ee1ed53614ba1de5d11277f073ed43c94c48470e53fbbca2679e8e643"
+        "filename": "bluemap-ars-technica-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ars-technica-addon/releases/download/v0.1.0-alpha.3/bluemap-ars-technica-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 156063,
+        "sha256": "d05a10f02557a425616dacf7ade89b1afed86ffef7aef1f0767d334d66fe1e46"
       },
       "requires": [
         "bluemap"
@@ -851,13 +851,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-theurgy-addon",
       "submodule_path": "addons/theurgy",
-      "commit": "7d27df09578fd521644ac15a4caf232b9729f312",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "74f8e54cafd52449ad2b75c0800019483876a5a9",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-theurgy-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-theurgy-addon/releases/download/v0.1.0-alpha.1/bluemap-theurgy-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 67128,
-        "sha256": "8517196b56ddc9c180e792ad33f28347781b3f08ffe9805f23b7932182035ce0"
+        "filename": "bluemap-theurgy-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-theurgy-addon/releases/download/v0.1.0-alpha.2/bluemap-theurgy-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 73035,
+        "sha256": "3da20938edeb04617f3227abe8d1fd18b342c59519fbfe0ff255284f9f97beef"
       },
       "requires": [
         "bluemap"
