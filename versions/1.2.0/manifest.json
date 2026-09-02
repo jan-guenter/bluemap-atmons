@@ -443,13 +443,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-laser-bridges-addon",
       "submodule_path": "addons/laser-bridges",
-      "commit": "e801361fa3495b1752cf4ab8d6c2a48e0caabd53",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "341d2b643cfa3318a760ea73f95d48d509b4e8b8",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-laser-bridges-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-laser-bridges-addon/releases/download/v0.1.0-alpha.1/bluemap-laser-bridges-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 91268,
-        "sha256": "f4229a2ad89eafbc7c0d1a434cec53c859c051221804ee3013ed4fde34284193"
+        "filename": "bluemap-laser-bridges-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-laser-bridges-addon/releases/download/v0.1.0-alpha.2/bluemap-laser-bridges-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 96544,
+        "sha256": "39d8d9d6b35181e654d48c3f5b2938d307463000787a7acec0193a98ead5a773"
       },
       "requires": [
         "bluemap"
@@ -494,13 +494,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-logistics-networks-addon",
       "submodule_path": "addons/logistics-networks",
-      "commit": "e6dc2ebe4c3ddbf4942b07c9208147d901f411fb",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "d5a9ebb2702b217c8f671cc2ea489b73a52f7766",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-logistics-networks-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-logistics-networks-addon/releases/download/v0.1.0-alpha.1/bluemap-logistics-networks-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 67367,
-        "sha256": "5f813504e2dccd63ad0a2cc1bd33a129da2e2934e5576d149b6b215c12ba8f18"
+        "filename": "bluemap-logistics-networks-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-logistics-networks-addon/releases/download/v0.1.0-alpha.2/bluemap-logistics-networks-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 73405,
+        "sha256": "9f9708a26a433fe50c52d3220180e51c1044a1f90db5a08258504f9f4c09fdb3"
       },
       "requires": [
         "bluemap"
@@ -511,13 +511,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-lootr-addon",
       "submodule_path": "addons/lootr",
-      "commit": "f01d71c1f55a743d73d171677b18ed13be5756eb",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "e34dec9e44befde2d672a3a6cb395187ce9cdb50",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-lootr-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-lootr-addon/releases/download/v0.1.0-alpha.1/bluemap-lootr-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 138464,
-        "sha256": "009495162e9319990f7dfc427c4b5a9caa9279fbcd64740e51ccacaa37b06cc3"
+        "filename": "bluemap-lootr-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-lootr-addon/releases/download/v0.1.0-alpha.2/bluemap-lootr-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 143928,
+        "sha256": "3d5acf3bfc54de610790765c28361b5a1bd04ee5a93a74578d81fda9b86e1aa7"
       },
       "requires": [
         "bluemap"
@@ -562,13 +562,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-morered-addon",
       "submodule_path": "addons/morered",
-      "commit": "845033ad8d49eab73986622dd964b6f5072a559e",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "ec3880e823944f2fbd7318bde0950658538e429e",
+      "release_tag": "v0.1.0-alpha.3",
       "artifact": {
-        "filename": "bluemap-morered-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-morered-addon/releases/download/v0.1.0-alpha.1/bluemap-morered-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 93178,
-        "sha256": "8c146f92d2939a38093423e70dd7db248a28426fade75e5eb0cefb477dcc0f9d"
+        "filename": "bluemap-morered-addon-0.1.0-alpha.3.jar",
+        "url": "https://github.com/jan-guenter/bluemap-morered-addon/releases/download/v0.1.0-alpha.3/bluemap-morered-addon-0.1.0-alpha.3.jar",
+        "size_bytes": 99257,
+        "sha256": "9b7250e368e2d00127fc048fed363659785191ace59cd4cb6210187d8e373134"
       },
       "requires": [
         "bluemap"
@@ -868,13 +868,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-trophy-manager-addon",
       "submodule_path": "addons/trophy-manager",
-      "commit": "235fe54839a9521b0a70fd95822779fa499eee37",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "855fcaf58df91b4e72dcfd35b7441dd1ecdc00e6",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-trophy-manager-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-trophy-manager-addon/releases/download/v0.1.0-alpha.1/bluemap-trophy-manager-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 92121,
-        "sha256": "3eb5e33df93231f362e749b9044fc450748e2a3d0f3998711d6871586aae00d9"
+        "filename": "bluemap-trophy-manager-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-trophy-manager-addon/releases/download/v0.1.0-alpha.2/bluemap-trophy-manager-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 102388,
+        "sha256": "b492948aaa281e1874441a259ff9a83cb1b605eb6a390d36e3f6d7424212209b"
       },
       "requires": [
         "bluemap"

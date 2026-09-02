@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "8443eecd2e97df0bb26f92e6887ed3a4a772c64b94117857ef69999adc9978d1"
+EXPECTED_MANIFEST_SHA256 = "f118552f76a334d7f00ac85fcb2e30a0394f438c20492fe5c5a149e2f3093df3"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -179,7 +179,7 @@ SETTLED_VERIFIER_NORMALIZATIONS = (
     ),
     SettledVerifierNormalization(
         "morered",
-        "845033ad8d49eab73986622dd964b6f5072a559e",
+        "ec3880e823944f2fbd7318bde0950658538e429e",
         "data/morered_gallery/function/verify.mcfunction",
         "execute unless block 194 100 203 "
         "morered:hexidecrubrometer[face=floor,facing=north,power=15] run tellraw @a "
@@ -270,7 +270,7 @@ CUMULATIVE_SCORE_RESET_RULES = (
     ),
     CumulativeScoreResetRule(
         "logistics-networks",
-        "e6dc2ebe4c3ddbf4942b07c9208147d901f411fb",
+        "d5a9ebb2702b217c8f671cc2ea489b73a52f7766",
         "data/logisticsnetworks_gallery/function/build_loaded.mcfunction",
         (("#builds", "ln_gallery"),),
     ),
