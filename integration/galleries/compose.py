@@ -27,7 +27,7 @@ from typing import Callable, Iterable, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "versions" / "1.2.0" / "manifest.json"
 VALIDATOR_PATH = ROOT / "tools" / "validate.py"
-EXPECTED_MANIFEST_SHA256 = "f118552f76a334d7f00ac85fcb2e30a0394f438c20492fe5c5a149e2f3093df3"
+EXPECTED_MANIFEST_SHA256 = "f80fb84ef34caf68452e0def57e734da5abd3b7129be7bbb05e5bb31c9b89917"
 EXPECTED_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 NUMBER = r"-?\d+(?:\.\d+)?(?:[dDfF])?"
 TRIPLE = rf"({NUMBER})\s+({NUMBER})\s+({NUMBER})"
@@ -190,7 +190,7 @@ SETTLED_VERIFIER_NORMALIZATIONS = (
     ),
     SettledVerifierNormalization(
         "xnet",
-        "925a5e890e0f97791599c063825bc0ac4fc2bd51",
+        "3e650621695aba1aa67b268e91e9c1e1d307ab11",
         "data/xnet_gallery/function/verify.mcfunction",
         "execute unless block 194 100 175 "
         "xnet:netcable[color=red,north=none,south=none,east=block,west=cable,"
@@ -203,7 +203,7 @@ SETTLED_VERIFIER_NORMALIZATIONS = (
     ),
     SettledVerifierNormalization(
         "xnet",
-        "925a5e890e0f97791599c063825bc0ac4fc2bd51",
+        "3e650621695aba1aa67b268e91e9c1e1d307ab11",
         "data/xnet_gallery/function/verify.mcfunction",
         "execute unless block 188 100 178 "
         "xnet:controller[error=true,facing=north] run tellraw @a "
@@ -217,7 +217,7 @@ SETTLED_VERIFIER_NORMALIZATIONS = (
 CUMULATIVE_SCORE_RESET_RULES = (
     CumulativeScoreResetRule(
         "ae2",
-        "575c05222c7322421c30cb1158a2054dc04aa564",
+        "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
         "data/ae2_m3/function/build.mcfunction",
         (
             ("#m3f_builds", "ae2m3run"),
@@ -277,7 +277,7 @@ CUMULATIVE_SCORE_RESET_RULES = (
 )
 
 
-XNET_SETTLED_TOPOLOGY_COMMIT = "925a5e890e0f97791599c063825bc0ac4fc2bd51"
+XNET_SETTLED_TOPOLOGY_COMMIT = "3e650621695aba1aa67b268e91e9c1e1d307ab11"
 XNET_SETTLED_TOPOLOGY_ANCHOR = "function xnet_gallery:verify"
 XNET_SETTLED_TOPOLOGY = (
     "# Integration-only stable XNet topology; source gallery remains immutable.",

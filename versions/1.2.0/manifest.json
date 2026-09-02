@@ -20,13 +20,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-ae2-addon",
       "submodule_path": "addons/ae2",
-      "commit": "575c05222c7322421c30cb1158a2054dc04aa564",
-      "release_tag": "v0.1.0-alpha.3",
+      "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+      "release_tag": "v0.1.0-alpha.4",
       "artifact": {
-        "filename": "bluemap-ae2-addon-0.1.0-alpha.3.jar",
-        "url": "https://github.com/jan-guenter/bluemap-ae2-addon/releases/download/v0.1.0-alpha.3/bluemap-ae2-addon-0.1.0-alpha.3.jar",
-        "size_bytes": 1252649,
-        "sha256": "f7014e1c60bdf02fa22583a7b5b5cbf6f3076a0b2371601360775507d473a12d"
+        "filename": "bluemap-ae2-addon-0.1.0-alpha.4.jar",
+        "url": "https://github.com/jan-guenter/bluemap-ae2-addon/releases/download/v0.1.0-alpha.4/bluemap-ae2-addon-0.1.0-alpha.4.jar",
+        "size_bytes": 1254922,
+        "sha256": "41684478ad59c5d36baae99f1f6bd3f61bf6a5a92df0bbc66d93ca310b74bc99"
       },
       "requires": [
         "bluemap"
@@ -341,13 +341,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-framedblocks-addon",
       "submodule_path": "addons/framedblocks",
-      "commit": "b4a3f3641b47aaf9b56a89db6215df121575ca08",
-      "release_tag": "v0.1.0-alpha.3",
+      "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+      "release_tag": "v0.1.0-alpha.4",
       "artifact": {
-        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.3.jar",
-        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.3/bluemap-framedblocks-addon-0.1.0-alpha.3.jar",
-        "size_bytes": 1337598,
-        "sha256": "1b4befc9b475e11e99d4af776ee776c724605b78b4879ab8a93ebfb217ce618a"
+        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.4.jar",
+        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.4/bluemap-framedblocks-addon-0.1.0-alpha.4.jar",
+        "size_bytes": 1341258,
+        "sha256": "de195ed764dea85099e238099f1fc98671b0bbfa951b939ec26ae4912a1971b2"
       },
       "requires": [
         "bluemap"
@@ -392,13 +392,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-immersive-energistics-addon",
       "submodule_path": "addons/immersive-energistics",
-      "commit": "4632af465a9991cc1f81ea4d12239d5a1376c6df",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "c017712a0a6909515434dae5464b769eaf6d1ea5",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-immersive-energistics-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-immersive-energistics-addon/releases/download/v0.1.0-alpha.1/bluemap-immersive-energistics-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 91505,
-        "sha256": "e61ae9c0fd9c8cfd36698a13a03124ff3536e8e93419fca22c47d4e29eb9bc76"
+        "filename": "bluemap-immersive-energistics-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-immersive-energistics-addon/releases/download/v0.1.0-alpha.2/bluemap-immersive-energistics-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 97191,
+        "sha256": "cdc50e2f335d4c40e261dd54d872c22fbd71988c9953caeb1a013625670d6c49"
       },
       "requires": [
         "bluemap"
@@ -409,13 +409,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-immersive-engineering-addon",
       "submodule_path": "addons/immersive-engineering",
-      "commit": "a08b7fd0267103d0a3d1722bed171ef7b4487a57",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "76a4b200c8bc347c3d35b046a49553eb7198b14e",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-immersive-engineering-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-immersive-engineering-addon/releases/download/v0.1.0-alpha.1/bluemap-immersive-engineering-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 321202,
-        "sha256": "eec9bbd5b1c27ffa3e9c57d7a730f5a2212ebeebc600cafc7498fa0a15580fb4"
+        "filename": "bluemap-immersive-engineering-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-immersive-engineering-addon/releases/download/v0.1.0-alpha.2/bluemap-immersive-engineering-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 324308,
+        "sha256": "16a3416565323ef18e829d8f3b9338af2f5e68cadec5dc18f51d0059c9c41f9f"
       },
       "requires": [
         "bluemap"
@@ -885,13 +885,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-xnet-addon",
       "submodule_path": "addons/xnet",
-      "commit": "925a5e890e0f97791599c063825bc0ac4fc2bd51",
-      "release_tag": "v0.1.0-alpha.1",
+      "commit": "3e650621695aba1aa67b268e91e9c1e1d307ab11",
+      "release_tag": "v0.1.0-alpha.2",
       "artifact": {
-        "filename": "bluemap-xnet-addon-0.1.0-alpha.1.jar",
-        "url": "https://github.com/jan-guenter/bluemap-xnet-addon/releases/download/v0.1.0-alpha.1/bluemap-xnet-addon-0.1.0-alpha.1.jar",
-        "size_bytes": 129889,
-        "sha256": "bd08f4e4d0c7e88e7dbe15863e7f6669bd4c6c2cb495bfdbff43af2d35e49bb4"
+        "filename": "bluemap-xnet-addon-0.1.0-alpha.2.jar",
+        "url": "https://github.com/jan-guenter/bluemap-xnet-addon/releases/download/v0.1.0-alpha.2/bluemap-xnet-addon-0.1.0-alpha.2.jar",
+        "size_bytes": 135017,
+        "sha256": "b6230d7fef2b5b1fa91beaf07cd1fe5fee5c710ddd4ea95d79305977ce0fb226"
       },
       "requires": [
         "bluemap"
