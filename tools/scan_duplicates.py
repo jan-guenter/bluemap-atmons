@@ -431,7 +431,7 @@ CANDIDATE_SPECS = (
             "Similar helper names do not prove identical UV, lighting, coordinate, or material semantics.",
             "BlueMap mesh emission must remain isolated in a version-specific adapter module.",
         ),
-        "recommendation": "Start only with exact multi-consumer APIs such as the seven-copy FaceLighting contract.",
+        "recommendation": "Keep parity-proven multi-consumer APIs such as FaceLighting in the shared render core; expand it only with exact evidence.",
     },
     {
         "order": 6,
