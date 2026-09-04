@@ -14,17 +14,20 @@ Player identity and the RCON password live only in Kubernetes Secrets.
 | World | normal overworld, structures enabled, seed `731963181124214131` |
 | BlueMap source | `feature/backport-5.23-stateless-java-web-server` at `7e07f4e74ec1e92a6ead9aa1e66054af3e133aac` |
 | BlueMap runtime version | `5.22-feature.backport-5.23-stateless-java-web-server-46` |
-| BlueMap candidate JAR | 6,545,661 bytes; SHA-256 `86a0323d24f472e425dda4d4e6bba2d7d8ce8315ad009930a67131128c715e62` |
-| Add-ons | all 51 immutable `atmons-1.2.0` releases with staging-only compatibility overlays |
+| BlueMap release | `v5.23-agent.backport-5.23-mc1.21.1-2`; 6,545,661 bytes; SHA-256 `86a0323d24f472e425dda4d4e6bba2d7d8ce8315ad009930a67131128c715e62` |
+| Add-ons | all 51 exact production releases in the refreshed `atmons-1.2.0` manifest, with no compatibility overlays |
 | Integration harness | 190,653 bytes; SHA-256 `b35fc567c60d79a56ad4c20857979f94d900d3c09169f9ff87f1ac538f7826ed` |
 | Gallery datapack | 592,097 bytes; SHA-256 `002e3c551a8edcfde32d92e7e70204622a403b151976e6114621f6803af6ad77` |
 | Gallery layout / composition ledger | `6a8d0169090c100f5bd03b5c881ed4275a4f11643b958d9df07f247e57635479` / `e6c9dc8051420597b3513e554c44ac977768a008564f30c6c3c549a386ee48f6` |
 | Canonical base-mod ledger | 375 JARs; SHA-256 `aba2db94fbcd6cf756d6ab2f03e7adc35422d4a2c1eb82e47d998ed740e4d70c` |
 
-The published `atmons-1.2.0` manifest and tag remain unchanged. Compatibility
-overlays replace only `AdapterCompatibility.class` and the add-on entrypoint
-class in copies of verified release JARs and must never be published as
-releases.
+The BlueMap release contains the exact owner-accepted branch-context build.
+Its internal runtime version remains
+`5.22-feature.backport-5.23-stateless-java-web-server-46`, which is the exact
+identity admitted by the published add-ons, while its source is the 5.23
+backport commit recorded above. The refreshed manifest pins this release and
+FramedBlocks `v0.1.0-alpha.5` directly; the final integration gate uses only
+published production artifacts.
 
 The runtime inventory contains 377 exact on-disk JARs. NeoForge exposes 374 of
 them through `ModList`: the exact pack-pinned CrashAssistant wrapper,

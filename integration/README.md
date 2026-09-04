@@ -164,8 +164,9 @@ The materializer fetches each exact annotated tag, verifies its tag object and
 peeled commit, downloads and hashes the published production JAR, then applies
 the same release-provenance and native-adapter checks as the candidate builder.
 The resulting checkout, JARs, and absolute-path lock are disposable and remain
-untracked. The profile does not alter the immutable `atmons-1.2.0` manifest or
-its BlueMap 5.22 compatibility snapshot.
+untracked. This profile records the transitional native-release batch; the
+refreshed `atmons-1.2.0` manifest now pins the selected BlueMap 5.23 backport
+release directly.
 
 ## Individual add-on gates
 

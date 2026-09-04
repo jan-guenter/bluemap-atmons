@@ -32,8 +32,8 @@ COMMIT_RE = re.compile(r"[0-9a-f]{40}")
 GALLERY_TEST_RE = re.compile(r"^gallery/(?:.*/)?test_[^/]+\.py$")
 ADDON_ID_RE = re.compile(r"[a-z0-9][a-z0-9-]*")
 GRADLE_ARTIFACT_PROPERTY_RE = re.compile(r"[A-Za-z][A-Za-z0-9]*Jar")
-ATMONS_1_2_0_MANIFEST_SHA256 = "1c0ac9ca5c387f3d50e34d2982b3fd18267fda467d44330c31cf1305385e6a70"
-ATMONS_1_2_0_VALIDATOR_SHA256 = "10ac46a5f99bfa440dae6b15ab2cad3432e0a3acadf4c2b204597b30ae8a46b7"
+ATMONS_1_2_0_MANIFEST_SHA256 = "6157b090619d5881bd8498f65ba4a1cd38fb58e7778944219375fce19712a074"
+ATMONS_1_2_0_VALIDATOR_SHA256 = "e4e5d66d4314c381a7a657065ff51a818f7f48e823eaa13b9b25f6366adef1ba"
 
 
 class GateError(RuntimeError):

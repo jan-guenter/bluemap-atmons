@@ -4,15 +4,15 @@ This is a deterministic source audit of the exact 51 add-on commits pinned by th
 
 ## Scope and result
 
-- Add-ons: **51** gitlinks; eligible tracked files: **2714** (29,457,879 bytes).
-- Version manifest: `versions/1.2.0/manifest.json` (`1c0ac9ca5c387f3d50e34d2982b3fd18267fda467d44330c31cf1305385e6a70`); all **51** add-on commits exactly match the index gitlinks.
-- Inventory fingerprint: `9c01d2ff7c5a04afc972faa9b359d41943e24422bb2fdd903de27c540bf07f04`.
+- Add-ons: **51** gitlinks; eligible tracked files: **2717** (29,525,958 bytes).
+- Version manifest: `versions/1.2.0/manifest.json` (`6157b090619d5881bd8498f65ba4a1cd38fb58e7778944219375fce19712a074`); all **51** add-on commits exactly match the index gitlinks.
+- Inventory fingerprint: `f2c4c89f6e0b08b0e53626b9bc2c8c0a46285873631438e2d3faeefcfbb6f224`.
 - Exact file groups: **4** (57 occurrences).
 - Whole-Java-file token groups: **32 exact**, **46 renamed**.
-- Java method groups (minimum 36 tokens): **327 exact**, **189 renamed**.
+- Java method groups (minimum 36 tokens): **327 exact**, **190 renamed**.
 - Parsed Python/Gradle/GitHub Actions/Bash groups (minimum 12 units): **411 exact**, **24 conservative local-renamed**.
-- Structured inventory fingerprint: `582245b3c55ab043c9939620af799fcae2f3bbcc977988c59d0508de2a89b8d6` (10770 parsed units; 9578 eligible).
-- Exact method layers: behavioral 195, mixed 2, scaffolding 66, test_scaffolding 12, test_support 52; renamed method layers: behavioral 67, mixed 5, scaffolding 68, test_scaffolding 15, test_support 34.
+- Structured inventory fingerprint: `a1afba8be2503d5d7e423f3497f8fa834b831ba38d3c6206b898d4c9693999e1` (10770 parsed units; 9578 eligible).
+- Exact method layers: behavioral 195, mixed 5, scaffolding 63, test_scaffolding 12, test_support 52; renamed method layers: behavioral 67, mixed 8, scaffolding 65, test_scaffolding 15, test_support 35.
 
 The full JSON report records every qualifying occurrence with its add-on commit, path, line range where applicable, token count, and content fingerprint.
 

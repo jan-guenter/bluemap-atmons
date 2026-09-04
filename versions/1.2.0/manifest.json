@@ -105,13 +105,13 @@
       "kind": "bluemap",
       "repository": "jan-guenter/BlueMap",
       "submodule_path": "bluemap",
-      "commit": "9be321df995a1103808621d529eb72773e719d4d",
-      "release_tag": "v5.22-agent.backport-5.22-mc1.21.1-2",
+      "commit": "7e07f4e74ec1e92a6ead9aa1e66054af3e133aac",
+      "release_tag": "v5.23-agent.backport-5.23-mc1.21.1-2",
       "artifact": {
-        "filename": "bluemap-5.22-agent.backport-5.22-mc1.21.1-2-neoforge.jar",
-        "url": "https://github.com/jan-guenter/BlueMap/releases/download/v5.22-agent.backport-5.22-mc1.21.1-2/bluemap-5.22-agent.backport-5.22-mc1.21.1-2-neoforge.jar",
-        "size_bytes": 6467235,
-        "sha256": "749f7647fa29764cea113114a7ab3259271bab3da22720989f2bd9fd1f3ba150"
+        "filename": "bluemap-5.23-agent.backport-5.23-mc1.21.1-2-neoforge.jar",
+        "url": "https://github.com/jan-guenter/BlueMap/releases/download/v5.23-agent.backport-5.23-mc1.21.1-2/bluemap-5.23-agent.backport-5.23-mc1.21.1-2-neoforge.jar",
+        "size_bytes": 6545661,
+        "sha256": "86a0323d24f472e425dda4d4e6bba2d7d8ce8315ad009930a67131128c715e62"
       },
       "requires": []
     },
@@ -341,13 +341,13 @@
       "kind": "addon",
       "repository": "jan-guenter/bluemap-framedblocks-addon",
       "submodule_path": "addons/framedblocks",
-      "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-      "release_tag": "v0.1.0-alpha.4",
+      "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+      "release_tag": "v0.1.0-alpha.5",
       "artifact": {
-        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.4.jar",
-        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.4/bluemap-framedblocks-addon-0.1.0-alpha.4.jar",
-        "size_bytes": 1341258,
-        "sha256": "de195ed764dea85099e238099f1fc98671b0bbfa951b939ec26ae4912a1971b2"
+        "filename": "bluemap-framedblocks-addon-0.1.0-alpha.5.jar",
+        "url": "https://github.com/jan-guenter/bluemap-framedblocks-addon/releases/download/v0.1.0-alpha.5/bluemap-framedblocks-addon-0.1.0-alpha.5.jar",
+        "size_bytes": 1368405,
+        "sha256": "2b1382b119377f72ff6a8daa2531380cd4a2dcd723a557105e7fb95c3706ec29"
       },
       "requires": [
         "bluemap"
