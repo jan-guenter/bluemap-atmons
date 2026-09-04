@@ -140,7 +140,7 @@
         {
           "addon": "framedblocks",
           "category": "quality_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/config/checkstyle/checkstyle.xml"
         },
@@ -448,7 +448,7 @@
         {
           "addon": "framedblocks",
           "category": "gallery_data",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_support",
           "path": "addons/framedblocks/gallery/datapack/data/framedblocks_gallery/function/pose_south.mcfunction"
         }
@@ -2220,7 +2220,7 @@
           {
             "addon": "framedblocks",
             "category": "java_main",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "layer": "scaffolding",
             "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/BlueMapFramedBlocksAddon.java"
           },
@@ -14662,9 +14662,9 @@
       {
         "addon_count": 3,
         "id": "method-exact-817b4d87f1ad3104",
-        "layer": "scaffolding",
+        "layer": "mixed",
         "minimum_token_count": 67,
-        "occurrence_count": 5,
+        "occurrence_count": 6,
         "occurrences": [
           {
             "addon": "ae2",
@@ -14701,7 +14701,18 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 158,
+            "exact_token_sha256": "817b4d87f1ad3104eaeeeb783818278de939f8fa76fb419214fffff8bf0096a6",
+            "layer": "behavioral",
+            "method": "decodeUtf8",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/ExactNeoForgeModArtifact.java",
+            "start_line": 148,
+            "token_count": 67
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 128,
             "exact_token_sha256": "817b4d87f1ad3104eaeeeb783818278de939f8fa76fb419214fffff8bf0096a6",
             "layer": "scaffolding",
@@ -17154,13 +17165,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 700,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 727,
             "exact_token_sha256": "4733db352ba9806ad1e33b8d878f3ac30e77e728718edcaf706ea5a854993777",
             "layer": "behavioral",
             "method": "isHiddenCave",
             "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRenderer.java",
-            "start_line": 695,
+            "start_line": 722,
             "token_count": 50
           }
         ],
@@ -17230,17 +17241,82 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 637,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 744,
             "exact_token_sha256": "d2e88f35c8b53080813d8d7a7859b1e4ff14afeb3d7448c000c423cbd5835b55",
             "layer": "test_support",
             "method": "setColor",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 633,
+            "start_line": 740,
             "token_count": 51
           }
         ],
         "token_sha256": "d2e88f35c8b53080813d8d7a7859b1e4ff14afeb3d7448c000c423cbd5835b55"
+      },
+      {
+        "addon_count": 2,
+        "id": "method-exact-5d49fd5e5755a9d9",
+        "layer": "mixed",
+        "minimum_token_count": 52,
+        "occurrence_count": 5,
+        "occurrences": [
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 226,
+            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
+            "layer": "scaffolding",
+            "method": "isEscaped",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
+            "start_line": 220,
+            "token_count": 52
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 215,
+            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
+            "layer": "scaffolding",
+            "method": "isEscaped",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
+            "start_line": 207,
+            "token_count": 52
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 263,
+            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
+            "layer": "scaffolding",
+            "method": "isEscaped",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
+            "start_line": 255,
+            "token_count": 52
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 228,
+            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
+            "layer": "behavioral",
+            "method": "isEscaped",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/ExactNeoForgeModArtifact.java",
+            "start_line": 222,
+            "token_count": 52
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 220,
+            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
+            "layer": "scaffolding",
+            "method": "isEscaped",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
+            "start_line": 214,
+            "token_count": 52
+          }
+        ],
+        "token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a"
       },
       {
         "addon_count": 2,
@@ -17295,17 +17371,82 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 1056,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 1046,
             "exact_token_sha256": "a9770506b539f23e5a88f6269b15c4eeaf81f3b915422148d76f840236e355c9",
             "layer": "behavioral",
             "method": "renderResource",
             "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRenderer.java",
-            "start_line": 1016,
+            "start_line": 1006,
             "token_count": 288
           }
         ],
         "token_sha256": "a9770506b539f23e5a88f6269b15c4eeaf81f3b915422148d76f840236e355c9"
+      },
+      {
+        "addon_count": 2,
+        "id": "method-exact-b53271312c852f3c",
+        "layer": "mixed",
+        "minimum_token_count": 330,
+        "occurrence_count": 5,
+        "occurrences": [
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 218,
+            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
+            "layer": "scaffolding",
+            "method": "sanitizeTomlLine",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
+            "start_line": 158,
+            "token_count": 330
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 205,
+            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
+            "layer": "scaffolding",
+            "method": "sanitizeTomlLine",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
+            "start_line": 146,
+            "token_count": 330
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 253,
+            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
+            "layer": "scaffolding",
+            "method": "sanitizeTomlLine",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
+            "start_line": 192,
+            "token_count": 330
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 220,
+            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
+            "layer": "behavioral",
+            "method": "sanitizeTomlLine",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/ExactNeoForgeModArtifact.java",
+            "start_line": 160,
+            "token_count": 330
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 212,
+            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
+            "layer": "scaffolding",
+            "method": "sanitizeTomlLine",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
+            "start_line": 152,
+            "token_count": 330
+          }
+        ],
+        "token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca"
       },
       {
         "addon_count": 2,
@@ -17360,71 +17501,17 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 623,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 730,
             "exact_token_sha256": "d51eaa233bc7afa667b79396f8585a08dac7410f8002c496d8d045d2af0f139c",
             "layer": "test_support",
             "method": "setUvs",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 614,
+            "start_line": 721,
             "token_count": 72
           }
         ],
         "token_sha256": "d51eaa233bc7afa667b79396f8585a08dac7410f8002c496d8d045d2af0f139c"
-      },
-      {
-        "addon_count": 2,
-        "id": "method-exact-5d49fd5e5755a9d9",
-        "layer": "scaffolding",
-        "minimum_token_count": 52,
-        "occurrence_count": 4,
-        "occurrences": [
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 226,
-            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
-            "layer": "scaffolding",
-            "method": "isEscaped",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
-            "start_line": 220,
-            "token_count": 52
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 215,
-            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
-            "layer": "scaffolding",
-            "method": "isEscaped",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
-            "start_line": 207,
-            "token_count": 52
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 263,
-            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
-            "layer": "scaffolding",
-            "method": "isEscaped",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
-            "start_line": 255,
-            "token_count": 52
-          },
-          {
-            "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 220,
-            "exact_token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a",
-            "layer": "scaffolding",
-            "method": "isEscaped",
-            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
-            "start_line": 214,
-            "token_count": 52
-          }
-        ],
-        "token_sha256": "5d49fd5e5755a9d9ccbd6c3d47352e827ec846f71aff63f059922d568ae0868a"
       },
       {
         "addon_count": 2,
@@ -17482,60 +17569,6 @@
       },
       {
         "addon_count": 2,
-        "id": "method-exact-b53271312c852f3c",
-        "layer": "scaffolding",
-        "minimum_token_count": 330,
-        "occurrence_count": 4,
-        "occurrences": [
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 218,
-            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
-            "layer": "scaffolding",
-            "method": "sanitizeTomlLine",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
-            "start_line": 158,
-            "token_count": 330
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 205,
-            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
-            "layer": "scaffolding",
-            "method": "sanitizeTomlLine",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
-            "start_line": 146,
-            "token_count": 330
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 253,
-            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
-            "layer": "scaffolding",
-            "method": "sanitizeTomlLine",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
-            "start_line": 192,
-            "token_count": 330
-          },
-          {
-            "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 212,
-            "exact_token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca",
-            "layer": "scaffolding",
-            "method": "sanitizeTomlLine",
-            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
-            "start_line": 152,
-            "token_count": 330
-          }
-        ],
-        "token_sha256": "b53271312c852f3cbd21dc35f81029d17117a1539a867155b17de1dfd8835bca"
-      },
-      {
-        "addon_count": 2,
         "id": "method-exact-fcc9f66228700a0e",
         "layer": "test_support",
         "minimum_token_count": 93,
@@ -17576,13 +17609,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 611,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 718,
             "exact_token_sha256": "fcc9f66228700a0e006dbc9fb6bb16e8802b078a44b9110b2cd01f43e61087b2",
             "layer": "test_support",
             "method": "setPositions",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 602,
+            "start_line": 709,
             "token_count": 93
           }
         ],
@@ -17705,7 +17738,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 238,
             "exact_token_sha256": "bbc8d19ba2ef0afbe1d658374cebd5b807b7547ddb5182bd25193e5cbdfd60c2",
             "layer": "scaffolding",
@@ -18463,13 +18496,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 630,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 737,
             "exact_token_sha256": "28af308fe286d07328c18fbeb5f976bc917b1b2ee46524f87bc1b2c6fe9be191",
             "layer": "test_support",
             "method": "setAOs",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 626,
+            "start_line": 733,
             "token_count": 51
           }
         ],
@@ -20831,13 +20864,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 497,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 604,
             "exact_token_sha256": "b0a74462d51a7391d6cbafd1ba95bbab99cb4842215165b6e2fa44b1044614f5",
             "layer": "test_support",
             "method": "TestBlockAccess",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 489,
+            "start_line": 596,
             "token_count": 46
           }
         ],
@@ -22271,13 +22304,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 537,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 644,
             "exact_token_sha256": "f4fd8ca261245d1bf1bfb273cb9bc72647755eac8293a081bc595c685dcda3a3",
             "layer": "test_support",
             "method": "getLightData",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 532,
+            "start_line": 639,
             "token_count": 52
           }
         ],
@@ -22684,7 +22717,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 40,
             "exact_token_sha256": "988e14c3cb4169374874dba7fde8d1f9baed2423ef7af6f75c340fba52f855da",
             "layer": "scaffolding",
@@ -23580,9 +23613,9 @@
         "addon_count": 24,
         "distinct_exact_token_fingerprints": 2,
         "id": "method-renamed-af2154e25705955c",
-        "layer": "scaffolding",
+        "layer": "mixed",
         "minimum_token_count": 67,
-        "occurrence_count": 26,
+        "occurrence_count": 27,
         "occurrences": [
           {
             "addon": "ae2",
@@ -23685,7 +23718,18 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 158,
+            "exact_token_sha256": "817b4d87f1ad3104eaeeeb783818278de939f8fa76fb419214fffff8bf0096a6",
+            "layer": "behavioral",
+            "method": "decodeUtf8",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/ExactNeoForgeModArtifact.java",
+            "start_line": 148,
+            "token_count": 67
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 128,
             "exact_token_sha256": "817b4d87f1ad3104eaeeeb783818278de939f8fa76fb419214fffff8bf0096a6",
             "layer": "scaffolding",
@@ -24279,7 +24323,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 47,
             "exact_token_sha256": "f9c261c10c9b9d4365ccc36f86e4cf6ea9b7a11d6022b8c4244a3d09126ab9f1",
             "layer": "scaffolding",
@@ -25951,7 +25995,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 79,
             "exact_token_sha256": "70427873002fbe57ad54a62e941738faeaf1cc8cdc7c3710f898d2296d6429ec",
             "layer": "test_scaffolding",
@@ -29680,13 +29724,13 @@
         "occurrences": [
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 790,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 818,
             "exact_token_sha256": "5445f61eced61220995986c1c79f83ed9b89c1da71811454ed9e1af5cecb0294",
             "layer": "behavioral",
             "method": "setTriangle",
             "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRenderer.java",
-            "start_line": 771,
+            "start_line": 799,
             "token_count": 129
           },
           {
@@ -30252,28 +30296,149 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 630,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 737,
             "exact_token_sha256": "28af308fe286d07328c18fbeb5f976bc917b1b2ee46524f87bc1b2c6fe9be191",
             "layer": "test_support",
             "method": "setAOs",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 626,
+            "start_line": 733,
             "token_count": 51
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 637,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 744,
             "exact_token_sha256": "d2e88f35c8b53080813d8d7a7859b1e4ff14afeb3d7448c000c423cbd5835b55",
             "layer": "test_support",
             "method": "setColor",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 633,
+            "start_line": 740,
             "token_count": 51
           }
         ],
         "renamed_token_sha256": "d8c506a24247aab985f8364adae15cbbe281b980376ecda546a6f4c276709c72"
+      },
+      {
+        "addon_count": 2,
+        "distinct_exact_token_fingerprints": 3,
+        "id": "method-renamed-dea7ce9a0298fe6d",
+        "layer": "test_support",
+        "minimum_token_count": 61,
+        "occurrence_count": 10,
+        "occurrences": [
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 2138,
+            "exact_token_sha256": "55848a404421d31e0f04ca3a389823504e22f63a87eba751a31f2f6ea73124c8",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/CableBusRendererTest.java",
+            "start_line": 2134,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 808,
+            "exact_token_sha256": "55848a404421d31e0f04ca3a389823504e22f63a87eba751a31f2f6ea73124c8",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/DriveRendererTest.java",
+            "start_line": 804,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 558,
+            "exact_token_sha256": "55848a404421d31e0f04ca3a389823504e22f63a87eba751a31f2f6ea73124c8",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/ExtendedAeDriveRendererTest.java",
+            "start_line": 554,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 189,
+            "exact_token_sha256": "d0296f15959927162b6292b0f4a6c8313a5e62ebf2360ea0d0ca95765156695c",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/M3CompletionResourceModelsTest.java",
+            "start_line": 184,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 211,
+            "exact_token_sha256": "55848a404421d31e0f04ca3a389823504e22f63a87eba751a31f2f6ea73124c8",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/M3DriveResourceModelsTest.java",
+            "start_line": 207,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 130,
+            "exact_token_sha256": "55848a404421d31e0f04ca3a389823504e22f63a87eba751a31f2f6ea73124c8",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/M3bExtendedAeDriveResourceModelsTest.java",
+            "start_line": 126,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 78,
+            "exact_token_sha256": "d0296f15959927162b6292b0f4a6c8313a5e62ebf2360ea0d0ca95765156695c",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/M3cQuartzGlassResourceModelsTest.java",
+            "start_line": 74,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 150,
+            "exact_token_sha256": "d0296f15959927162b6292b0f4a6c8313a5e62ebf2360ea0d0ca95765156695c",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/M3dCraftingResourceModelsTest.java",
+            "start_line": 145,
+            "token_count": 61
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 119,
+            "exact_token_sha256": "d0296f15959927162b6292b0f4a6c8313a5e62ebf2360ea0d0ca95765156695c",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/ae2/src/test/java/io/github/janguenter/bluemap/ae2/adapter/bluemap523/M3eQuantumBridgeResourceModelsTest.java",
+            "start_line": 114,
+            "token_count": 61
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 671,
+            "exact_token_sha256": "df2ebda61f09a4c34bbbf9c68a04210531071e725bf75ea860236e542c03589f",
+            "layer": "test_support",
+            "method": "putTexture",
+            "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/CamoMaterialResolverTest.java",
+            "start_line": 666,
+            "token_count": 61
+          }
+        ],
+        "renamed_token_sha256": "dea7ce9a0298fe6dc5bb3ef3b749af1026fcb821fae519e282994e71685d1ae9"
       },
       {
         "addon_count": 2,
@@ -30461,13 +30626,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 700,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 727,
             "exact_token_sha256": "4733db352ba9806ad1e33b8d878f3ac30e77e728718edcaf706ea5a854993777",
             "layer": "behavioral",
             "method": "isHiddenCave",
             "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRenderer.java",
-            "start_line": 695,
+            "start_line": 722,
             "token_count": 50
           }
         ],
@@ -30475,11 +30640,11 @@
       },
       {
         "addon_count": 2,
-        "distinct_exact_token_fingerprints": 4,
+        "distinct_exact_token_fingerprints": 3,
         "id": "method-renamed-0d5cc70ff06e02c7",
         "layer": "test_support",
         "minimum_token_count": 59,
-        "occurrence_count": 6,
+        "occurrence_count": 5,
         "occurrences": [
           {
             "addon": "ae2",
@@ -30527,28 +30692,149 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 387,
-            "exact_token_sha256": "a443fa254f9a9236377c589becf15aa5233580711f7221c3ff8be9c11d6a335c",
-            "layer": "test_support",
-            "method": "putOpaqueTexture",
-            "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/CamoMaterialResolverTest.java",
-            "start_line": 382,
-            "token_count": 59
-          },
-          {
-            "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 265,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 348,
             "exact_token_sha256": "93f0350cdb3694624d3b2d70e30493c90868f6d47012b01ad68511a7825cf7ac",
             "layer": "test_support",
             "method": "putOpaqueTexture",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 261,
+            "start_line": 344,
             "token_count": 59
           }
         ],
         "renamed_token_sha256": "0d5cc70ff06e02c79e0f3085226950f906e6f143894f73f93ed6f06e6e89f3a6"
+      },
+      {
+        "addon_count": 2,
+        "distinct_exact_token_fingerprints": 5,
+        "id": "method-renamed-7779653fdf6ae523",
+        "layer": "mixed",
+        "minimum_token_count": 147,
+        "occurrence_count": 5,
+        "occurrences": [
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 156,
+            "exact_token_sha256": "d400d2eaf70f144dffabcee272fec5c5908fa67b616f54a2ab56355a169aef5b",
+            "layer": "scaffolding",
+            "method": "descriptorDeclaresAe2",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
+            "start_line": 134,
+            "token_count": 147
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 132,
+            "exact_token_sha256": "f3a0128e0cc645aaf63a93762133b9d350892176193f5f772986cd1964ceebf0",
+            "layer": "scaffolding",
+            "method": "descriptorDeclaresMod",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
+            "start_line": 111,
+            "token_count": 147
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 190,
+            "exact_token_sha256": "d80c48ef567f4310855aba30bed4512afa5e94a630b1f3424c656d082273c54d",
+            "layer": "scaffolding",
+            "method": "descriptorDeclaresExtendedAe",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
+            "start_line": 168,
+            "token_count": 147
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 146,
+            "exact_token_sha256": "e16c9d0a4af7113d95a07a1ed97a9c016441bddbcd3a14d4ef18e1e6f6881d92",
+            "layer": "behavioral",
+            "method": "descriptorDeclaresMod",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/ExactNeoForgeModArtifact.java",
+            "start_line": 126,
+            "token_count": 147
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 150,
+            "exact_token_sha256": "bfd4c29d175e2d779e8916c38b704eba2fc6bfc71fcbe9aeeb816386db258349",
+            "layer": "scaffolding",
+            "method": "descriptorDeclaresFramedBlocks",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
+            "start_line": 130,
+            "token_count": 147
+          }
+        ],
+        "renamed_token_sha256": "7779653fdf6ae523e2600694361202b4808f119cbde9eaf1d6f25678b1e74799"
+      },
+      {
+        "addon_count": 2,
+        "distinct_exact_token_fingerprints": 5,
+        "id": "method-renamed-f1868644d0ee5b10",
+        "layer": "mixed",
+        "minimum_token_count": 128,
+        "occurrence_count": 5,
+        "occurrences": [
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 120,
+            "exact_token_sha256": "f1e17d68642ca45c593253533e0df85ff032539ed829352d286bf86f2b4ee817",
+            "layer": "scaffolding",
+            "method": "declaresAe2",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
+            "start_line": 101,
+            "token_count": 128
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 109,
+            "exact_token_sha256": "01e30e2fd69c3fa60e3adfd114cd707cd9c2ef96926b14198c121be31f726424",
+            "layer": "scaffolding",
+            "method": "declaresMod",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
+            "start_line": 91,
+            "token_count": 128
+          },
+          {
+            "addon": "ae2",
+            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
+            "end_line": 154,
+            "exact_token_sha256": "1994883b52022ca9b60229c3a608d8f3ffa73078f4c6e1925f2f01229587d8fe",
+            "layer": "scaffolding",
+            "method": "declaresExtendedAe",
+            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
+            "start_line": 135,
+            "token_count": 128
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 124,
+            "exact_token_sha256": "1ba00065908dc3997568d2b65f3d166ace1e6b4d710df488f0c4fdccdac1b445",
+            "layer": "behavioral",
+            "method": "declaresMod",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/ExactNeoForgeModArtifact.java",
+            "start_line": 105,
+            "token_count": 128
+          },
+          {
+            "addon": "framedblocks",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 116,
+            "exact_token_sha256": "bf07952490b9c40eaea1c7dc4dd27d75c8f988a70e63e83f89a22aac31712827",
+            "layer": "scaffolding",
+            "method": "declaresFramedBlocks",
+            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
+            "start_line": 97,
+            "token_count": 128
+          }
+        ],
+        "renamed_token_sha256": "f1868644d0ee5b10d7f895a203a964e05fe12b498e156e8483bd4425e15ff402"
       },
       {
         "addon_count": 2,
@@ -30593,7 +30879,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 188,
             "exact_token_sha256": "f3758597dadaf5b9c0172537e6b68c416b7ee32423df3bfa109dd17fdd5fd5d7",
             "layer": "test_scaffolding",
@@ -30648,7 +30934,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 238,
             "exact_token_sha256": "bbc8d19ba2ef0afbe1d658374cebd5b807b7547ddb5182bd25193e5cbdfd60c2",
             "layer": "scaffolding",
@@ -30659,61 +30945,6 @@
           }
         ],
         "renamed_token_sha256": "3de07eaa02afd2296b5d054cc3ef11680a83f1e4935803253114be156e61c4fc"
-      },
-      {
-        "addon_count": 2,
-        "distinct_exact_token_fingerprints": 4,
-        "id": "method-renamed-7779653fdf6ae523",
-        "layer": "scaffolding",
-        "minimum_token_count": 147,
-        "occurrence_count": 4,
-        "occurrences": [
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 156,
-            "exact_token_sha256": "d400d2eaf70f144dffabcee272fec5c5908fa67b616f54a2ab56355a169aef5b",
-            "layer": "scaffolding",
-            "method": "descriptorDeclaresAe2",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
-            "start_line": 134,
-            "token_count": 147
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 132,
-            "exact_token_sha256": "f3a0128e0cc645aaf63a93762133b9d350892176193f5f772986cd1964ceebf0",
-            "layer": "scaffolding",
-            "method": "descriptorDeclaresMod",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
-            "start_line": 111,
-            "token_count": 147
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 190,
-            "exact_token_sha256": "d80c48ef567f4310855aba30bed4512afa5e94a630b1f3424c656d082273c54d",
-            "layer": "scaffolding",
-            "method": "descriptorDeclaresExtendedAe",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
-            "start_line": 168,
-            "token_count": 147
-          },
-          {
-            "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 150,
-            "exact_token_sha256": "bfd4c29d175e2d779e8916c38b704eba2fc6bfc71fcbe9aeeb816386db258349",
-            "layer": "scaffolding",
-            "method": "descriptorDeclaresFramedBlocks",
-            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
-            "start_line": 130,
-            "token_count": 147
-          }
-        ],
-        "renamed_token_sha256": "7779653fdf6ae523e2600694361202b4808f119cbde9eaf1d6f25678b1e74799"
       },
       {
         "addon_count": 2,
@@ -30758,13 +30989,13 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 497,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 604,
             "exact_token_sha256": "b0a74462d51a7391d6cbafd1ba95bbab99cb4842215165b6e2fa44b1044614f5",
             "layer": "test_support",
             "method": "TestBlockAccess",
             "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedGeometryRendererEmissionTest.java",
-            "start_line": 489,
+            "start_line": 596,
             "token_count": 46
           }
         ],
@@ -30879,61 +31110,6 @@
           }
         ],
         "renamed_token_sha256": "a935adfda2873a9293d57d915b2c5b4cf6ca0aa3aba7a9f18052ec2e5b419a37"
-      },
-      {
-        "addon_count": 2,
-        "distinct_exact_token_fingerprints": 4,
-        "id": "method-renamed-f1868644d0ee5b10",
-        "layer": "scaffolding",
-        "minimum_token_count": 128,
-        "occurrence_count": 4,
-        "occurrences": [
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 120,
-            "exact_token_sha256": "f1e17d68642ca45c593253533e0df85ff032539ed829352d286bf86f2b4ee817",
-            "layer": "scaffolding",
-            "method": "declaresAe2",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactArtifactDetector.java",
-            "start_line": 101,
-            "token_count": 128
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 109,
-            "exact_token_sha256": "01e30e2fd69c3fa60e3adfd114cd707cd9c2ef96926b14198c121be31f726424",
-            "layer": "scaffolding",
-            "method": "declaresMod",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/ExactModArtifactDetector.java",
-            "start_line": 91,
-            "token_count": 128
-          },
-          {
-            "addon": "ae2",
-            "commit": "eff3a5dc33e69b0196dc18edb0045bfd4affe44e",
-            "end_line": 154,
-            "exact_token_sha256": "1994883b52022ca9b60229c3a608d8f3ffa73078f4c6e1925f2f01229587d8fe",
-            "layer": "scaffolding",
-            "method": "declaresExtendedAe",
-            "path": "addons/ae2/src/main/java/io/github/janguenter/bluemap/ae2/profile/extendedae/ExtendedAeArtifactDetector.java",
-            "start_line": 135,
-            "token_count": 128
-          },
-          {
-            "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 116,
-            "exact_token_sha256": "bf07952490b9c40eaea1c7dc4dd27d75c8f988a70e63e83f89a22aac31712827",
-            "layer": "scaffolding",
-            "method": "declaresFramedBlocks",
-            "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java",
-            "start_line": 97,
-            "token_count": 128
-          }
-        ],
-        "renamed_token_sha256": "f1868644d0ee5b10d7f895a203a964e05fe12b498e156e8483bd4425e15ff402"
       },
       {
         "addon_count": 2,
@@ -34522,14 +34698,14 @@
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/BlueMapFramedBlocksAddon.java"
         },
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/diagnostics/BoundedDiagnostics.java"
         },
@@ -35737,28 +35913,28 @@
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetector.java"
         },
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/FramedBlocks1061Profile.java"
         },
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/GeometryTemplateProfile.java"
         },
         {
           "addon": "framedblocks",
           "category": "java_test",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_scaffolding",
           "path": "addons/framedblocks/src/test/java/io/github/janguenter/bluemap/framedblocks/profile/framedblocks10_6/ExactArtifactDetectorTest.java"
         },
@@ -36874,14 +37050,14 @@
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/BlueMap523Adapter.java"
         },
         {
           "addon": "framedblocks",
           "category": "java_main",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/src/main/java/io/github/janguenter/bluemap/framedblocks/adapter/bluemap523/FramedBlocksResourceExtension.java"
         },
@@ -38582,49 +38758,49 @@
         {
           "addon": "framedblocks",
           "category": "ci_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/.github/workflows/ci.yml"
         },
         {
           "addon": "framedblocks",
           "category": "ci_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/.github/workflows/release.yml"
         },
         {
           "addon": "framedblocks",
           "category": "build_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/build.gradle"
         },
         {
           "addon": "framedblocks",
           "category": "quality_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/config/checkstyle/checkstyle.xml"
         },
         {
           "addon": "framedblocks",
           "category": "build_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/gradle.properties"
         },
         {
           "addon": "framedblocks",
           "category": "build_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/gradle/wrapper/gradle-wrapper.properties"
         },
         {
           "addon": "framedblocks",
           "category": "build_config",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/settings.gradle"
         },
@@ -40399,7 +40575,7 @@
         {
           "addon": "framedblocks",
           "category": "verification_tool",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/tools/verify_pinned_artifact.py"
         },
@@ -41645,42 +41821,42 @@
         {
           "addon": "framedblocks",
           "category": "gallery_data",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_support",
           "path": "addons/framedblocks/gallery/datapack/data/framedblocks_gallery/function/build.mcfunction"
         },
         {
           "addon": "framedblocks",
           "category": "gallery_data",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_support",
           "path": "addons/framedblocks/gallery/datapack/data/framedblocks_gallery/function/clear.mcfunction"
         },
         {
           "addon": "framedblocks",
           "category": "gallery_data",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_support",
           "path": "addons/framedblocks/gallery/datapack/data/framedblocks_gallery/function/verify.mcfunction"
         },
         {
           "addon": "framedblocks",
           "category": "gallery_data",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_support",
           "path": "addons/framedblocks/gallery/datapack/data/framedblocks_gallery/function/verify_observation_decks.mcfunction"
         },
         {
           "addon": "framedblocks",
           "category": "gallery_data",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "test_support",
           "path": "addons/framedblocks/gallery/datapack/data/framedblocks_gallery/function/verify_renderer_paths.mcfunction"
         },
         {
           "addon": "framedblocks",
           "category": "gallery_tool",
-          "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+          "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
           "layer": "scaffolding",
           "path": "addons/framedblocks/gallery/generate.py"
         },
@@ -46124,9 +46300,9 @@
         "matches_manifest": true
       },
       {
-        "gitlink_commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+        "gitlink_commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
         "id": "framedblocks",
-        "manifest_commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+        "manifest_commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
         "matches_manifest": true
       },
       {
@@ -46328,15 +46504,15 @@
       "ci_config": 102,
       "gallery_data": 548,
       "gallery_tool": 152,
-      "java_main": 1021,
-      "java_test": 538,
+      "java_main": 1023,
+      "java_test": 539,
       "quality_config": 51,
       "tooling": 26,
       "verification_tool": 70
     },
-    "eligible_byte_count": 29457879,
-    "eligible_file_count": 2714,
-    "eligible_file_inventory_sha256": "9c01d2ff7c5a04afc972faa9b359d41943e24422bb2fdd903de27c540bf07f04",
+    "eligible_byte_count": 29525958,
+    "eligible_file_count": 2717,
+    "eligible_file_inventory_sha256": "f2c4c89f6e0b08b0e53626b9bc2c8c0a46285873631438e2d3faeefcfbb6f224",
     "excluded": [
       "build output and generated trees",
       "third-party, vendored, and dependency content",
@@ -46350,13 +46526,13 @@
       "tracked CI/release, quality configuration, tools, and gallery lifecycle data",
       "tracked BlueMap add-on and NeoForge metadata"
     ],
-    "java_file_count_eligible_for_token_clones": 1411,
-    "java_method_count_eligible_for_clones": 7160,
+    "java_file_count_eligible_for_token_clones": 1414,
+    "java_method_count_eligible_for_clones": 7209,
     "layer_file_counts": {
-      "behavioral": 556,
+      "behavioral": 558,
       "scaffolding": 1072,
       "test_scaffolding": 169,
-      "test_support": 917
+      "test_support": 918
     },
     "structured_language_counts": {
       "github_actions": 1390,
@@ -46377,7 +46553,7 @@
       "workflow_run": 677,
       "workflow_step": 1288
     },
-    "structured_unit_inventory_sha256": "582245b3c55ab043c9939620af799fcae2f3bbcc977988c59d0508de2a89b8d6"
+    "structured_unit_inventory_sha256": "a1afba8be2503d5d7e423f3497f8fa834b831ba38d3c6206b898d4c9693999e1"
   },
   "structured_unit_clones": {
     "exact": [
@@ -46645,7 +46821,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 116,
             "exact_syntax_sha256": "761a8dcb7d301ec998f69bd0a800769727017c0ecf448527a704b8124f69d851",
             "kind": "gradle_closure",
@@ -46659,7 +46835,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 143,
             "exact_syntax_sha256": "761a8dcb7d301ec998f69bd0a800769727017c0ecf448527a704b8124f69d851",
             "kind": "gradle_closure",
@@ -47389,7 +47565,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 26,
             "exact_syntax_sha256": "9dfc3d8a59b485de47013865b4fc08d940136da0f5cba76ca2e6d8950051a5f8",
             "kind": "workflow_step",
@@ -48119,7 +48295,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 35,
             "exact_syntax_sha256": "4de96400eab58ea0c2a752da73e86fdd4f9f310a7b45aaa473839baa9f61ec3b",
             "kind": "gradle_block",
@@ -48849,7 +49025,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 181,
             "exact_syntax_sha256": "b65a2fec8ee73ffe5788364ca6585fa2fe06a0dbc3e19c27b334aaed9d8d770e",
             "kind": "gradle_block",
@@ -49579,7 +49755,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 15,
             "exact_syntax_sha256": "cbf33777e8f1e4e31fbe9a3ebd4afc2ed5856ac545b225787745615aa847c93d",
             "kind": "gradle_block",
@@ -50309,7 +50485,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 33,
             "exact_syntax_sha256": "16c86915188e5e7f5a24a650e1225667868cdf59237c3c9398a445dbac36fcf8",
             "kind": "gradle_closure",
@@ -51039,7 +51215,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 49,
             "exact_syntax_sha256": "27158ed539401763c22b2e2964b021a7fb34a444da1637486f29492741fd8b07",
             "kind": "gradle_closure",
@@ -51769,7 +51945,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 180,
             "exact_syntax_sha256": "31cad29360f989af5a585adf2dbfdb4a1c88cbb64b491b62b9f4698e9deb0883",
             "kind": "gradle_closure",
@@ -52499,7 +52675,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 41,
             "exact_syntax_sha256": "95e3340b863e92fce24e4cc2500c2de919fa771af58a3482cff8296a4b0a17e4",
             "kind": "gradle_closure",
@@ -53229,7 +53405,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 34,
             "exact_syntax_sha256": "f9b089ac52acae4beb5ce93141815050d8d2502687fa8b12ebcac7874113843a",
             "kind": "gradle_closure",
@@ -53959,7 +54135,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 217,
             "exact_syntax_sha256": "903631e42118daf01dca0da781a0e8455bf944914112fdfc8d49eb9ae4c800e6",
             "kind": "gradle_task",
@@ -54675,7 +54851,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 121,
             "exact_syntax_sha256": "6289c7a55cf855d01ada92c82cd822cd21d59ec05f7a89f69428ed8481a0d636",
             "kind": "gradle_closure",
@@ -55391,7 +55567,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 218,
             "exact_syntax_sha256": "07ca720352cd8dd8a13eae62b4ef40f89b6d8cc28a99ad353ca9e70dce74c335",
             "kind": "gradle_task",
@@ -56121,7 +56297,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 144,
             "exact_syntax_sha256": "60fb1b517df2e6908b8d95f624a9a8741590e6ba46844cb0dcbfcceed58777a6",
             "kind": "gradle_block",
@@ -58197,7 +58373,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 115,
             "exact_syntax_sha256": "359a39b586bf4c7a05f60b644acf61ab9013777db7a77396d49031820149e747",
             "kind": "gradle_closure",
@@ -59109,7 +59285,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 68,
             "exact_syntax_sha256": "6758802cf51977953c805f5b50756d8d5ba7e975f9105fd7e8fb45043fc6d9ef",
             "kind": "workflow_step",
@@ -59123,7 +59299,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 84,
             "exact_syntax_sha256": "6758802cf51977953c805f5b50756d8d5ba7e975f9105fd7e8fb45043fc6d9ef",
             "kind": "workflow_step",
@@ -61495,7 +61671,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 32,
             "exact_syntax_sha256": "594208bcae9f968d71081281a5cc7f1af919654a07461d80123c3d026e0ae1b1",
             "kind": "gradle_closure",
@@ -62127,7 +62303,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 395,
             "exact_syntax_sha256": "656624e6f8e67572d424e55bb2bff118af4f5749b6ccf4f82d9a50a5513c5668",
             "kind": "gradle_closure",
@@ -63925,8 +64101,8 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 522,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 543,
             "exact_syntax_sha256": "b66a7b35219c031ca1df7b115771fa845226f77851c386f28c9acd4a9a7cccb0",
             "kind": "gradle_task",
             "language": "gradle",
@@ -63934,7 +64110,7 @@
             "name": "'check'",
             "parser": "groovy-balanced-token-v1",
             "path": "addons/framedblocks/build.gradle",
-            "start_line": 519,
+            "start_line": 540,
             "unit_count": 24
           },
           {
@@ -69189,7 +69365,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 68,
             "exact_syntax_sha256": "24cd496509ace9b82568e5aba669588a98409cad15ed7732a0d3d1cb970d254d",
             "kind": "gradle_closure",
@@ -69695,7 +69871,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 51,
             "exact_syntax_sha256": "648fc3ff162b233a445b17662a060bbb7087735fbe71f9c95ad4967bab2ede11",
             "kind": "gradle_closure",
@@ -70201,7 +70377,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 56,
             "exact_syntax_sha256": "9789cb14a05f9853db10617048adb4438457e223972b867ff1aa27e0217308e2",
             "kind": "gradle_closure",
@@ -70707,7 +70883,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 77,
             "exact_syntax_sha256": "aa62396b1307fbdce438a6df2ce1c6d99ddcb7dd44cc9446005832c875909025",
             "kind": "gradle_closure",
@@ -71677,7 +71853,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 22,
             "exact_syntax_sha256": "6c4810784b688c5b154140d90b2623a3913eaae13be73351a1b20101a351bf3c",
             "kind": "gradle_closure",
@@ -72295,7 +72471,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 46,
             "exact_syntax_sha256": "6810fd7b72001569d7be02841e8a7596df687e5546835e1ca489b297a129b025",
             "kind": "workflow_step",
@@ -72309,7 +72485,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 62,
             "exact_syntax_sha256": "6810fd7b72001569d7be02841e8a7596df687e5546835e1ca489b297a129b025",
             "kind": "workflow_step",
@@ -77033,7 +77209,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 95,
             "exact_syntax_sha256": "74faf0187ef84ac2ca151368e50f3b6f004c8569badecfc97e96fd481fedf059",
             "kind": "gradle_closure",
@@ -77455,7 +77631,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 110,
             "exact_syntax_sha256": "a923fba0bd23f0ec15d993d1a5be70bc66177fc526368164d40f9567036f7104",
             "kind": "gradle_closure",
@@ -82393,7 +82569,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 335,
             "exact_syntax_sha256": "339a525148c5f42f5130551f3e494bc4b6e40cb0904bacf5b11f51fc3280ef6e",
             "kind": "gradle_closure",
@@ -82801,7 +82977,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 262,
             "exact_syntax_sha256": "08826cfe7d4de2a2e088567a8341f1c38a68c40a11344de1232e6d3bb5608551",
             "kind": "gradle_closure",
@@ -83617,7 +83793,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 173,
             "exact_syntax_sha256": "2eaa471bbfd37582880ea209f5c75c66dd700eced3e236f14311d0aa52cb69bb",
             "kind": "gradle_closure",
@@ -83631,7 +83807,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 200,
             "exact_syntax_sha256": "2eaa471bbfd37582880ea209f5c75c66dd700eced3e236f14311d0aa52cb69bb",
             "kind": "gradle_closure",
@@ -89881,7 +90057,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 122,
             "exact_syntax_sha256": "617d16d3ad46b2f34d8706e95bc9ecdb5abda8de07ceacafd95677ff12db6893",
             "kind": "gradle_block",
@@ -90473,7 +90649,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 256,
             "exact_syntax_sha256": "9688a38e42416e4b16570945b95c1fef8de4398fa2c49f87df1e5595a7a93ea0",
             "kind": "gradle_closure",
@@ -90769,7 +90945,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 394,
             "exact_syntax_sha256": "cfa0350e59971afd25064e94eea0815ad60f4ae78f2adec9333eb7455a6fee80",
             "kind": "gradle_closure",
@@ -91897,7 +92073,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 152,
             "exact_syntax_sha256": "06bd52e1c5b06304dc3a755435e39a761f358b6fe03815626cc03862fe359e5e",
             "kind": "gradle_block",
@@ -93335,7 +93511,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 146,
             "exact_syntax_sha256": "0980e27153d971ab607966cbe0ce3e045f9b2e5d3c9f53261eb3e0df0cea059c",
             "kind": "gradle_block",
@@ -93561,7 +93737,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 419,
             "exact_syntax_sha256": "8457164285a39bcd65089b693afbcd861e9a6a1981640b3a81c0e919b97d01ed",
             "kind": "gradle_closure",
@@ -94675,7 +94851,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 63,
             "exact_syntax_sha256": "de40498bd05b58db1cd080045b1cb2f68765aacbd8ca0b31d4218e305ead2da7",
             "kind": "workflow_step",
@@ -94689,7 +94865,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 79,
             "exact_syntax_sha256": "de40498bd05b58db1cd080045b1cb2f68765aacbd8ca0b31d4218e305ead2da7",
             "kind": "workflow_step",
@@ -99543,7 +99719,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 175,
             "exact_syntax_sha256": "f419dbaabfd4280db715a6053d4359c40c4644aba94d2e615e5986f15eb39b6a",
             "kind": "workflow_step",
@@ -100679,7 +100855,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 357,
             "exact_syntax_sha256": "2203e5f83a7682351560a7b10e3207421157fc7c218a1dbd77bb9e8c0c95d51e",
             "kind": "python_function",
@@ -107159,7 +107335,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 45,
             "exact_syntax_sha256": "958f59c2265950115a926df2b69dbbbcd28dd3186a96ef75b0576c31a70fb7df",
             "kind": "python_function",
@@ -112713,7 +112889,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 54,
             "exact_syntax_sha256": "a542a21c7f986c51879fe8f582839c3ab59dabfc2ae8f3dbf75e0e8f0b2e0f45",
             "kind": "python_function",
@@ -112771,7 +112947,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 229,
             "exact_syntax_sha256": "fbc01ae58d1460bc05d1d3a7b530f604168a6c6b02dadf037c49be962e4d5650",
             "kind": "gradle_closure",
@@ -112785,7 +112961,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 386,
             "exact_syntax_sha256": "fbc01ae58d1460bc05d1d3a7b530f604168a6c6b02dadf037c49be962e4d5650",
             "kind": "gradle_closure",
@@ -114129,7 +114305,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 175,
             "exact_syntax_sha256": "6ff59840dd68ee6aa31a4395aebc50077c0790e6ebddbf265c2638b19f95529e",
             "kind": "gradle_block",
@@ -114217,7 +114393,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 172,
             "exact_syntax_sha256": "8d2bd38ab82f84cbcb541a9f4e56fabf069658ba7cf5a887315a02bb233aa055",
             "kind": "gradle_block",
@@ -114261,7 +114437,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 151,
             "exact_syntax_sha256": "a12e61ce843c894c0507c5b425a0bd777a44169d41850930f9a5859cb3b19fb2",
             "kind": "gradle_block",
@@ -114437,7 +114613,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 168,
             "exact_syntax_sha256": "d337da2ea3133e6494f83aae537ee5c7b0fbb6c9e14f91ee5b0e205de74f778d",
             "kind": "gradle_block",
@@ -114789,7 +114965,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 354,
             "exact_syntax_sha256": "1b6318838c568ee99b4be550853447511899ce292318dcb348390b00097cc3dd",
             "kind": "gradle_closure",
@@ -114833,7 +115009,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 111,
             "exact_syntax_sha256": "1f5d3386dca48b322c2283132e6daf383639e0eed18f2a925ba363cca5228ebc",
             "kind": "gradle_closure",
@@ -114965,7 +115141,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 391,
             "exact_syntax_sha256": "22f8c7abda6f28d814fd74232c2431a740dc7a71ae861decfc46d3d878cba2c3",
             "kind": "gradle_closure",
@@ -115713,7 +115889,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 104,
             "exact_syntax_sha256": "7f68cfa47abaa314d761ef3e2424086279c6a2f29709d229fc07bc33c6f23ec6",
             "kind": "gradle_closure",
@@ -115757,7 +115933,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 105,
             "exact_syntax_sha256": "86194b34825ac332fabcfba8011f2f18dbb0e0e7c15579def34f3feef50215be",
             "kind": "gradle_closure",
@@ -115977,7 +116153,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 131,
             "exact_syntax_sha256": "9e278e126194657cd74ea31105407805b084acc0ffe6134caf1f5ac3af0020a2",
             "kind": "gradle_closure",
@@ -116329,8 +116505,8 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 612,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 629,
             "exact_syntax_sha256": "cb7945d7d6f6b1e2227e459829b789cb07fb6c292ac8776d9fde762a7d722e4d",
             "kind": "gradle_closure",
             "language": "gradle",
@@ -116338,7 +116514,7 @@
             "name": "developer",
             "parser": "groovy-balanced-token-v1",
             "path": "addons/framedblocks/build.gradle",
-            "start_line": 608,
+            "start_line": 625,
             "unit_count": 12
           }
         ],
@@ -116417,8 +116593,8 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 613,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 630,
             "exact_syntax_sha256": "de0c11b8d9bc58eaf77dc412d275da28fcf244e225f66cb0326864faf61f254a",
             "kind": "gradle_closure",
             "language": "gradle",
@@ -116426,7 +116602,7 @@
             "name": "developers",
             "parser": "groovy-balanced-token-v1",
             "path": "addons/framedblocks/build.gradle",
-            "start_line": 607,
+            "start_line": 624,
             "unit_count": 15
           }
         ],
@@ -116461,7 +116637,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 346,
             "exact_syntax_sha256": "e75781336291a3d3e7b2c6cefc91bedf2c36b25e84150075c8205740cccf9c92",
             "kind": "gradle_closure",
@@ -116593,7 +116769,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 235,
             "exact_syntax_sha256": "f0247c29029a83dc8b58866b29e9942339c3df66db8cf8a569a13e782dbc0b74",
             "kind": "gradle_closure",
@@ -116637,7 +116813,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 237,
             "exact_syntax_sha256": "fa747194c1e885918361f6a9ed48b6aad238589c15df083f862b6937213f5d2e",
             "kind": "gradle_closure",
@@ -116725,7 +116901,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 137,
             "exact_syntax_sha256": "7b25b5bf143870a5b9988f950e2af43c74a2148e600d086ed5e11160ddf6b4b5",
             "kind": "gradle_task",
@@ -117899,7 +118075,7 @@
         "occurrences": [
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 354,
             "exact_syntax_sha256": "67c5ff2797bddd067217d6fde3608311319dbfaa7ae80b2d1f5d7588ee337644",
             "kind": "python_function",
@@ -119123,7 +119299,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 144,
             "exact_syntax_sha256": "60fb1b517df2e6908b8d95f624a9a8741590e6ba46844cb0dcbfcceed58777a6",
             "kind": "gradle_block",
@@ -119854,7 +120030,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 51,
             "exact_syntax_sha256": "648fc3ff162b233a445b17662a060bbb7087735fbe71f9c95ad4967bab2ede11",
             "kind": "gradle_closure",
@@ -120585,7 +120761,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 218,
             "exact_syntax_sha256": "07ca720352cd8dd8a13eae62b4ef40f89b6d8cc28a99ad353ca9e70dce74c335",
             "kind": "gradle_task",
@@ -121176,7 +121352,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 256,
             "exact_syntax_sha256": "9688a38e42416e4b16570945b95c1fef8de4398fa2c49f87df1e5595a7a93ea0",
             "kind": "gradle_closure",
@@ -121669,7 +121845,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 394,
             "exact_syntax_sha256": "cfa0350e59971afd25064e94eea0815ad60f4ae78f2adec9333eb7455a6fee80",
             "kind": "gradle_closure",
@@ -123022,7 +123198,7 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
             "end_line": 122,
             "exact_syntax_sha256": "617d16d3ad46b2f34d8706e95bc9ecdb5abda8de07ceacafd95677ff12db6893",
             "kind": "gradle_block",
@@ -124341,8 +124517,8 @@
           },
           {
             "addon": "framedblocks",
-            "commit": "b324b513ecfb2d592b76c3f4280a63354e480728",
-            "end_line": 721,
+            "commit": "56cef916b74cc3804dc2e6af6679938a3fe2a51f",
+            "end_line": 735,
             "exact_syntax_sha256": "16f22cc72b76b356699e2164f9aade373eab1bd856741721f78c4320b63f709e",
             "kind": "python_function",
             "language": "python",
@@ -124350,7 +124526,7 @@
             "name": "sha256_bytes",
             "parser": "python-ast-stdlib",
             "path": "addons/framedblocks/gallery/generate.py",
-            "start_line": 720,
+            "start_line": 734,
             "unit_count": 18
           }
         ],
@@ -124412,8 +124588,8 @@
     "exact_java_method_clone_groups": 327,
     "exact_method_groups_by_layer": {
       "behavioral": 195,
-      "mixed": 2,
-      "scaffolding": 66,
+      "mixed": 5,
+      "scaffolding": 63,
       "test_scaffolding": 12,
       "test_support": 52
     },
@@ -124430,13 +124606,13 @@
       "python": 7
     },
     "renamed_java_file_token_clone_groups": 46,
-    "renamed_java_method_clone_groups": 189,
+    "renamed_java_method_clone_groups": 190,
     "renamed_method_groups_by_layer": {
       "behavioral": 67,
-      "mixed": 5,
-      "scaffolding": 68,
+      "mixed": 8,
+      "scaffolding": 65,
       "test_scaffolding": 15,
-      "test_support": 34
+      "test_support": 35
     },
     "scaffold_family_count": 11
   },
@@ -124452,7 +124628,7 @@
       "pack_commit": "c7bb230f21d14d26859d0b92548f089b3a493ad9",
       "path": "versions/1.2.0/manifest.json",
       "schema_version": 1,
-      "sha256": "1c0ac9ca5c387f3d50e34d2982b3fd18267fda467d44330c31cf1305385e6a70",
+      "sha256": "6157b090619d5881bd8498f65ba4a1cd38fb58e7778944219375fce19712a074",
       "tag": "atmons-1.2.0"
     },
     "pack": "All the Mons",
